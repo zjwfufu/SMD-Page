@@ -13,7 +13,7 @@ function prepareDisclosures(root){
     const summary=details.querySelector(':scope > summary'),panel=document.createElement('div');panel.className='disclosure-panel';
     [...details.childNodes].filter(node=>node!==summary).forEach(node=>panel.append(node));details.append(panel);
     details.addEventListener('toggle',()=>{
-      if(!details.open){panel.querySelectorAll('video').forEach(video=>video.pause());return}
+      if(!details.open){closeDisclosure(details);return}
       const box=summary.getBoundingClientRect(),spaceBelow=innerHeight-box.bottom;
       details.classList.toggle('opens-up',spaceBelow<Math.min(panel.scrollHeight,360)&&box.top>spaceBelow);
     });

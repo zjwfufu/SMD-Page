@@ -7,6 +7,7 @@ html:has(dialog[open]){overflow:hidden}
 .teaser-grid .media-card.has-video>.teaser-caption{bottom:58px;max-height:calc(100% - 72px)}
 .teaser-grid .media-card:hover>.teaser-caption,.teaser-grid .media-card:focus-within>.teaser-caption{visibility:visible;opacity:1;pointer-events:auto}
 .teaser-caption strong{display:block;font-size:12px;letter-spacing:.2px;font-weight:600;color:#cfe4ff}
+.teaser-caption,.teaser-prompt{overscroll-behavior:contain}
 .teaser-prompt{margin-top:5px;max-height:96px;overflow:auto;white-space:normal;font-size:13px;line-height:1.45;color:#fff}
 .overlay-disclosure{position:relative;overflow:visible}
 .overlay-disclosure[open]{z-index:25}
