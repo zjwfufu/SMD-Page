@@ -11,7 +11,7 @@ const available={};
 for(const group of Object.keys(selection).filter(k=>k!=='defaults')){available[group]=selection[group]?selection[group].map(code=>D[group].find(c=>c.code===code)).filter(Boolean):D[group];if(!available[group].length)available[group]=D[group]}
 const state={};
 for(const group in available)state[group]=available[group].find(c=>c.code===selection.defaults[group])||available[group][0];
-const image=(src,alt,cls='')=>`<button class="image-button ${cls}" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="1000" height="1000"></button>`;
+const image=(src,alt,cls='')=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1000,1000];return `<button class="image-button ${cls}" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="${size[0]}" height="${size[1]}"></button>`};
 const vid=(v,label,cls='')=>`<figure class="media-card ${cls}"><div class="video-wrap"><video controls playsinline preload="none" ${v.src.endsWith(".parts.json")?"":`src="${esc(v.src)}"`} data-src="${esc(v.src)}" data-poster="${esc(v.poster)}" aria-label="${esc(label)}"></video><button class="video-start" aria-label="Play ${esc(label)}">▶</button></div><figcaption>${esc(label)}</figcaption></figure>`;
 const picker=(group,label)=>`<div id="${group}-carousel" class="case-carousel" role="region" aria-roledescription="carousel" aria-label="${label}" data-carousel-group="${group}"></div>`;
 const prompt=c=>`<details class="prompt"><summary>View exact prompt <span>${esc(c.code)}</span></summary><pre>${esc(c.prompt)}</pre></details>`;
