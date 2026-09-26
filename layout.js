@@ -1,4 +1,28 @@
 /* Isolated overlays and pre-sized media keep other sections stationary. */
+
+// Independent, equally centered sections instead of nested width/spacing rules.
+const referenceHeading=document.querySelector('#audio .subsection-heading');
+if(referenceHeading){
+  const referenceSection=document.createElement('section');
+  referenceSection.id='reference-section';referenceSection.className='section';
+  document.querySelector('#audio').after(referenceSection);
+  while(referenceHeading.nextSibling)referenceSection.append(referenceHeading.nextSibling);
+  referenceSection.prepend(referenceHeading);referenceHeading.className='section-heading';
+  const oldTitle=referenceHeading.querySelector('h3'),title=document.createElement('h2');
+  title.id='reference-title';title.textContent=oldTitle.textContent;oldTitle.replaceWith(title);
+  referenceSection.setAttribute('aria-labelledby',title.id);
+  visibilityObserver.observe(referenceSection);
+}
+const multiBlock=document.querySelector('#multi-teacher');
+if(multiBlock){
+  const multiSection=document.createElement('section');
+  multiSection.id=multiBlock.id;multiSection.className='section multi-block';
+  while(multiBlock.firstChild)multiSection.append(multiBlock.firstChild);
+  document.querySelector('#transfer').after(multiSection);multiBlock.remove();
+  const oldTitle=multiSection.querySelector('h3'),title=document.createElement('h2');
+  title.id='multi-title';title.textContent=oldTitle.textContent;oldTitle.replaceWith(title);
+  multiSection.setAttribute('aria-labelledby',title.id);
+}
 const teaserCases=[state.av,state.images,D.wan.find(c=>c.id==='lantern_river_city_seed510102'),D.images.find(c=>c.id==='forest_nurse_log'),state.wan,D.av.find(c=>c.id==='case51')];
 document.querySelectorAll('#teaser > .teaser-grid > figure').forEach((card,i)=>{
   const caption=card.querySelector('figcaption'),label=caption.textContent;

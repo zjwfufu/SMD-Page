@@ -42,3 +42,46 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 #wan-results .wan-row .video-wrap{height:190px}
 .overlay-disclosure>.disclosure-panel{max-height:50vh;padding:12px}
 }
+
+/* One centered reading axis; only the teaser keeps the wider editorial canvas. */
+#explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{
+  width:calc(100% - 48px);max-width:1280px;margin:76px auto 0;
+}
+#shape,#audio,#reference-section,#transfer,#multi-teacher{max-width:1120px}
+#explore>.section,#shape>.section,#audio>.section{margin:0}
+#reference-section .section-heading h2,#multi-teacher h2{margin:0 0 14px}
+#multi-teacher .multi-metrics{max-width:100%;margin:24px auto 32px}
+#multi-teacher .image-button{margin-top:0}
+#multi-teacher h2{font-size:clamp(22px,2.4vw,36px);line-height:1.25;text-align:center}
+.carousel-stage{grid-template-columns:44px minmax(0,1fr) 44px;gap:12px}
+.carousel-footer{margin-left:56px;margin-right:56px}
+.carousel-arrow{font-size:28px}
+.seed-heading,.diversity-row{grid-template-columns:120px repeat(4,minmax(0,1fr))}
+.wan-header,.wan-row{grid-template-columns:110px repeat(3,minmax(0,1fr))}
+.seed-heading,.wan-header{font-size:16px}
+.row-label,.wan-row .row-label{font-size:16px;padding:0 6px}
+.row-label small{font-size:14px}
+#wan-results .wan-row .video-wrap{height:auto;aspect-ratio:4/3}
+#av-results>.video-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#av-results>.video-group>.media-card{display:flex;flex-direction:column-reverse;gap:10px}
+#av-results>.video-group figcaption{margin:0;text-align:center;font-size:17px}
+.cross-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.cross-grid>div{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.cross-grid h4{margin:0;min-height:48px;display:flex;align-items:center;justify-content:center;font-size:16px}
+@media(max-width:1024px){
+  #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{width:100%;margin:60px auto 0}
+  .carousel-stage{grid-template-columns:1fr 1fr}
+  .carousel-footer{margin-left:0;margin-right:0}
+  .diversity-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row-label,.wan-row .row-label{padding:10px 0 4px}
+  .wan-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cross-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  .cross-grid>div{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .cross-grid h4{grid-column:1/-1;min-height:24px}
+}
+@media(max-width:640px){
+  #av-results>.video-group{grid-template-columns:1fr;gap:22px}
+  .cross-grid{grid-template-columns:1fr}
+  #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{margin-top:48px}
+  #multi-teacher .multi-metrics{margin-top:20px}
+}
