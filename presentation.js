@@ -1,12 +1,12 @@
 /* FastGen-PDD layout adaptation using only this project's own content/assets. */
 const teaser=document.querySelector('#teaser');
-teaser.innerHTML=`<p class="caption">Few-step image, video, audio–video and 3D generation.</p><div class="teaser-grid">
+teaser.innerHTML=`<p class="caption">Few-step image and video generation.</p><div class="teaser-grid">
 ${vid(state.av.ours,'MiniMax H3 · 8 NFE')}
 <figure class="media-card">${image(state.images.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
-<figure class="media-card">${image(state.shapes.routes.ours.poster,'TRELLIS.2 · shape and texture')}<figcaption>TRELLIS.2 · shape and texture</figcaption></figure>
-<figure class="media-card">${image(state.edits.ours,'Image editing · 4 NFE')}<figcaption>Image editing · 4 NFE</figcaption></figure>
+${vid(D.wan.find(c=>c.id==='lantern_river_city_seed510102').ours,'Wan2.1-14B · 4 NFE')}
+<figure class="media-card">${image(D.images.find(c=>c.id==='forest_nurse_log').ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
 ${vid(state.wan.ours,'Wan2.1-14B · 4 NFE')}
-${vid(state.reference.output,'Reference-conditioned · 4 NFE')}
+${vid(D.av.find(c=>c.id==='case51').ours,'MiniMax H3 · 8 NFE')}
 </div>`;
 // The method illustration is intentionally omitted from the project page.
 const presentationTitles={explore:['Ours vs. Lightning on Qwen-Image','Four matched seeds for each prompt. Both methods use 4 NFE.'],editing:['Image Editing with Qwen-Image-Edit','Input, Lightning and Ours. Both students use 4 NFE.'],shape:['Image-to-3D Generation','Hunyuan3D 2.1 and TRELLIS.2. Inspect the generated assets or compare turntables.'],video:['Ours vs. AnyFlow on Wan2.1-14B','AnyFlow and Ours at 4 NFE. Three paired prompts per page.'],audio:['Joint Audio–Video Generation with MiniMax H3','LightX2V DMD and Ours at 8 NFE. Select an audio track to listen.'],transfer:['Cross-Model Distillation','Four teacher-to-student routes at 4 NFE.'],method:['Simplified Matching Distillation','Pivot proxy and teacher repulsion are used during training only.']};

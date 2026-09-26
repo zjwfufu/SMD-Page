@@ -25,6 +25,7 @@ figure,h1,h2,h3,p{margin:0}
 .teaser-grid>.media-card:nth-child(6n+4),.teaser-grid>.media-card:nth-child(6n+5){grid-column:1}
 .teaser-grid .image-button,.teaser-grid .video-wrap{height:100%;width:100%;aspect-ratio:auto}
 .teaser-grid img,.teaser-grid video{height:100%;width:100%;object-fit:cover}
+.teaser-grid .image-button img{height:100%;width:100%;object-fit:cover;object-position:center}
 .teaser-grid figcaption{position:absolute;bottom:0;left:0;right:0;padding:28px 12px 12px;background:linear-gradient(transparent,#102135e6);color:white;font-size:15px;pointer-events:none;opacity:0;transition:opacity .2s}
 .teaser-grid .media-card:hover figcaption,.teaser-grid .media-card:focus-within figcaption{opacity:1}
 .abstract,#method{max-width:min(1200px,92vw);margin:56px auto 0}
