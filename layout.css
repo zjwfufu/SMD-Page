@@ -85,3 +85,59 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
   #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{margin-top:48px}
   #multi-teacher .multi-metrics{margin-top:20px}
 }
+/* Compact reader view: natural image proportions, close rows, no curation UI. */
+.section-heading .caption,#multi-teacher>.caption,#multi-teacher>div>.caption{
+  max-width:1000px;font-size:16px;line-height:1.55;text-align:center;margin:16px auto 0;
+}
+.section-heading{margin-bottom:18px}
+.case-carousel{margin:20px 0 0}
+.carousel-stage{gap:8px;grid-template-columns:36px minmax(0,1fr) 36px}
+.carousel-arrow{border-radius:6px;font-size:28px}
+.carousel-arrow:hover{transform:none;box-shadow:none}
+.carousel-footer{display:block;margin:12px 44px 0;text-align:center}
+.case-page{font-size:16px;font-weight:400}.case-page strong{font-size:22px}
+.diversity-row{grid-template-columns:92px repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.diversity-row .image-button,#edit-results .media-card>.image-button{aspect-ratio:auto}
+.diversity-row .image-button img,#edit-results .media-card>.image-button img{height:auto;width:100%;object-fit:contain}
+.three-col,.two-col{gap:6px}
+#edit-results .media-card{gap:4px}
+.media-card figcaption{font-size:16px;margin:4px 0}
+.row-label,.wan-row .row-label{font-size:15px}
+.row-label small{font-size:13px}
+.wan-row{grid-template-columns:92px repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px}
+#wan-results .wan-row .video-wrap{height:auto;aspect-ratio:var(--wan-ratio,832/480)}
+#wan-results .wan-row video{height:100%;object-fit:contain}
+.wan-row .media-card figcaption{display:none}
+#av-results>.video-group{gap:6px}
+#av-results>.video-group>.media-card{gap:4px}
+#av-results>.video-group figcaption{font-size:16px}
+.reference-layout{gap:8px;align-items:start}
+.references{height:auto;max-height:380px;gap:6px}
+.references .image-button{height:auto}
+.references .image-button img{height:auto;max-height:180px;object-fit:contain}
+.cross-grid{gap:8px}.cross-grid>div{gap:6px}
+.cross-grid h4{font-size:15px;min-height:36px}
+.reader-prompts{margin-top:12px}
+.inline-prompt{margin:0;color:var(--muted);font-size:14px;line-height:1.5;font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
+.reader-prompts-wan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-left:98px}
+.prompt-long{margin:0}
+.prompt-long summary{font-size:14px}
+.reader-prompts-wan .prompt-long>.disclosure-panel{width:min(650px,75vw);left:auto;right:0}
+.reader-prompts-wan .prompt-long:first-child>.disclosure-panel{left:0;right:auto}
+.playback-tools,.sync-button{margin-top:10px}
+@media(max-width:1024px){
+  .carousel-stage{grid-template-columns:1fr 1fr}
+  .carousel-footer{margin-left:0;margin-right:0}
+  .diversity-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .diversity-row .image-button:after{content:none}
+  .wan-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .wan-row .row-label{padding:4px 0}
+  .reader-prompts-wan{margin-left:0}
+}
+@media(max-width:640px){
+  .section-heading .caption,#multi-teacher>div>.caption{font-size:14px;text-align:left}
+  .inline-prompt{font-size:13px}
+  .reader-prompts-wan{grid-template-columns:1fr;gap:12px}
+  #av-results>.video-group{gap:12px}
+  .references{max-height:320px}
+}
