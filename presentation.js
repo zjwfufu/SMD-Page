@@ -1,6 +1,6 @@
 /* FastGen-PDD layout adaptation using only this project's own content/assets. */
 const teaser=document.querySelector('#teaser');
-teaser.innerHTML=`<p class="caption">Few-step image and video generation.</p><div class="teaser-grid">
+teaser.innerHTML=`<div class="teaser-grid">
 ${vid(state.av.ours,'MiniMax H3 · 8 NFE')}
 <figure class="media-card">${image(state.images.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
 ${vid(D.wan.find(c=>c.id==='lantern_river_city_seed510102').ours,'Wan2.1-14B · 4 NFE')}
