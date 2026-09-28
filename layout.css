@@ -141,3 +141,10 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
   #av-results>.video-group{gap:12px}
   .references{max-height:320px}
 }
+/* One selected prompt per page; portrait outputs stay paired and compact. */
+#wan-results>.wan-portrait{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.wan-sample-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.wan-sample-pair .media-card{display:flex;flex-direction:column-reverse;justify-content:flex-end}
+.wan-sample-pair video{aspect-ratio:480/832;max-height:320px;object-fit:contain}
+.wan-sample-pair figcaption{font-size:13px;margin:0 0 6px;text-align:center}
+@media(max-width:750px){#wan-results>.wan-portrait{grid-template-columns:repeat(3,250px);overflow-x:auto;padding-bottom:8px}}
