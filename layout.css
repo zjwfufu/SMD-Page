@@ -148,3 +148,8 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 .wan-sample-pair video{aspect-ratio:480/832;max-height:320px;object-fit:contain}
 .wan-sample-pair figcaption{font-size:13px;margin:0 0 6px;text-align:center}
 @media(max-width:750px){#wan-results>.wan-portrait{grid-template-columns:repeat(3,250px);overflow-x:auto;padding-bottom:8px}}
+/* Reserved geometry remains visible while nearby media are fetched. */
+.image-button img[data-src]{background:var(--surface-alt)}
+.video-wrap.is-loading:after{content:"";position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid #ffffff70;border-top-color:#fff;border-radius:50%;animation:media-loading .8s linear infinite;pointer-events:none}
+@keyframes media-loading{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.video-wrap.is-loading:after{animation:none}}

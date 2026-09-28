@@ -11,8 +11,8 @@ const available={};
 for(const group of Object.keys(selection).filter(k=>k!=='defaults')){available[group]=selection[group]?selection[group].map(code=>D[group].find(c=>c.code===code)).filter(Boolean):D[group];if(!available[group].length)available[group]=D[group]}
 const state={};
 for(const group in available)state[group]=available[group].find(c=>c.code===selection.defaults[group])||available[group][0];
-const image=(src,alt,cls='')=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1000,1000];return `<button class="image-button ${cls}" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="${size[0]}" height="${size[1]}"></button>`};
-const vid=(v,label,cls='')=>`<figure class="media-card ${cls}"><div class="video-wrap"><video controls playsinline preload="none" ${v.src.endsWith(".parts.json")?"":`src="${esc(v.src)}"`} data-src="${esc(v.src)}" data-poster="${esc(v.poster)}" aria-label="${esc(label)}"></video><button class="video-start" aria-label="Play ${esc(label)}">▶</button></div><figcaption>${esc(label)}</figcaption></figure>`;
+const image=(src,alt,cls='')=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1000,1000];return `<button class="image-button ${cls}" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}"><img data-src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="${size[0]}" height="${size[1]}"></button>`};
+const vid=(v,label,cls='')=>`<figure class="media-card ${cls}"><div class="video-wrap"><video controls playsinline preload="none" data-src="${esc(v.src)}" data-poster="${esc(v.poster)}" aria-label="${esc(label)}"></video><button class="video-start" aria-label="Play ${esc(label)}">▶</button></div><figcaption>${esc(label)}</figcaption></figure>`;
 const picker=(group,label)=>`<div id="${group}-carousel" class="case-carousel" role="region" aria-roledescription="carousel" aria-label="${label}" data-carousel-group="${group}"></div>`;
 const prompt=c=>`<details class="prompt"><summary>View exact prompt <span>${esc(c.code)}</span></summary><pre>${esc(c.prompt)}</pre></details>`;
 $('#full-content').innerHTML=`
@@ -30,7 +30,7 @@ $('#full-content').innerHTML=`
 function renderImages(){const c=state.images,samples=[{seed:c.seed,ours:c.ours,baseline:c.baseline},...c.samples];$('#image-results').innerHTML=`<div class="diversity-grid">${[['Lightning','baseline'],['SMD · ours','ours']].map(([label,key])=>`<div class="diversity-row ${key}"><div class="row-label">${label}<small>4 NFE</small></div>${samples.map((s,i)=>image(s[key],`${label}, sample ${i+1}`)).join('')}</div>`).join('')}</div>${prompt(c)}`;}
 function renderEdits(){const c=state.edits;$('#edit-results').innerHTML=`<div class="three-col">${[['Input image','input'],['Lightning · 4 NFE','baseline'],['SMD · 4 NFE','ours']].map(([label,key])=>`<figure class="media-card ${key}">${image(c[key],c.code+' '+label)}<figcaption>${label}</figcaption></figure>`).join('')}</div>${prompt(c)}`;}
 let viewer=null,viewerVersion=0;
-function renderShapes(){viewerVersion++;viewer?.dispose();viewer=null;const c=state.shapes;$('#shape-results').innerHTML=`<div class="shape-stage"><figure class="shape-input">${image(c.input,c.code+' conditioning image')}<figcaption>Conditioning image <span>${c.code}</span></figcaption></figure><div><div class="model-stage" id="model-stage"><img src="${c.routes.ours.poster}" alt="${esc(c.title)} 3D preview" loading="lazy"><button id="load-model" class="button primary">Load interactive 3D <span>↗</span></button><span class="model-badge">${c.model==='trellis2'?'TRELLIS.2 · textured asset':'Hunyuan3D 2.1 · shape'}</span></div><div class="viewer-toolbar"><span id="viewer-status" role="status">Click to load · drag to orbit · scroll / pinch to zoom</span><button id="reset-view" disabled>Reset view</button><button id="rotate-view" disabled aria-pressed="false">Auto-rotate</button><a href="${c.mesh}" download>Download asset ↓</a></div></div></div><details class="turntable-details"><summary>Compare recorded turntables <span>Input → full teacher / reduced-step teacher / SMD</span></summary><div class="three-col video-group">${vid(c.routes.teacher,'Full teacher')}${vid(c.routes.short,'Reduced-step teacher')}${vid(c.routes.ours,'SMD · distilled stages','ours')}</div><button class="sync-button" data-sync="shape-results">▶ Play together</button><p class="fine-print">Directory names are historical: the Hunyuan reduced-budget source records 5 sampler steps. These route labels are not a claim of identical end-to-end NFE. Original turntable videos are not re-rendered by this page.</p></details>`;
+function renderShapes(){viewerVersion++;viewer?.dispose();viewer=null;const c=state.shapes;$('#shape-results').innerHTML=`<div class="shape-stage"><figure class="shape-input">${image(c.input,c.code+' conditioning image')}<figcaption>Conditioning image <span>${c.code}</span></figcaption></figure><div><div class="model-stage" id="model-stage"><img data-src="${c.routes.ours.poster}" alt="${esc(c.title)} 3D preview" loading="lazy"><button id="load-model" class="button primary">Load interactive 3D <span>↗</span></button><span class="model-badge">${c.model==='trellis2'?'TRELLIS.2 · textured asset':'Hunyuan3D 2.1 · shape'}</span></div><div class="viewer-toolbar"><span id="viewer-status" role="status">Click to load · drag to orbit · scroll / pinch to zoom</span><button id="reset-view" disabled>Reset view</button><button id="rotate-view" disabled aria-pressed="false">Auto-rotate</button><a href="${c.mesh}" download>Download asset ↓</a></div></div></div><details class="turntable-details"><summary>Compare recorded turntables <span>Input → full teacher / reduced-step teacher / SMD</span></summary><div class="three-col video-group">${vid(c.routes.teacher,'Full teacher')}${vid(c.routes.short,'Reduced-step teacher')}${vid(c.routes.ours,'SMD · distilled stages','ours')}</div><button class="sync-button" data-sync="shape-results">▶ Play together</button><p class="fine-print">Directory names are historical: the Hunyuan reduced-budget source records 5 sampler steps. These route labels are not a claim of identical end-to-end NFE. Original turntable videos are not re-rendered by this page.</p></details>`;
 $('#load-model').onclick=async()=>{const version=viewerVersion,button=$('#load-model');button.disabled=true;button.textContent='Loading 3D…';$('#viewer-status').textContent='Loading the viewer and this model only…';try{if(location.protocol==='file:')throw new Error('Interactive 3D needs a local web server. Run npm start in project_page; the turntable videos work without it.');const{mountViewer}=await loadPublishedViewer();if(version!==viewerVersion)return;const result=await mountViewer($('#model-stage'),c.mesh,n=>{if(version===viewerVersion)$('#viewer-status').textContent=`Loading asset · ${n}%`});if(version!==viewerVersion){result.dispose();return}viewer=result;$('#viewer-status').textContent='Drag to orbit · scroll / pinch to zoom';$('#reset-view').disabled=false;$('#rotate-view').disabled=false}catch(e){if(version!==viewerVersion)return;$('#viewer-status').textContent=e.message;button.disabled=false;button.textContent='Retry interactive 3D';}};
 $('#reset-view').onclick=()=>viewer?.reset();$('#rotate-view').onclick=function(){this.setAttribute('aria-pressed',String(viewer?.rotate()))};}
 function wanCases(){return [state.wan]}
@@ -55,7 +55,9 @@ function updateCarousel(group){
   carousel.querySelectorAll('[data-step]').forEach(button=>{button.disabled=list.length<2});
 }
 // Bound URLs use preload=none; media downloads start on playback, posters near viewport.
-const posterObserver=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){const v=e.target;if(v.dataset.poster)v.poster=v.dataset.poster;posterObserver.unobserve(v)}},{rootMargin:'200px'});
+const imageObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){const img=entry.target;img.src=img.dataset.src;img.removeAttribute('data-src');imageObserver.unobserve(img)}},{rootMargin:'400px'});
+const posterObserver=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){const v=e.target;if(v.dataset.poster)v.poster=v.dataset.poster;posterObserver.unobserve(v)}},{rootMargin:'400px'});
+
 function videoError(v,error){
   if(!v.isConnected||error?.name==='AbortError')return;
   const wrap=v.parentElement;let message=wrap.querySelector('.media-error');
@@ -65,10 +67,11 @@ function videoError(v,error){
   const link=document.createElement('a');link.href=v.dataset.src;link.target='_blank';link.rel='noopener';link.textContent='Open video ↗';message.append(text,link);
   const start=wrap.querySelector('.video-start');if(start){start.hidden=false;start.disabled=false;start.textContent='↻'}
 }
-function prepareMedia(){document.querySelectorAll('video[data-poster]').forEach(v=>{
+function prepareMedia(){document.querySelectorAll('img[data-src]').forEach(img=>imageObserver.observe(img));document.querySelectorAll('video[data-poster]').forEach(v=>{
   posterObserver.observe(v);if(v.dataset.prepared)return;v.dataset.prepared='true';
   const start=v.parentElement.querySelector('.video-start');
-  start.onclick=()=>{v.parentElement.querySelector('.media-error')?.remove();start.textContent='…';start.disabled=true;if(v.error)v.load();ensureVideoSource(v).then(()=>v.play()).catch(error=>videoError(v,error))};
+  start.onclick=()=>{v.parentElement.querySelector('.media-error')?.remove();start.textContent='…';start.disabled=true;ensureVideoSource(v).then(()=>v.play()).catch(error=>videoError(v,error)).finally(()=>{start.disabled=false;if(v.paused)start.textContent='▶'})};
+  for(const event of ['loadeddata','playing','error','emptied'])v.addEventListener(event,()=>v.parentElement?.classList.remove('is-loading'));
   v.addEventListener('playing',()=>{start.hidden=true;start.disabled=false;start.textContent='▶'});
   const stopped=()=>{start.hidden=false;start.disabled=false;start.textContent='▶'};
   v.addEventListener('pause',stopped);v.addEventListener('ended',stopped);
@@ -76,7 +79,7 @@ function prepareMedia(){document.querySelectorAll('video[data-poster]').forEach(
   v.addEventListener('error',()=>videoError(v,v.error));
 })}
 prepareMedia();
-function changeCase(group,code){const c=available[group].find(x=>x.code===code);if(!c)return;cancelPlayback(resultIds[group]);document.querySelectorAll('#'+resultIds[group]+' video').forEach(v=>{v.pause();releaseVideoSource(v);posterObserver.unobserve(v)});state[group]=c;renders[group]();prepareMedia();minimalLabels($('#'+resultIds[group]));updatePlaybackControls();updateCarousel(group);}
+function changeCase(group,code){const c=available[group].find(x=>x.code===code);if(!c)return;cancelPlayback(resultIds[group]);document.querySelectorAll('#'+resultIds[group]+' video').forEach(v=>{v.pause();releaseVideoSource(v);posterObserver.unobserve(v)});document.querySelectorAll('#'+resultIds[group]+' img[data-src]').forEach(img=>imageObserver.unobserve(img));state[group]=c;renders[group]();prepareMedia();minimalLabels($('#'+resultIds[group]));updatePlaybackControls();updateCarousel(group);}
 function stepCase(group,direction){const list=available[group];changeCase(group,list[(list.indexOf(state[group])+direction+list.length)%list.length].code)}
 document.querySelectorAll('[data-step]').forEach(el=>el.onclick=()=>stepCase(el.dataset.group,Number(el.dataset.step)));
 // A swipe advances a whole comparison, never one model independently.
@@ -120,19 +123,22 @@ function updatePlaybackControls(){
   });
 }
 async function readyVideo(video,signal){
-  await ensureVideoSource(video);
+  if(signal.aborted)throw new DOMException('Cancelled','AbortError');
+  const cancel=()=>releaseVideoSource(video);signal.addEventListener('abort',cancel,{once:true});
+  try{await ensureVideoSource(video)}finally{signal.removeEventListener('abort',cancel)}
+  video.preload='auto';
   if(signal.aborted)return Promise.reject(new DOMException('Cancelled','AbortError'));
   if(video.readyState>=2)return Promise.resolve();
   return new Promise((resolve,reject)=>{
     const cleanup=()=>{clearTimeout(timer);video.removeEventListener('loadeddata',done);video.removeEventListener('error',fail);signal.removeEventListener('abort',abort)};
-    const done=()=>{cleanup();resolve()},fail=()=>{cleanup();reject(new Error('Video failed to load'))},abort=()=>{cleanup();reject(new DOMException('Cancelled','AbortError'))};
-    const timer=setTimeout(fail,20000);
+    const done=()=>{cleanup();resolve()},fail=()=>{cleanup();reject(new Error('Video failed to load'))},abort=()=>{cleanup();releaseVideoSource(video);reject(new DOMException('Cancelled','AbortError'))};
+    const timer=setTimeout(fail,30000);
     video.addEventListener('loadeddata',done,{once:true});video.addEventListener('error',fail,{once:true});signal.addEventListener('abort',abort,{once:true});video.load();
   });
 }
 async function syncPlay(id,audio=-1){
   const videos=[...document.querySelectorAll('#'+id+' .video-group video')];if(!videos.length)return;
-  if(playbackJobs.has(id)){cancelPlayback(id);videos.forEach(v=>v.pause());updatePlaybackControls();return}
+  if(playbackJobs.has(id)){cancelPlayback(id);videos.forEach(releaseVideoSource);updatePlaybackControls();return}
   const active=videos.some(v=>!v.paused&&!v.ended);
   if(active&&audio<0){videos.forEach(v=>v.pause());updatePlaybackControls();return}
   // Switching sound during comparison must not restart either clip.
@@ -162,7 +168,7 @@ for(const event of ['play','pause','ended','volumechange'])document.addEventList
 updatePlaybackControls();
 document.addEventListener('click',e=>{const sync=e.target.closest('[data-sync]');if(sync)syncPlay(sync.dataset.sync);const listen=e.target.closest('[data-listen]');if(listen)syncPlay('av-results',Number(listen.dataset.listen));});
 // Stop videos that leave the screen; no autoplay or background downloads.
-function stopSection(section){section.querySelectorAll('[data-sync]').forEach(b=>cancelPlayback(b.dataset.sync));section.querySelectorAll('video').forEach(v=>v.pause());updatePlaybackControls()}
+function stopSection(section){section.querySelectorAll('[data-sync]').forEach(b=>cancelPlayback(b.dataset.sync));section.querySelectorAll('video').forEach(v=>{v.pause();deferVideoRelease(v)});updatePlaybackControls()}
 const visibilityObserver=new IntersectionObserver(entries=>{for(const e of entries)if(!e.isIntersecting)stopSection(e.target)});document.querySelectorAll('section').forEach(s=>visibilityObserver.observe(s));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSection(document)});
 
@@ -205,14 +211,39 @@ $('.extra-gallery summary').firstChild.textContent='FLUX.1-dev ';
 $('.full-table summary').textContent='Full table';
 $('.method-figure summary').textContent='Figure';
 
+
 const videoAssets=new WeakMap();
+const videoLoads=new WeakMap();
 async function ensureVideoSource(video){
- const source=video.dataset.src;if(!source?.endsWith('.parts.json'))return;
- if(!videoAssets.has(video))videoAssets.set(video,Promise.resolve().then(()=>window.resolvePublishedAsset(source)));
- const asset=await videoAssets.get(video);if(!video.isConnected){asset.revoke();throw new DOMException('Cancelled','AbortError')}
- if(video.getAttribute('src')!==asset.url)video.src=asset.url;
+ if(!video.isConnected)throw new DOMException('Cancelled','AbortError');
+ clearTimeout(video._releaseTimer);
+ if(video.getAttribute('src'))return;
+ if(videoLoads.has(video))return videoLoads.get(video).promise;
+ const controller=new AbortController(),job={controller};
+ job.promise=(async()=>{
+  const source=video.dataset.src;
+  if(!source)throw new Error('Missing video source');
+  video.parentElement.classList.add('is-loading');
+  let asset;
+  try{
+   if(source.endsWith('.parts.json')){
+    asset=await window.resolvePublishedAsset(source,()=>{if(controller.signal.aborted)throw new DOMException('Cancelled','AbortError')});
+   }else asset={url:source,revoke(){}};
+   if(controller.signal.aborted||!video.isConnected){asset.revoke();throw new DOMException('Cancelled','AbortError')}
+   videoAssets.set(video,asset);video.src=asset.url;
+  }catch(error){video.parentElement.classList.remove('is-loading');throw error}
+ })();
+ videoLoads.set(video,job);
+ try{await job.promise}finally{if(videoLoads.get(video)===job)videoLoads.delete(video)}
 }
-function releaseVideoSource(video){const pending=videoAssets.get(video);if(pending)pending.then(asset=>asset.revoke()).catch(()=>{});videoAssets.delete(video)}
+function releaseVideoSource(video){
+ clearTimeout(video._releaseTimer);videoLoads.get(video)?.controller.abort();videoLoads.delete(video);
+ video.pause();video.removeAttribute('src');video.preload='none';video.load();
+ videoAssets.get(video)?.revoke();videoAssets.delete(video);
+ video.parentElement?.classList.remove('is-loading');
+}
+function deferVideoRelease(video){clearTimeout(video._releaseTimer);video._releaseTimer=setTimeout(()=>{if(!isVisible(video)||document.hidden)releaseVideoSource(video)},1200)}
+
 document.addEventListener('click',async event=>{
  const link=event.target.closest('a[download]');if(!link||!link.getAttribute('href')?.endsWith('.parts.json'))return;
  event.preventDefault();const old=link.textContent;link.textContent='Preparing download…';

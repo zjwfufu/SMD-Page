@@ -1,5 +1,7 @@
 /* FastGen-PDD layout adaptation using only this project's own content/assets. */
 const teaser=document.querySelector('#teaser');
+teaser.querySelectorAll('video').forEach(v=>posterObserver.unobserve(v));
+teaser.querySelectorAll('img[data-src]').forEach(img=>imageObserver.unobserve(img));
 teaser.innerHTML=`<div class="teaser-grid">
 ${vid(state.av.ours,'MiniMax H3 · 8 NFE')}
 <figure class="media-card">${image(state.images.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
@@ -24,16 +26,53 @@ function presentCase(group){
 }
 // Preserve the existing media lifecycle, case IDs and keyboard/swipe navigation.
 const originalChangeCase=changeCase;
-changeCase=function(group,code){originalChangeCase(group,code);presentCase(group);if(['wan','av'].includes(group)&&isVisible(document.querySelector('#'+resultIds[group])))syncPlay(resultIds[group]);};
+changeCase=function(group,code){originalChangeCase(group,code);presentCase(group);if(['wan','av'].includes(group))scheduleComparison(resultIds[group]);};
 for(const group of Object.keys(resultIds))presentCase(group);
-function isVisible(element){const r=element.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight}
+function isVisible(element){if(!element?.isConnected)return false;const r=element.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth}
 prepareMedia();
-// Like the reference: muted motion when visible, with lazy loading off screen.
-const teaserPlayback=new IntersectionObserver(entries=>{for(const entry of entries){const video=entry.target;if(entry.isIntersecting&&!document.hidden){video.muted=true;video.loop=true;ensureVideoSource(video).then(()=>{if(isVisible(video)&&!document.hidden)return video.play()}).catch(()=>{})}else video.pause()}},{threshold:.15});
+
+// Start motion only after the visitor has settled on visible content.
+const allowAutoMotion=()=>!document.hidden&&!navigator.connection?.saveData&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+const autoplayTimers=new Map();
+function cancelAuto(id){clearTimeout(autoplayTimers.get(id));autoplayTimers.delete(id)}
+function scheduleComparison(id){
+ cancelAuto(id);const element=document.getElementById(id);
+ if(!allowAutoMotion()||!isVisible(element))return;
+ autoplayTimers.set(id,setTimeout(()=>{
+  autoplayTimers.delete(id);
+  if(allowAutoMotion()&&isVisible(element)&&element.querySelectorAll('video').length&&[...element.querySelectorAll('video')].every(v=>v.paused))syncPlay(id);
+ },300));
+}
+const teaserVisible=new Set();
+function refreshTeaserMotion(){
+ const chosen=allowAutoMotion()?[...teaser.querySelectorAll('video')].filter(v=>teaserVisible.has(v)).slice(0,2):[];
+ teaser.querySelectorAll('video').forEach(video=>{
+  cancelAuto(video);
+  if(!chosen.includes(video)){video.pause();deferVideoRelease(video);return}
+  clearTimeout(video._releaseTimer);
+  autoplayTimers.set(video,setTimeout(async()=>{
+   autoplayTimers.delete(video);
+   if(!allowAutoMotion()||!teaserVisible.has(video))return;
+   video.muted=true;video.loop=true;
+   try{await ensureVideoSource(video);if(allowAutoMotion()&&teaserVisible.has(video))await video.play()}catch{}
+  },300));
+ });
+}
+const teaserPlayback=new IntersectionObserver(entries=>{
+ for(const entry of entries){if(entry.isIntersecting)teaserVisible.add(entry.target);else teaserVisible.delete(entry.target)}
+ refreshTeaserMotion();
+},{threshold:.2});
 teaser.querySelectorAll('video').forEach(video=>teaserPlayback.observe(video));
-const comparisonPlayback=new IntersectionObserver(entries=>{for(const entry of entries){const element=entry.target;if(entry.isIntersecting&&!document.hidden){const videos=[...element.querySelectorAll('video')];if(videos.every(v=>v.paused))syncPlay(element.id)}else{cancelPlayback(element.id);element.querySelectorAll('video').forEach(v=>v.pause())}}},{threshold:.15});
+const comparisonPlayback=new IntersectionObserver(entries=>{for(const entry of entries){
+ if(entry.isIntersecting)scheduleComparison(entry.target.id);
+ else{cancelAuto(entry.target.id);cancelPlayback(entry.target.id);entry.target.querySelectorAll('video').forEach(v=>{v.pause();deferVideoRelease(v)})}
+}},{threshold:.2});
 for(const id of ['wan-results','av-results'])comparisonPlayback.observe(document.getElementById(id));
-document.addEventListener('visibilitychange',()=>{if(document.hidden)teaser.querySelectorAll('video').forEach(v=>v.pause())});
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){for(const id of autoplayTimers.keys())cancelAuto(id);teaser.querySelectorAll('video').forEach(releaseVideoSource)}
+ else{refreshTeaserMotion();for(const id of ['wan-results','av-results'])scheduleComparison(id)}
+});
+
 const multiMetrics=SMD_METRICS.multi;
 const metricRanks=multiMetrics.metrics.map((_,i)=>[...new Set(multiMetrics.rows.slice(1).map(row=>row[i+2]))].sort((a,b)=>b-a));
 const tableNumber=(value,i)=>Number(value).toFixed(i===2?2:i===5&&value>=1?3:4);
