@@ -153,3 +153,21 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 .video-wrap.is-loading:after{content:"";position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid #ffffff70;border-top-color:#fff;border-radius:50%;animation:media-loading .8s linear infinite;pointer-events:none}
 @keyframes media-loading{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.video-wrap.is-loading:after{animation:none}}
+
+/* Reserve exact geometry before decoding and crossfade over a tiny preview. */
+.progressive-image{position:relative;isolation:isolate;overflow:hidden;background:var(--surface-alt)}
+.progressive-image::before{content:"";position:absolute;inset:0;background-image:var(--preview);background-size:contain;background-repeat:no-repeat;background-position:center;filter:blur(7px);transform:scale(1.03);opacity:1;transition:opacity .22s}
+.progressive-image>img{position:absolute;inset:0;width:100%!important;height:100%!important;opacity:0;transition:opacity .22s}
+.progressive-image.is-ready>img{opacity:1}
+.progressive-image.is-ready::before{opacity:0}
+.image-loading-dots{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px;pointer-events:none;z-index:2}
+.image-loading-dots i{display:block;width:7px;height:7px;border-radius:50%;background:white;box-shadow:0 1px 5px #142f5360}
+.progressive-image.is-fetching .image-loading-dots i{animation:image-dot-bounce .9s ease-in-out infinite}
+.image-loading-dots i:nth-child(2){animation-delay:.15s!important}
+.image-loading-dots i:nth-child(3){animation-delay:.3s!important}
+.progressive-image.is-ready .image-loading-dots,.progressive-image.has-error .image-loading-dots{display:none}
+.image-load-error{display:none;position:absolute;inset:auto 8px 8px;padding:6px;background:#edf3fae8;font-size:12px}
+.progressive-image.has-error .image-load-error{display:block}
+.teaser-grid .progressive-image::before{background-size:cover}
+@keyframes image-dot-bounce{0%,60%,100%{transform:translateY(0);opacity:.6}30%{transform:translateY(-6px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.progressive-image>img,.progressive-image::before{transition:none}.progressive-image.is-fetching .image-loading-dots i{animation:none}}

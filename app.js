@@ -11,7 +11,7 @@ const available={};
 for(const group of Object.keys(selection).filter(k=>k!=='defaults')){available[group]=selection[group]?selection[group].map(code=>D[group].find(c=>c.code===code)).filter(Boolean):D[group];if(!available[group].length)available[group]=D[group]}
 const state={};
 for(const group in available)state[group]=available[group].find(c=>c.code===selection.defaults[group])||available[group][0];
-const image=(src,alt,cls='')=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1000,1000];return `<button class="image-button ${cls}" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}"><img data-src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="${size[0]}" height="${size[1]}"></button>`};
+const image=(src,alt,cls='')=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1000,1000],preview=window.SMD_IMAGE_PLACEHOLDERS?.[src]||'';return `<button class="image-button progressive-image ${cls}" style="aspect-ratio:${size[0]}/${size[1]};--preview:url('${preview}')" data-image="${esc(src)}" data-alt="${esc(alt)}" aria-label="Enlarge ${esc(alt)}" aria-busy="true"><img data-src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="${size[0]}" height="${size[1]}"><span class="image-loading-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="image-load-error" aria-hidden="true">Image unavailable · click to open</span></button>`};
 const vid=(v,label,cls='')=>`<figure class="media-card ${cls}"><div class="video-wrap"><video controls playsinline preload="none" data-src="${esc(v.src)}" data-poster="${esc(v.poster)}" aria-label="${esc(label)}"></video><button class="video-start" aria-label="Play ${esc(label)}">▶</button></div><figcaption>${esc(label)}</figcaption></figure>`;
 const picker=(group,label)=>`<div id="${group}-carousel" class="case-carousel" role="region" aria-roledescription="carousel" aria-label="${label}" data-carousel-group="${group}"></div>`;
 const prompt=c=>`<details class="prompt"><summary>View exact prompt <span>${esc(c.code)}</span></summary><pre>${esc(c.prompt)}</pre></details>`;
@@ -55,7 +55,24 @@ function updateCarousel(group){
   carousel.querySelectorAll('[data-step]').forEach(button=>{button.disabled=list.length<2});
 }
 // Bound URLs use preload=none; media downloads start on playback, posters near viewport.
-const imageObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){const img=entry.target;img.src=img.dataset.src;img.removeAttribute('data-src');imageObserver.unobserve(img)}},{rootMargin:'400px'});
+function loadNearbyImage(img){
+ const src=img.dataset.src;if(!src)return;
+ const holder=img.closest('.progressive-image');
+ holder?.classList.add('is-fetching');
+ const ready=async()=>{
+  try{await img.decode()}catch{}
+  if(!img.isConnected)return;
+  if(!img.naturalWidth){failed();return}
+  holder?.classList.add('is-ready');holder?.classList.remove('is-fetching');
+  holder?.setAttribute('aria-busy','false');
+ };
+ const failed=()=>{holder?.classList.add('has-error');holder?.classList.remove('is-fetching');holder?.setAttribute('aria-busy','false')};
+ img.addEventListener('load',ready,{once:true});img.addEventListener('error',failed,{once:true});
+ // IntersectionObserver is the loading gate; avoid a second browser lazy delay.
+ img.loading='eager';img.src=src;img.removeAttribute('data-src');
+ imageObserver.unobserve(img);
+}
+const imageObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting)loadNearbyImage(entry.target)},{rootMargin:'400px'});
 const posterObserver=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){const v=e.target;if(v.dataset.poster)v.poster=v.dataset.poster;posterObserver.unobserve(v)}},{rootMargin:'400px'});
 
 function videoError(v,error){
