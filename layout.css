@@ -43,11 +43,10 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 .overlay-disclosure>.disclosure-panel{max-height:50vh;padding:12px}
 }
 
-/* One centered reading axis; only the teaser keeps the wider editorial canvas. */
+/* Results share the teaser's full main-column width at every breakpoint. */
 #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{
-  width:calc(100% - 48px);max-width:1280px;margin:76px auto 0;
+  width:100%;max-width:none;margin:76px auto 0;
 }
-#shape,#audio,#reference-section,#transfer,#multi-teacher{max-width:1120px}
 #explore>.section,#shape>.section,#audio>.section{margin:0}
 #reference-section .section-heading h2,#multi-teacher h2{margin:0 0 14px}
 #multi-teacher .multi-metrics{max-width:100%;margin:24px auto 32px}
