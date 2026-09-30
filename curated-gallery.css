@@ -1,0 +1,11 @@
+/* Compact, complete comparison rows; no fixed image crop. */
+.curated-multi-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:start;margin-bottom:12px}
+.curated-multi-row figure{margin:0;min-width:0}
+.curated-multi-row .image-button{width:100%;margin:0!important}
+.curated-multi-row figcaption{font-size:13px;text-align:center;line-height:1.4;margin-top:6px;min-height:2.8em}
+.has-grid-samples .cross-grid>div{grid-template-columns:1fr}
+.has-grid-samples .cross-grid h4{grid-column:1}
+@media(max-width:760px){
+ .curated-multi-row{grid-template-columns:repeat(7,minmax(140px,1fr));overflow-x:auto;padding-bottom:12px}
+ .has-grid-samples .cross-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
