@@ -24,8 +24,9 @@ renders.reference=function(){
 // keyboard/swipe controls, and offscreen cleanup remain active.
 for(const [group,code] of [['cross','C31'],['edits','E20'],['av','A08'],['reference','R05']])changeCase(group,code);
 
-// Keep the existing five-row figure and add six complete comparison rows.
-// Each new row preserves every method, not only the preferred result.
+// All eleven cases share one carousel. The old composite is no longer displayed.
+const oldMultiPanel=$('#multi-teacher .image-button');
+if(oldMultiPanel){oldMultiPanel.querySelectorAll('img[data-src]').forEach(img=>imageObserver.unobserve(img));oldMultiPanel.remove()}
 const extraMulti=document.createElement('div');extraMulti.className='case-carousel curated-multi';
 extraMulti.innerHTML='<div class="carousel-stage"><button class="carousel-arrow previous" aria-label="Previous multi-teacher example">‹</button><div id="curated-multi-results" class="carousel-slide" tabindex="0" role="group" aria-roledescription="slide"></div><button class="carousel-arrow next" aria-label="Next multi-teacher example">›</button></div><div class="carousel-footer"><span class="case-page" role="status" aria-live="polite"></span></div>';
 $('#multi-teacher').append(extraMulti);
@@ -50,4 +51,4 @@ let multiTouch;
 extraMulti.addEventListener('touchstart',e=>{multiTouch=[e.touches[0].clientX,e.touches[0].clientY]},{passive:true});
 extraMulti.addEventListener('touchend',e=>{if(!multiTouch)return;const dx=e.changedTouches[0].clientX-multiTouch[0],dy=e.changedTouches[0].clientY-multiTouch[1];if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)showCuratedMulti(dx>0?-1:1);multiTouch=null},{passive:true});
 showCuratedMulti();
-$('#multi-teacher .caption').textContent='Four reward-specialized teachers—CLIPScore, GenEval, OCR, and PickScore—supervise one SD3.5-Medium student at 4 NFE. The table compares six metrics; bold and underlined values mark the best and second-best student results. Below the original comparison panel, browse six additional prompts across the base teacher, self-distilled student, four specialist-distilled students, and our multi-teacher student.';
+$('#multi-teacher .caption').textContent=`Four reward-specialized teachers—CLIPScore, GenEval, OCR, and PickScore—supervise one SD3.5-Medium student at 4 NFE. The table compares six metrics; bold and underlined values mark the best and second-best student results. Below, each column shows the same prompt across the base teacher, self-distilled student, four specialist-distilled students, and our multi-teacher student. Use the arrows or swipe to browse all ${SMD_CURATED.multiCases.length} examples.`;
