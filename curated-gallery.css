@@ -1,4 +1,17 @@
 /* Compact, complete comparison rows; no fixed image crop. */
+#multi-teacher .multi-quantitative{max-width:1100px;margin:26px auto 0;border-top:1px solid var(--border);padding-top:13px}
+#multi-teacher .multi-quantitative>summary{width:fit-content;margin:0 auto;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;list-style-position:inside}
+#multi-teacher .multi-quantitative>summary:hover{color:var(--ink)}
+#multi-teacher .multi-quantitative .multi-metrics{margin:16px auto 0;max-width:100%}
+#multi-teacher .multi-metrics table{font-size:13px;line-height:1.45;font-variant-numeric:tabular-nums}
+#multi-teacher .multi-metrics td,#multi-teacher .multi-metrics th{padding:7px 9px}
+#multi-teacher .multi-metrics caption{padding-bottom:8px;font-size:12px}
+#multi-teacher .multi-metrics thead{background:transparent;color:var(--muted);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+#multi-teacher .multi-metrics tbody tr:last-child{border-bottom:1px solid var(--border)}
+#multi-teacher .multi-metrics tbody th{font-weight:500}
+#multi-teacher .multi-metrics .highlight{background:#1466cf08;color:var(--ink)}
+#multi-teacher .multi-metrics .highlight th{font-weight:650}
+#multi-teacher .quantitative-note{font-size:12px;line-height:1.5;color:var(--muted);margin:10px 0 0}
 .curated-multi-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:start;margin-bottom:12px}
 .curated-multi-row figure{margin:0;min-width:0}
 .curated-multi-row .image-button{width:100%;margin:0!important}

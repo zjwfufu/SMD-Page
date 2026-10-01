@@ -48,4 +48,10 @@ let multiTouch;
 extraMulti.addEventListener('touchstart',e=>{multiTouch=[e.touches[0].clientX,e.touches[0].clientY]},{passive:true});
 extraMulti.addEventListener('touchend',e=>{if(!multiTouch)return;const dx=e.changedTouches[0].clientX-multiTouch[0],dy=e.changedTouches[0].clientY-multiTouch[1];if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)showCuratedMulti(dx>0?-1:1);multiTouch=null},{passive:true});
 showCuratedMulti();
-$('#multi-teacher .caption').textContent=`Four reward-specialized teachers—CLIPScore, GenEval, OCR, and PickScore—supervise one SD3.5-Medium student at 4 NFE. The table compares six metrics; bold and underlined values mark the best and second-best student results. Below, each column shows the same prompt across the base teacher, self-distilled student, four specialist-distilled students, and our multi-teacher student. Use the arrows or swipe to browse all ${SMD_CURATED.multiCases.length} examples.`;
+$('#multi-teacher .caption').textContent=`Four reward-specialized teachers supervise one SD3.5-Medium student at 4 NFE. Compare the base teacher, self-distilled student, four specialist-distilled students, and Ours for the same prompt; use the arrows or swipe to browse ${SMD_CURATED.multiCases.length} examples.`;
+// Keep the exact existing metrics/formatting, but make them secondary to examples.
+const multiQuantitative=document.createElement('details');multiQuantitative.className='multi-quantitative';
+const multiQuantSummary=document.createElement('summary');multiQuantSummary.textContent='Quantitative results — 6 metrics';multiQuantitative.append(multiQuantSummary);
+multiQuantitative.append($('#multi-teacher .multi-metrics'));
+const multiQuantNote=document.createElement('p');multiQuantNote.className='quantitative-note';multiQuantNote.textContent='Best and second-best student results are bold and underlined. GenEval, OCR and PickScore use their respective test sets; HPSv2, CLIPScore and ImageReward use DrawBench.';multiQuantitative.append(multiQuantNote);
+extraMulti.after(multiQuantitative);
