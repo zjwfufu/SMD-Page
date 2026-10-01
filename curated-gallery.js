@@ -1,4 +1,6 @@
 /* Reader-facing additions; keep the original carousel and media lifecycle. */
+// User shortlist: original positions 1–7, 12, 9, 10; retain stable source codes.
+available.cross=['C01','C02','C03','C04','C05','C06','C07','C12','C09','C10'].map(code=>D.cross.find(c=>c.code===code)).filter(Boolean);
 const curatedCrossRender=renderCross;
 renders.cross=function(){
  curatedCrossRender();
@@ -17,7 +19,7 @@ available.reference=available.reference.filter(c=>c.id!=='curated-A019');
 $('#reference-section .caption').textContent=`Image- and video-conditioned audio–video generation with MiniMax H3 at 4 NFE. Reference inputs are shown on the left and our output on the right. Use the side arrows or swipe to browse all ${available.reference.length} examples.`;
 // Re-render through the existing wrappers: image previews, prompt folding,
 // keyboard/swipe controls, and offscreen cleanup remain active.
-for(const [group,code] of [['cross','C31'],['edits','E20'],['av','A08'],['reference','R04']])changeCase(group,code);
+for(const [group,code] of [['cross','C01'],['edits','E20'],['av','A08'],['reference','R04']])changeCase(group,code);
 
 // All eleven cases share one carousel. The old composite is no longer displayed.
 const oldMultiPanel=$('#multi-teacher .image-button');
