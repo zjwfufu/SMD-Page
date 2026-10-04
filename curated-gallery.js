@@ -14,12 +14,9 @@ renders.av=function(){
  $('#av-results').innerHTML=`<div class="two-col video-group">${vid(c.baseline,'LightX2V DMD · '+nfe+' NFE')}${vid(c.ours,'Ours · '+nfe+' NFE','ours')}</div><div class="playback-tools"><button class="sync-button" data-sync="av-results">▶ Play together (muted)</button><button data-listen="0">Listen to DMD</button><button data-listen="1">Listen to Ours</button></div>${prompt(c)}`;
  $('#audio .caption').textContent=`Comparison between Ours and LightX2V DMD on MiniMax H3, using the same prompt. This pair uses ${nfe} NFE. Browse all ${available.av.length} examples with the side arrows or swipe; use the buttons below to listen to either original audio track. The 4-NFE and 8-NFE examples come from separate evaluations.`;
 };
-// The user removed the fifth (early-checkpoint) reference example.
-available.reference=available.reference.filter(c=>c.id!=='curated-A019');
-$('#reference-section .caption').textContent=`Image- and video-conditioned audio–video generation with MiniMax H3 at 4 NFE. Reference inputs are shown on the left and our output on the right. Use the side arrows or swipe to browse all ${available.reference.length} examples.`;
 // Re-render through the existing wrappers: image previews, prompt folding,
 // keyboard/swipe controls, and offscreen cleanup remain active.
-for(const [group,code] of [['cross','C01'],['edits','E20'],['av','A08'],['reference','R04']])changeCase(group,code);
+for(const [group,code] of [['cross','C01'],['edits','E20'],['av','A08']])changeCase(group,code);
 
 // All eleven cases share one carousel. The old composite is no longer displayed.
 const oldMultiPanel=$('#multi-teacher .image-button');

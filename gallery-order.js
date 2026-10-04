@@ -7,11 +7,7 @@ available.images=firstCase(available.images,'I04');
 const editingCases=new Map([...available.edits,...SMD_EDIT_REPLACEMENTS].map(c=>[c.code,c]));
 available.edits=['E23','E11','E24','E05','E12','E13','E14','E25','E26','E17','E18','E19','E20','E21','E22'].map(code=>{const c=editingCases.get(code);if(!c)throw new Error('Missing edit: '+code);return c});
 available.wan=firstCase(available.wan,'V06');
-available.trellis=firstCase(available.trellis,'T16');
-// Hide reference-conditioned generation for now, retaining recoverable sources.
-const referenceSection=$('#reference-section');
-if(referenceSection){cancelPlayback('reference-results');visibilityObserver.unobserve(referenceSection);referenceSection.querySelectorAll('video').forEach(v=>{v.pause();releaseVideoSource(v);posterObserver.unobserve(v)});referenceSection.querySelectorAll('img[data-src]').forEach(img=>imageObserver.unobserve(img));referenceSection.remove()}
-available.reference=[];
+available.trellis=firstCase(available.trellis,'T01');
 // Remove the wine-label example: its required phrase is visibly malformed.
 SMD_CURATED.multiCases=SMD_CURATED.multiCases.filter(c=>c.id!=='multi-original-1');
 curatedMultiIndex=0;showCuratedMulti();

@@ -21,8 +21,6 @@ html:has(dialog[open]){overflow:hidden}
 .diversity-row .image-button img,#edit-results .media-card>.image-button img,.cross-grid .image-button img{width:100%;height:100%;object-fit:contain;background:transparent}
 .shape-input>.image-button{height:350px}.shape-input>.image-button img{height:100%;object-fit:contain}
 .viewer-toolbar>span{min-height:3em}
-.references{height:350px;align-content:start;overflow:auto;overscroll-behavior:contain}
-.references .image-button{height:145px}.references .image-button img{height:100%;object-fit:contain}
 .wan-header{min-height:3em}
 #wan-results .wan-row .video-wrap{height:clamp(190px,22vw,360px)}
 #wan-results .wan-row video{height:100%;width:100%;aspect-ratio:auto;object-fit:contain}
@@ -38,17 +36,16 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 .teaser-grid .media-card>.teaser-caption{left:8px;right:8px;bottom:8px;padding:8px 10px}
 .teaser-grid .media-card.has-video>.teaser-caption{bottom:54px;max-height:calc(100% - 66px)}
 .teaser-prompt{max-height:70px;font-size:12px}
-.references{height:320px}
 #wan-results .wan-row .video-wrap{height:190px}
 .overlay-disclosure>.disclosure-panel{max-height:50vh;padding:12px}
 }
 
 /* Results share the teaser's full main-column width at every breakpoint. */
-#explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{
+#explore,#editing,#shape,#video,#audio,#transfer,#multi-teacher{
   width:100%;max-width:none;margin:76px auto 0;
 }
 #explore>.section,#shape>.section,#audio>.section{margin:0}
-#reference-section .section-heading h2,#multi-teacher h2{margin:0 0 14px}
+#multi-teacher h2{margin:0 0 14px}
 #multi-teacher .multi-metrics{max-width:100%;margin:24px auto 32px}
 #multi-teacher .image-button{margin-top:0}
 #multi-teacher h2{font-size:clamp(22px,2.4vw,36px);line-height:1.25;text-align:center}
@@ -68,7 +65,7 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 .cross-grid>div{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 .cross-grid h4{margin:0;min-height:48px;display:flex;align-items:center;justify-content:center;font-size:16px}
 @media(max-width:1024px){
-  #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{width:100%;margin:60px auto 0}
+  #explore,#editing,#shape,#video,#audio,#transfer,#multi-teacher{width:100%;margin:60px auto 0}
   .carousel-stage{grid-template-columns:1fr 1fr}
   .carousel-footer{margin-left:0;margin-right:0}
   .diversity-row{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -81,7 +78,7 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 @media(max-width:640px){
   #av-results>.video-group{grid-template-columns:1fr;gap:22px}
   .cross-grid{grid-template-columns:1fr}
-  #explore,#editing,#shape,#video,#audio,#reference-section,#transfer,#multi-teacher{margin-top:48px}
+  #explore,#editing,#shape,#video,#audio,#transfer,#multi-teacher{margin-top:48px}
   #multi-teacher .multi-metrics{margin-top:20px}
 }
 /* Compact reader view: natural image proportions, close rows, no curation UI. */
@@ -110,10 +107,6 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
 #av-results>.video-group{gap:6px}
 #av-results>.video-group>.media-card{gap:4px}
 #av-results>.video-group figcaption{font-size:16px}
-.reference-layout{gap:8px;align-items:start}
-.references{height:auto;max-height:380px;gap:6px}
-.references .image-button{height:auto}
-.references .image-button img{height:auto;max-height:180px;object-fit:contain}
 .cross-grid{gap:8px}.cross-grid>div{gap:6px}
 .cross-grid h4{font-size:15px;min-height:36px}
 .reader-prompts{margin-top:12px}
@@ -138,7 +131,6 @@ dialog#image-dialog{position:fixed;inset:0;margin:auto;height:min(94vh,1100px);o
   .inline-prompt{font-size:13px}
   .reader-prompts-wan{grid-template-columns:1fr;gap:12px}
   #av-results>.video-group{gap:12px}
-  .references{max-height:320px}
 }
 /* One selected prompt per page; portrait outputs stay paired and compact. */
 #wan-results>.wan-portrait{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}

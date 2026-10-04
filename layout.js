@@ -1,18 +1,6 @@
 /* Isolated overlays and pre-sized media keep other sections stationary. */
 
 // Independent, equally centered sections instead of nested width/spacing rules.
-const referenceHeading=document.querySelector('#audio .subsection-heading');
-if(referenceHeading){
-  const referenceSection=document.createElement('section');
-  referenceSection.id='reference-section';referenceSection.className='section';
-  document.querySelector('#audio').after(referenceSection);
-  while(referenceHeading.nextSibling)referenceSection.append(referenceHeading.nextSibling);
-  referenceSection.prepend(referenceHeading);referenceHeading.className='section-heading';
-  const oldTitle=referenceHeading.querySelector('h3'),title=document.createElement('h2');
-  title.id='reference-title';title.textContent=oldTitle.textContent;oldTitle.replaceWith(title);
-  referenceSection.setAttribute('aria-labelledby',title.id);
-  visibilityObserver.observe(referenceSection);
-}
 const multiBlock=document.querySelector('#multi-teacher');
 if(multiBlock){
   const multiSection=document.createElement('section');
@@ -47,10 +35,9 @@ function prepareDisclosures(root){
 const readerSections={
   explore:['Image Generation',`Comparison between Ours and Lightning on Qwen-Image, both at 4 NFE. Each method is one row; the four images are different samples of the same prompt, paired across methods. Use the side arrows or swipe to browse all ${available.images.length} prompts.`],
   editing:['Image Editing',`Comparison between Ours and Lightning on Qwen-Image-Edit-2511, both at 4 NFE. From left to right: input image, Lightning, and Ours, using the same editing instruction. Use the side arrows or swipe to browse all ${available.edits.length} examples.`],
-  shape:['Image-to-3D Generation',`Results on Hunyuan3D 2.1 and TRELLIS.2. The input image is followed by recorded turntable videos from the full teacher, reduced-step teacher, and Ours. Play the videos together to compare the generated shapes across views. Use the side arrows or swipe to browse all ${available.shapes.length} examples.`],
+  shape:['3D Generation',`Results on Hunyuan3D 2.1 and TRELLIS.2. The input image is followed by recorded turntable videos from the full teacher, reduced-step teacher, and Ours. Play the videos together to compare the generated shapes across views. Use the side arrows or swipe to browse all ${available.shapes.length} examples.`],
   video:['Video Generation',`Comparison between Ours and AnyFlow on Wan2.1 14B T2V, both at 4 NFE. Each method is one row; the three videos are different samples for the same prompt. Use the side arrows or swipe to browse all ${available.wan.length} prompts.`],
   audio:['Audio–Video Generation',`Comparison between Ours and LightX2V DMD on MiniMax H3, both at 8 NFE, using the same prompt. Listen to either audio track with the buttons below. Use the side arrows or swipe to browse all ${available.av.length} prompts.`],
-  'reference-section':['Reference-Conditioned Generation',`Image- and video-conditioned audio–video generation with MiniMax H3 at 4 NFE. Reference inputs are shown on the left and our output on the right. Use the side arrows or swipe to browse all ${available.reference.length} examples.`],
   transfer:['Cross-Model Distillation',`Distillation across model sizes and architectures at 4 NFE. Each column is a teacher-to-student route, with two outputs for the same prompt. Use the side arrows or swipe to browse all ${available.cross.length} prompts.`]
 };
 for(const [id,[title,copy]] of Object.entries(readerSections)){

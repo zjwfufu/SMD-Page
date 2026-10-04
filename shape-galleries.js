@@ -1,8 +1,7 @@
 /* Independent model galleries: one counter per model, all frames square. */
 available.shapes=SMD_SHAPE_REFRESH.hunyuan;
-// User exclusions refer to the original 18-case order; keep stable source IDs.
-const excludedTrellis=new Set(['T01','T04','T05','T06','T10','T13','T14','T15']);
-available.trellis=SMD_SHAPE_REFRESH.trellis.filter(c=>!excludedTrellis.has(c.code));
+const hiddenTrellisPositions=new Set([2,5,7,11,14,15,16,17]);
+available.trellis=SMD_SHAPE_REFRESH.trellis.filter((_,index)=>!hiddenTrellisPositions.has(index+1));
 resultIds.trellis='trellis-results';
 const shapeHost=$('#shapes-carousel').parentElement;
 const hunGroup=document.createElement('div');hunGroup.className='shape-model-group';hunGroup.innerHTML='<h3>Hunyuan3D 2.1</h3>';
@@ -21,6 +20,6 @@ trellisStage.addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0||e
 trellisStage.addEventListener('pointerup',e=>{if(!shapeGesture||shapeGesture.id!==e.pointerId)return;const dx=e.clientX-shapeGesture.x,dy=e.clientY-shapeGesture.y;shapeGesture=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){shapeSuppressClickUntil=performance.now()+500;stepCase('trellis',dx<0?1:-1)}});
 trellisStage.addEventListener('pointercancel',()=>shapeGesture=null);trellisStage.addEventListener('dragstart',e=>{if(e.target.closest('.image-button'))e.preventDefault()});trellisStage.addEventListener('click',e=>{if(performance.now()<shapeSuppressClickUntil){e.preventDefault();e.stopImmediatePropagation()}},true);
 changeCase('shapes',available.shapes[0].code);changeCase('trellis',available.trellis[0].code);
-$('#shape .caption').textContent=`Image-to-3D generation on Hunyuan3D 2.1 and TRELLIS.2. Each example shows the input image, Ours, undistilled teacher, and full teacher. Play the turntable videos together and use each gallery’s arrows or swipe to browse ${available.shapes.length} Hunyuan3D and ${available.trellis.length} TRELLIS.2 examples.`;
+$('#shape .caption').textContent=`3D generation on Hunyuan3D 2.1 and TRELLIS.2. Each example shows the input image, Ours, undistilled teacher, and full teacher. Play the turntable videos together and use each gallery’s arrows or swipe to browse ${available.shapes.length} Hunyuan3D and ${available.trellis.length} TRELLIS.2 examples.`;
 const shapeVideoVisibility=new IntersectionObserver(entries=>{for(const entry of entries)if(!entry.isIntersecting){cancelPlayback(entry.target.id);entry.target.querySelectorAll('video').forEach(v=>{v.pause();deferVideoRelease(v)})}},{threshold:.1});
 for(const id of ['shape-results','trellis-results'])shapeVideoVisibility.observe($('#'+id));
