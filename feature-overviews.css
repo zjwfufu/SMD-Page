@@ -37,7 +37,7 @@
 .diagonal-edit .edit-before{clip-path:polygon(0 0,62% 0,40% 100%,0 100%)}
 .diagonal-edit>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .edit-side{position:absolute;bottom:12px;padding:5px 11px;border-radius:3px;background:#fffefae8;color:#385161;font-size:11px;backdrop-filter:blur(4px)}.before-side{left:12px}.after-side{right:12px}
-.shape-glance{display:flex;align-items:center;padding:8% 1%}.shape-video-print{width:100%;background:transparent}.shape-video-print video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#f0f4f7}
+.shape-glance{display:flex;align-items:center;padding:8% 1%}.shape-video-print{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#f0f4f7;clip-path:inset(.5px);transform:translateZ(0);backface-visibility:hidden}.shape-video-print video{position:absolute;inset:-1px;display:block;width:calc(100% + 2px);height:calc(100% + 2px);max-width:none;object-fit:cover;background:#f0f4f7;transform:translateZ(0);backface-visibility:hidden}
 .video-glance{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
 .film-stack{position:absolute;inset:0;isolation:isolate}
 .film-strip{position:absolute;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;background:#263542;padding:19px 11px;width:112%;box-shadow:0 12px 24px #172c3d25;transform-origin:center}
