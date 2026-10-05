@@ -11,12 +11,11 @@ if(multiBlock){
   title.id='multi-title';title.textContent=oldTitle.textContent;oldTitle.replaceWith(title);
   multiSection.setAttribute('aria-labelledby',title.id);
 }
-const teaserCases=[state.av,state.images,D.wan.find(c=>c.id==='lantern_river_city_seed510102'),D.images.find(c=>c.id==='forest_nurse_log'),state.wan,D.av.find(c=>c.id==='case51')];
-document.querySelectorAll('#teaser > .teaser-grid > figure').forEach((card,i)=>{
-  const caption=card.querySelector('figcaption'),label=caption.textContent;
+// Top teaser is intentionally media-only: no hover/focus prompt or caption layer.
+// Prompt provenance is retained separately in teaser-prompt-notes.js (not loaded).
+document.querySelectorAll('#teaser > .teaser-grid > figure').forEach(card=>{
   card.classList.toggle('has-video',!!card.querySelector('video'));
-  caption.classList.add('teaser-caption');
-  caption.innerHTML=`<strong>${esc(label)}</strong><div class="teaser-prompt">${esc(teaserCases[i].prompt)}</div>`;
+  card.querySelector('figcaption')?.remove();
 });
 function closeDisclosure(details){details.open=false;details.querySelectorAll('video').forEach(video=>video.pause());const slide=details.closest('.carousel-slide');if(slide&&details.querySelector('video'))cancelPlayback(slide.id)}
 function prepareDisclosures(root){

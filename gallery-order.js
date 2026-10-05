@@ -7,7 +7,8 @@ available.images=firstCase(available.images,'I04');
 const editingCases=new Map([...available.edits,...SMD_EDIT_REPLACEMENTS].map(c=>[c.code,c]));
 available.edits=['E23','E11','E24','E05','E12','E13','E14','E25','E26','E17','E18','E19','E20','E21','E22'].map(code=>{const c=editingCases.get(code);if(!c)throw new Error('Missing edit: '+code);return c});
 available.wan=firstCase(available.wan,'V06');
-available.trellis=firstCase(available.trellis,'T01');
+// TRELLIS order is already fixed by stable IDs in shape-galleries.js.
+// Do not reintroduce excluded 2B or derive this order from display numbers.
 // Remove the wine-label example: its required phrase is visibly malformed.
 SMD_CURATED.multiCases=SMD_CURATED.multiCases.filter(c=>c.id!=='multi-original-1');
 curatedMultiIndex=0;showCuratedMulti();

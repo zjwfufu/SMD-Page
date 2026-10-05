@@ -1,7 +1,10 @@
 /* Independent model galleries: one counter per model, all frames square. */
 available.shapes=SMD_SHAPE_REFRESH.hunyuan;
-const hiddenTrellisPositions=new Set([2,5,7,11,14,15,16,17]);
-available.trellis=SMD_SHAPE_REFRESH.trellis.filter((_,index)=>!hiddenTrellisPositions.has(index+1));
+// Restore the curation saved in 69f433a, with cd88c36's lead example.
+// 8f69771 mistakenly reinterpreted display positions as raw array indices.
+// Use immutable asset IDs, not display positions or re-numberable Txx codes.
+const selectedTrellisIds=['trellis-new-trellis_4','trellis-new-drake','trellis-new-fatalis','trellis-new-image4','trellis-new-image5','trellis-new-image6','trellis-new-image8','trellis-new-lizard','trellis-new-trex','trellis-new-war_hammer'];
+available.trellis=selectedTrellisIds.map(id=>{const item=SMD_SHAPE_REFRESH.trellis.find(c=>c.id===id);if(!item)throw new Error('Missing selected TRELLIS case: '+id);return item});
 resultIds.trellis='trellis-results';
 const shapeHost=$('#shapes-carousel').parentElement;
 const hunGroup=document.createElement('div');hunGroup.className='shape-model-group';hunGroup.innerHTML='<h3>Hunyuan3D 2.1</h3>';

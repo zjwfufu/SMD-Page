@@ -1,0 +1,86 @@
+/* Shared controls and report evidence. Loaded last to replace legacy per-gallery skins. */
+.results-dialog{--detail-accent:#365f7d;--detail-muted:#5b6d7b;--detail-border:#c3d2de}
+.results-dialog .results-content{padding:24px clamp(16px,3vw,44px) 36px}
+.results-dialog .results-dialog-header{padding:16px clamp(16px,3vw,44px)}
+.results-dialog .results-dialog-header h2{font-size:clamp(21px,2.1vw,30px);line-height:1.2}
+.report-detail-intro{margin:0 auto 20px}
+.detail-jumps{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.results-dialog .detail-jumps button,.results-dialog .playback-tools button{border:1px solid var(--detail-border);border-radius:8px;background:#f8fbfd;padding:9px 15px;min-height:44px;font-size:13px;color:var(--detail-accent)}
+.results-dialog .detail-jumps button:hover,.results-dialog .playback-tools button:hover{background:#e3edf4}
+.results-dialog .comparison-heading{display:none}
+.gallery-help{font-size:12px;color:#6a8090;margin-top:14px}
+.results-dialog .carousel-stage{display:block;min-width:0}
+.results-dialog .carousel-footer,.results-dialog .multimodal-case-nav{display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0 12px;min-height:44px}
+.results-dialog .carousel-footer .case-id,.results-dialog .carousel-footer .pick-button{display:none}
+.results-dialog .carousel-arrow,.results-dialog .multimodal-case-nav button,.results-dialog .results-close{display:inline-flex;align-items:center;justify-content:center;align-self:center;flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;max-height:44px;margin:0;padding:0;border:1px solid var(--detail-border);border-radius:50%;background:#f8fbfd;color:var(--detail-accent);font:28px/1 Arial,sans-serif;box-shadow:none;transform:none}
+.results-dialog .carousel-arrow:hover,.results-dialog .multimodal-case-nav button:hover,.results-dialog .results-close:hover{background:#e0ebf3;border-color:#7d9eb7}
+.results-dialog .case-page,.results-dialog .multimodal-case-nav>span{min-width:75px;text-align:center;font:500 14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums;color:var(--detail-muted)}
+.results-dialog .audio-nfe-tabs,.results-dialog .multimodal-nfe-tabs,.results-dialog .benchmark-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;max-width:100%;width:fit-content;padding:4px;border:1px solid var(--detail-border);border-radius:10px;background:#e7eff5;margin:20px auto}
+.results-dialog .audio-nfe-tabs button,.results-dialog .multimodal-nfe-tabs button,.results-dialog .benchmark-tabs button{min-height:44px;border:0;border-radius:7px;background:transparent;color:var(--detail-muted);padding:9px 20px;font-size:14px;box-shadow:none}
+.results-dialog .audio-nfe-tabs button[aria-selected=true],.results-dialog .multimodal-nfe-tabs button[aria-selected=true],.results-dialog .benchmark-tabs button[aria-pressed=true]{background:#fff;color:#244d6b;font-weight:650;box-shadow:0 1px 4px #1c3c5214}
+.results-dialog .shape-model-group h3{font-size:21px;margin:24px 0 14px;text-align:left}
+.results-dialog .multimodal-case-heading h3{font-size:23px}
+.results-dialog .multimodal-case-heading p{font-size:14px}
+.report-evidence{margin:32px auto 0;padding:22px 24px;max-width:1040px;border:1px solid var(--detail-border);border-radius:12px;background:#f8fbfd;scroll-margin-top:88px;color:#233e53;min-width:0}
+.evidence-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.results-dialog .evidence-heading .benchmark-tabs{margin:0}
+.report-kicker{text-transform:uppercase;font-size:10px;letter-spacing:.15em;font-weight:650;color:#617f92;margin-bottom:6px}
+.evidence-heading h3{font:500 23px/1.25 Georgia,serif;letter-spacing:-.02em}
+.evidence-kind{font-size:11px;color:#4b6b80;border:1px solid #cadbe6;padding:6px 10px;border-radius:20px;white-space:nowrap}
+.benchmark-context{text-align:center;font-size:12px;color:#5e798b;margin:12px 0}
+.metric-highlights,.evidence-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 24px}
+.metric-highlight,.evidence-facts>div{min-width:0;padding:18px 20px;border:1px solid #d3e0e9;border-radius:10px;background:#ffffffa6;text-align:left;color:#314f65}
+.metric-highlight[aria-pressed=true]{border-color:#648ca8;background:#e9f2f8}
+.metric-highlight span,.evidence-facts h4{display:block;font-size:12px;font-weight:500;line-height:1.4}
+.metric-highlight strong,.evidence-facts strong{display:block;margin:7px 0;font:500 clamp(25px,3vw,35px)/1.2 Georgia,serif;font-variant-numeric:lining-nums tabular-nums;color:#284e6a}
+.metric-highlight small,.evidence-facts p{font-size:11px;color:#658094;line-height:1.5}
+.benchmark-toolbar{display:flex;justify-content:flex-end;margin:16px 0 12px}
+.benchmark-toolbar label{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;font-weight:600}
+.benchmark-toolbar select{max-width:100%;padding:9px 30px 9px 12px;min-height:44px;border:1px solid #b9cddd;border-radius:8px;background:#fff;font-size:13px}
+.benchmark-toolbar>span{font-size:11px;color:#627d90;text-align:right}
+.chart-axis{display:flex;justify-content:space-between;margin:0 94px 10px 200px;font-size:10px;color:#648093}
+.benchmark-row{display:grid;grid-template-columns:184px minmax(0,1fr) 78px;gap:16px;align-items:center;min-height:48px;margin:4px 0;border-radius:6px}
+.benchmark-method{display:flex;flex-direction:column;font-size:12px;line-height:1.45}
+.benchmark-method small{font-size:10px;color:#78909f}
+.benchmark-track{height:14px;background:repeating-linear-gradient(90deg,#d8e4ed 0 1px,transparent 1px 25%),#eaf0f5;border-radius:2px;overflow:hidden}
+.benchmark-track>span{display:block;height:100%;background:#9bafbf;border-radius:2px}
+.benchmark-row.is-focus .benchmark-track>span{background:#3d7195}
+.benchmark-row.is-focus .benchmark-method>span{font-weight:700;color:#244e6c}
+.benchmark-row.is-reference .benchmark-track>span{background:#bdc8d0}
+.benchmark-value{font-size:13px;font-weight:500;text-align:right;font-variant-numeric:tabular-nums;line-height:1.3}
+.benchmark-row.is-focus .benchmark-value{font-weight:750;color:#244e6c}
+.evidence-note,.evidence-intro,.report-protocol p{font-size:13px;line-height:1.7;color:#526b7e;margin-top:20px;max-width:1000px}
+.evidence-note{padding:14px 16px;border-left:3px solid #86a7be;background:#e8f0f6;border-radius:0 6px 6px 0}
+.evidence-source{font-size:11px;line-height:1.65;color:#698193;margin-top:16px;overflow-wrap:anywhere}
+.evidence-source code{font-family:inherit}
+.benchmark-table,.report-protocol{margin-top:18px;border-top:1px solid #d1dfe9;padding-top:14px}
+.benchmark-table summary,.report-protocol summary{font-size:13px;color:#355e7c;cursor:pointer;min-height:28px}
+.benchmark-table-scroll{max-width:100%;overflow-x:auto;margin-top:14px;border:1px solid #d5e2ec;border-radius:8px;background:#fff}
+.benchmark-table table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+.benchmark-table caption{padding:12px;text-align:left;font-size:12px;color:#617d90}
+.benchmark-table th,.benchmark-table td{padding:11px 13px;text-align:right;white-space:nowrap;border-bottom:1px solid #e3ebf1}
+.benchmark-table th:first-child{text-align:left}.benchmark-table thead{background:#eaf1f6}.benchmark-table tbody th{font-weight:500}.benchmark-table tr.is-focus{background:#e8f2f9;color:#254f6e}
+.report-detail-intro+.comparison-heading:empty{display:none}
+.report-evidence.has-paired-metrics{max-width:none}
+.paired-legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin:22px 0 18px;font-size:12px;color:#405c70}
+.paired-legend>span{display:flex;align-items:center;gap:8px}.paired-legend small{font-size:11px;color:#748a9a}
+.paired-legend i{display:inline-block;width:20px;height:8px;background:#9bafbf;border-radius:2px}.paired-legend i.is-focus{background:#3d7195}
+.paired-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.paired-metric{min-width:0;padding:15px 16px 18px;border:1px solid #d6e2eb;border-radius:8px;background:#fff}
+.paired-metric h4{font-size:12px;font-weight:550;line-height:1.5;margin:0 0 13px;color:#35566f}.paired-metric h4>span{color:#7893a7}
+.paired-axis{display:flex;justify-content:space-between;margin:0 59px 7px 0;font-size:10px;color:#7e95a5}
+.paired-row{display:grid;grid-template-columns:minmax(0,1fr) 49px;gap:10px;align-items:center;margin-top:9px;min-height:21px}
+.paired-row strong{font-size:12px;font-weight:500;text-align:right;font-variant-numeric:tabular-nums;color:#536d80}
+.paired-row.is-focus .benchmark-track>span{background:#3d7195}.paired-row.is-focus strong{font-weight:700;color:#254f6e}
+.paired-row .benchmark-track{height:12px}
+@media(max-width:1000px){.paired-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.paired-metrics{grid-template-columns:1fr;gap:10px}.paired-metric{padding:13px 14px}.paired-legend{gap:10px;font-size:11px}.paired-metric h4{margin-bottom:9px}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:640px){
+ .results-dialog .results-content{padding:18px 12px 24px}.results-dialog .results-dialog-header{padding:12px}.report-detail-intro{font-size:14px;text-align:left}
+ .report-evidence{padding:18px 12px;margin-top:30px}.evidence-heading{align-items:flex-start;flex-direction:column}.evidence-kind{display:none}
+ .metric-highlights,.evidence-facts{gap:7px}.metric-highlight,.evidence-facts>div{padding:12px 8px}.metric-highlight span,.evidence-facts h4{font-size:11px}.metric-highlight strong,.evidence-facts strong{font-size:24px}.evidence-facts{grid-template-columns:1fr}.evidence-facts strong{font-size:28px}
+ .benchmark-toolbar{align-items:flex-start;flex-direction:column}.benchmark-toolbar>span{text-align:left}.benchmark-toolbar label{width:100%}.benchmark-toolbar select{flex:1;min-width:0}
+ .benchmark-row{grid-template-columns:112px minmax(0,1fr) 58px;gap:8px;min-height:54px}.benchmark-method{font-size:11px}.benchmark-value{font-size:12px}.chart-axis{margin-left:120px;margin-right:66px}
+ .results-dialog .benchmark-tabs button{padding:8px 12px;font-size:12px}.evidence-note{padding:12px;font-size:12px}.results-dialog .multimodal-case-heading h3{font-size:20px}
+}

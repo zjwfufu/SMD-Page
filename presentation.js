@@ -2,13 +2,30 @@
 const teaser=document.querySelector('#teaser');
 teaser.querySelectorAll('video').forEach(v=>posterObserver.unobserve(v));
 teaser.querySelectorAll('img[data-src]').forEach(img=>imageObserver.unobserve(img));
-teaser.innerHTML=`<div class="teaser-grid">
-${vid(state.av.ours,'MiniMax H3 · 8 NFE')}
-<figure class="media-card">${image(state.images.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
-${vid(D.wan.find(c=>c.id==='lantern_river_city_seed510102').ours,'Wan2.1-14B · 4 NFE')}
-<figure class="media-card">${image(D.images.find(c=>c.id==='forest_nurse_log').ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
-${vid(state.wan.ours,'Wan2.1-14B · 4 NFE')}
-${vid(D.av.find(c=>c.id==='case51').ours,'MiniMax H3 · 8 NFE')}
+// Three diagonal leads, with image/video/3D companions interspersed by palette.
+const teaserLeadVideos=[
+ {src:'assets/top-picked-20261005/h3_ghost_whale.mp4',poster:'assets/top-picked-20261005/h3_ghost_whale-poster.webp'},
+ {src:'assets/top-picked-20261005/h3_sci_talk.mp4',poster:'assets/top-picked-20261005/h3_sci_talk-poster.webp'},
+ {src:'assets/feature-overviews/t2va-h3wave02-l10-ours-8.mp4',poster:'assets/top-picked-20261005/h3-cloudship-gallery-poster.webp'}
+];
+const teaserCompanions={
+ topImage:D.images.find(c=>c.id==='frosted_rowan_bothy'),
+ topVideo:D.wan.find(c=>c.id==='13_close_up_of_grapes_on_a_rotating_table'),
+ bottomImage:D.images.find(c=>c.id==='tianmen_shanshui'),
+ bottomVideo:D.wan.find(c=>c.id==='drawing_sample1')
+};
+for(const [slot,item] of Object.entries(teaserCompanions))if(!item)throw new Error('Missing curated teaser companion: '+slot);
+const teaserPickedClip=name=>({src:`assets/top-picked-20261005/${name}.mp4`,poster:`assets/top-picked-20261005/${name}-poster.webp`});
+teaser.innerHTML=`<div class="teaser-grid teaser-curated">
+${vid(teaserLeadVideos[0],'MiniMax H3')}
+<figure class="media-card">${image(teaserCompanions.topImage.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
+${vid(teaserPickedClip('3d_ulta'),'3D generation','teaser-3d')}
+${vid(teaserPickedClip('3d_bunny'),'3D generation','teaser-3d')}
+${vid(teaserCompanions.bottomVideo.ours,'Wan2.1-14B · 4 NFE')}
+${vid(teaserLeadVideos[1],'MiniMax H3')}
+${vid(teaserLeadVideos[2],'MiniMax H3 · 8 NFE')}
+<figure class="media-card">${image(teaserCompanions.bottomImage.ours,'Qwen-Image · 4 NFE')}<figcaption>Qwen-Image · 4 NFE</figcaption></figure>
+${vid(teaserCompanions.topVideo.ours,'Wan2.1-14B · 4 NFE')}
 </div>`;
 const presentationTitles={explore:['Ours vs. Lightning on Qwen-Image','Four matched seeds for each prompt. Both methods use 4 NFE.'],editing:['Image Editing with Qwen-Image-Edit','Input, Lightning and Ours. Both students use 4 NFE.'],shape:['3D Generation','Hunyuan3D 2.1 and TRELLIS.2. Compare the generated turntables across views.'],video:['Ours vs. AnyFlow on Wan2.1-14B','AnyFlow and Ours at 4 NFE. Three paired prompts per page.'],audio:['Joint Audio–Video Generation with MiniMax H3','LightX2V DMD and Ours at 8 NFE. Select an audio track to listen.'],transfer:['Cross-Model Distillation','Four teacher-to-student routes at 4 NFE.']};
 for(const [id,[title,caption]] of Object.entries(presentationTitles)){
