@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>SMD</title>
+  <rect width="64" height="64" rx="14" fill="#29495f"/>
+  <path d="M44 18C37 11 19 14 19 23C19 32 45 29 45 40C45 52 27 53 19 47" fill="none" stroke="#eff4f7" stroke-width="6.8" stroke-linecap="round"/>
+  <g fill="#d9b684">
+    <circle cx="44" cy="18" r="2.8"/>
+    <circle cx="23.06" cy="27.13" r="2.8"/>
+    <circle cx="40.94" cy="33.38" r="2.8"/>
+    <circle cx="19" cy="47" r="2.8"/>
+  </g>
+</svg>
