@@ -3,7 +3,7 @@
  */
 window.SMD_REPORT_CONTENT = {
   abstract: [
-    'Strong few-step generation need not require an auxiliary score model, adversarial training, or a specialized inference architecture. We start with a simple on-policy baseline: match student velocities to teacher predictions at the same states along student rollouts, holding the student velocity constant within each sampling interval.',
+    'Strong few-step generation need not require an auxiliary score model, adversarial training, or a specialized inference architecture. Our simple on-policy baseline matches student velocities to teacher predictions at the same states along student rollouts, holding the student velocity constant within each sampling interval.',
     'Simplified Matching Distillation (SMD) adds a training-only Pivot proxy for local velocity variation and repulsion from weaker predictions of the same teacher. The resulting objective remains regression-based and leaves student inference unchanged. We evaluate image generation and editing, 3D shape and texture, video, and joint audio–video generation on models up to 33B parameters, and extend the formulation to cross-model supervision, multiple specialist teachers, and causal video compression.'
   ],
   explore: {
@@ -22,7 +22,7 @@ window.SMD_REPORT_CONTENT = {
   },
   shape: {
     title: '3D Generation',
-    overview: 'The same objective extends to different 3D representations: fixed-size shape latents in Hunyuan3D 2.1 and sparse geometry and appearance latents in TRELLIS.2. Rendered views show what survives few-step distillation.',
+    overview: 'The same objective extends to fixed-size shape latents in Hunyuan3D 2.1 and sparse geometry and appearance latents in TRELLIS.2. Rendered views show what survives few-step distillation.',
     detail: 'Compare input images and synchronized turntables from SMD, direct four-step teacher sampling, and the multi-step teacher. These are selected qualitative comparisons, not a quantitative 3D benchmark.',
     protocol: 'Hunyuan3D 2.1 distills shape generation to 4 NFE. For TRELLIS.2, only the final high-resolution shape and texture stages are distilled, each to 4 NFE. Sparse-structure and coarse-shape stages remain unchanged; 4 NFE is not the budget of the entire pipeline.',
     evidence: [['Hunyuan3D 2.1', '4 NFE', 'Shape-generation stage'], ['TRELLIS.2 shape', '4 NFE', 'High-resolution stage only'], ['TRELLIS.2 texture', '4 NFE', 'Texture stage only']],
@@ -45,7 +45,7 @@ window.SMD_REPORT_CONTENT = {
   },
   audio: {
     title: 'Audio–Video Generation',
-    overview: 'Generate sound and motion together. On the 33B MiniMax H3 model, SMD improves temporal coherence, visual naturalness, and audio clarity and quality over LightX2V-DMD at both 4 and 8 NFE; prompt alignment remains stronger for DMD.',
+    overview: 'Generate sound and motion together. On the 33B MiniMax H3 model, SMD improves temporal coherence, visual naturalness, and audio clarity and quality over LightX2V-DMD at both 4 and 8 NFE. DMD retains stronger prompt alignment.',
     detail: 'Compare SMD and LightX2V-DMD v1.1 at 4 or 8 NFE. Both methods use the same prompt within each case; switch the listening track to hear the original audio. The gallery contains 30 selected examples, not the 100-prompt evaluation set.',
     protocol: 'The report evaluates both budgets on the same 100 prompts, matching seeds, resolution, and duration between methods. Four visual scores use a 1–5 scale (GPT-5.6 Sol, 24 chronological frames, two candidate orders). Audio clarity is PAM × 5 and audio quality is Audiobox Production Quality ÷ 2, both on a 0–5 scale. These automatic scores are not a human preference study or a direct measure of audio–visual synchronization. Means describe the text-conditioned benchmark, not REF2VA or individual gallery clips.',
     metrics: ['h3', 'h3eight']
@@ -61,14 +61,14 @@ window.SMD_REPORT_CONTENT = {
   },
   transfer: {
     title: 'Cross-Model Distillation',
-    overview: 'A different teacher can change what a student learns. A 9B FLUX.2 teacher improves six of seven metrics for the 4B student; transfer to Lens improves diversity and style but exposes trade-offs on other criteria.',
+    overview: 'A different teacher can change what a student learns. A 9B FLUX.2 teacher improves six of seven metrics for the 4B student. Transfer to Lens improves diversity and style but exposes trade-offs on other criteria.',
     detail: 'All four teacher-to-student routes use 4 NFE. Compare cross-capacity transfer within FLUX.2-klein and cross-architecture transfer into Lens-RL-3.8B; each route uses the same prompt.',
     protocol: 'Compare teacher choices within the same student, not as a single pooled ranking. The 9B teacher helps the FLUX.2-4B student on six of seven metrics, with a small reasoning decrease. For Lens, diversity and style improve but the other scores decrease. Lens was pretrained with long captions, which may affect short-prompt evaluations.',
     metrics: ['crossFlux', 'crossLens']
   },
   'multi-teacher': {
     title: 'Multi-Teacher Distillation',
-    overview: 'Bring complementary specialists into one student. Prompt-routed supervision improves all six reported metrics over self-distillation and the 28-NFE base teacher; inference uses only the resulting 4-NFE student.',
+    overview: 'Bring complementary specialists into one student. Prompt-routed supervision improves all six reported metrics over self-distillation and the 28-NFE base teacher. Inference uses only the resulting 4-NFE student.',
     detail: 'Four reward-specialized LoRA teachers target CLIPScore, GenEval, OCR, and PickScore. Compare their individually distilled students with self-distillation, the base teacher, and the routed SD3.5-Medium student.',
     protocol: 'All students share the same initialization and use imitation without repulsion. GenEval, OCR, and PickScore use their respective evaluation sets; HPSv2, CLIPScore, and ImageReward use DrawBench. Routing is training-only. Specialists still lead several criteria: the claim is balanced transfer, not dominance over every specialist.',
     metrics: ['multi']

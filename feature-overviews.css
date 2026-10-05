@@ -116,3 +116,16 @@
 .multimodal-gallery-output.is-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1080px}.multimodal-gallery-output.is-comparison.is-portrait{max-width:720px}.multimodal-gallery-output.is-comparison .media-card{min-width:0}
 @media(max-width:760px){.multimodal-gallery-output.is-comparison{grid-template-columns:1fr;max-width:100%}.multimodal-gallery-output.is-comparison.is-portrait{max-width:320px}}
 @media(max-width:760px){.audio-cinema{left:3%;top:18%;width:94%;padding:5px}.audio-ribbon{bottom:9%;height:29%}.audio-field{width:21%}}
+
+/* One vertical rhythm for the public overview, independent of gallery dialogs. */
+.editorial-preview{--overview-section-gap:64px}
+.editorial-preview :is(#explore,#editing,#shape,#video,#causal,#audio,#multimodal,#transfer,#multi-teacher){margin-top:var(--overview-section-gap);margin-bottom:0}
+.editorial-preview .task-overview{margin-bottom:0}
+.editorial-preview .abstract{margin-top:56px;margin-bottom:0}
+.editorial-preview .abstract p:last-child{margin-bottom:0}
+/* These simple compositions had large empty square canvases around wide media. */
+.editorial-preview .shape-glance{aspect-ratio:1.65;padding:3% 1%}
+.editorial-preview .cross-glance{aspect-ratio:1.6;padding:3% 2%}
+.editorial-preview .multi-glance{aspect-ratio:1.45;padding:3% 1%}
+@media(max-width:1000px){.editorial-preview{--overview-section-gap:52px}}
+@media(max-width:760px){.editorial-preview{--overview-section-gap:40px}.editorial-preview .abstract{margin-top:40px}}
