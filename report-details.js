@@ -1,4 +1,4 @@
-/* Shared report copy, evidence panels and navigation for the nine result dialogs. */
+/* Shared report copy, evidence panels and navigation for nine inline chapters. */
 (() => {
   const content = window.SMD_REPORT_CONTENT;
   const escape = value => esc(String(value));
@@ -79,19 +79,19 @@
   for (const [id, spec] of Object.entries(content)) {
     if (id === 'abstract') continue;
     const overview = document.getElementById(`${id}-overview`);
-    const modal = document.getElementById(`${id}-results-dialog`);
-    if (!overview || !modal) continue;
+    const panelRoot = document.getElementById(`${id}-details`);
+    if (!overview || !panelRoot) continue;
     overview.querySelector('h2').textContent = spec.title;
     overview.querySelector('.overview-intro').textContent = spec.overview;
-    overview.querySelector('.overview-trigger').setAttribute('aria-label', `Open ${spec.title} results`);
-    modal.querySelector('.results-dialog-header h2').textContent = spec.title;
-    const body = modal.querySelector('.results-content');
+    overview.querySelector('.overview-trigger').setAttribute('aria-label', `View ${spec.title} results`);
+    panelRoot.querySelector('.results-collapse[aria-label]').setAttribute('aria-label', `Hide ${spec.title} results`);
+    const body = panelRoot.querySelector('.results-content');
     // Supersede old report notes and the legacy multi-teacher-only table.
     body.querySelectorAll('.protocol-note,.multi-quantitative').forEach(el => el.remove());
     const intro = document.createElement('div');
     intro.className = 'report-detail-intro';
     intro.innerHTML = spec.metrics ? `<nav class="detail-jumps" aria-label="${escape(spec.title)} detail sections"><button type="button" data-detail-jump="examples">Gallery</button><button type="button" data-detail-jump="evidence">Benchmarks</button></nav>` : '';
-    if (spec.metrics) body.prepend(intro);
+    if (spec.metrics) panelRoot.querySelector('.results-label').replaceWith(intro);
     const examples = body.querySelector('.case-carousel,#multimodal-gallery-results');
     if (examples) examples.id ||= `${id}-examples`;
     const panel = spec.metrics ? metricPanel(id, spec) : null;
@@ -101,12 +101,7 @@
       if (!button) return;
       const target = button.dataset.detailJump === 'evidence' ? panel : examples;
       if (target) {
-        // Scroll only the dialog's inner shell. scrollIntoView also scrolls the
-        // overflow:hidden dialog itself and can clip its sticky title/close button.
-        const shell = modal.querySelector('.results-shell');
-        const header = modal.querySelector('.results-dialog-header');
-        modal.scrollTop = 0;
-        shell.scrollTo({top:shell.scrollTop + target.getBoundingClientRect().top - shell.getBoundingClientRect().top - header.offsetHeight - 16,behavior:'instant'});
+        target.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
         target.tabIndex = -1;
         target.focus({preventScroll:true});
       }

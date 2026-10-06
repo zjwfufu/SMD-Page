@@ -1,4 +1,4 @@
-/* Overview images are the only visual entry points; existing widgets live in dialogs. */
+/* Visual overviews and text links disclose result galleries in the document flow. */
 document.documentElement.classList.add('editorial-preview');
 const overviewData=window.SMD_FEATURE_OVERVIEWS;
 const overviewImage=(v,alt,extra='')=>`<img src="${esc(v.src||v)}" ${v.width?`width="${v.width}" height="${v.height}"`:''} alt="${esc(alt)}" loading="lazy" decoding="async" ${extra}>`;
@@ -51,7 +51,7 @@ function renderMultimodalGallery(){
  multimodalGallery.innerHTML=`<div class="multimodal-case-heading"><div><span class="multimodal-condition-label">${esc(c.conditionLabel||'Multimodal')}</span><h3>${esc(c.title)}</h3><p>${esc(multimodalSummary(c))}</p></div><span class="multimodal-case-count" role="status" aria-live="polite">${position} / ${multimodalCases.length}</span></div><div class="multimodal-nfe-tabs" role="tablist" aria-label="Sampling steps">${[4,8].map(nfe=>`<button type="button" role="tab" aria-selected="${nfe===multimodalNfe}" tabindex="${nfe===multimodalNfe?0:-1}" data-multimodal-nfe="${nfe}" aria-controls="multimodal-active-output">${nfe} NFE</button>`).join('')}</div><div id="multimodal-active-output" class="multimodal-gallery-output video-group ${ordered.length>1?'is-comparison ':''}${out.height>out.width?'is-portrait':out.height===out.width?'is-square':''}" role="tabpanel" aria-label="${multimodalNfe} NFE results">${ordered.map(multimodalOutput).join('')}</div>${c.references.length?`<div class="multimodal-reference-block"><p class="multimodal-reference-heading">References</p><div class="multimodal-reference-strip">${c.references.map(multimodalReference).join('')}</div></div>`:''}<details class="prompt"><summary>View exact prompt</summary><pre>${esc(c.prompt)}</pre></details><div class="multimodal-case-nav"><button type="button" data-multimodal-step="-1" aria-label="Previous multimodal case">‹</button><span>${position} / ${multimodalCases.length}</span><button type="button" data-multimodal-step="1" aria-label="Next multimodal case">›</button></div>`;
  prepareMedia();minimalLabels(multimodalGallery);updatePlaybackControls();
 }
-multimodalGallery.addEventListener('click',event=>{const tab=event.target.closest('[data-multimodal-nfe]'),step=event.target.closest('[data-multimodal-step]');if(tab){const nfe=Number(tab.dataset.multimodalNfe);if(nfe!==multimodalNfe){multimodalNfe=nfe;renderMultimodalGallery()}}else if(step){multimodalCaseIndex=(multimodalCaseIndex+Number(step.dataset.multimodalStep)+multimodalCases.length)%multimodalCases.length;renderMultimodalGallery();multimodalGallery.closest('.results-shell')?.scrollTo({top:0,behavior:'instant'})}});
+multimodalGallery.addEventListener('click',event=>{const tab=event.target.closest('[data-multimodal-nfe]'),step=event.target.closest('[data-multimodal-step]');if(tab){const nfe=Number(tab.dataset.multimodalNfe);if(nfe!==multimodalNfe){multimodalNfe=nfe;renderMultimodalGallery()}}else if(step){multimodalCaseIndex=(multimodalCaseIndex+Number(step.dataset.multimodalStep)+multimodalCases.length)%multimodalCases.length;renderMultimodalGallery();multimodalGallery.querySelector(`[data-multimodal-step="${step.dataset.multimodalStep}"]`)?.focus({preventScroll:true})}});
 multimodalGallery.addEventListener('keydown',event=>{const tab=event.target.closest('[data-multimodal-nfe]');if(tab&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();multimodalNfe=event.key==='Home'?4:event.key==='End'?8:multimodalNfe===4?8:4;renderMultimodalGallery();multimodalGallery.querySelector(`[data-multimodal-nfe="${multimodalNfe}"]`)?.focus()}});
 renderMultimodalGallery();
 const overviewSpecs=[
@@ -65,29 +65,63 @@ const overviewSpecs=[
  {section:'transfer',direction:'visual-right',visual:crossOverview,copy:'A teacher need not share its student’s architecture. We study distillation across model sizes and model families, comparing what different teachers bring to a four-step student.'},
  {section:'multi-teacher',direction:'visual-left',visual:multiOverview,copy:'Different teachers emphasize different qualities. Routed supervision brings their strengths into one student, without requiring a collection of teachers at inference time.'}
 ];
-let activeResults=null;
-function pauseResultContent(modal){modal.querySelectorAll('[data-sync]').forEach(b=>cancelPlayback(b.dataset.sync));modal.querySelectorAll('video').forEach(v=>{v.pause();releaseVideoSource(v)});updatePlaybackControls()}
-// Background comparison observers must not auto-start videos in opened dialogs.
-const scheduleBeforeOverviewDialogs=scheduleComparison;
-scheduleComparison=function(id){if(document.querySelector('.results-dialog[open]'))return;scheduleBeforeOverviewDialogs(id)};
+function pauseResultContent(panel){panel.querySelectorAll('[data-sync]').forEach(b=>{cancelAuto(b.dataset.sync);cancelPlayback(b.dataset.sync)});panel.querySelectorAll('video').forEach(v=>{v.pause();releaseVideoSource(v)});updatePlaybackControls()}
+// Comparisons remain opt-in, including after case changes and tab restoration.
+const scheduleBeforeInlineResults=scheduleComparison;
+scheduleComparison=function(id){if(document.getElementById(id)?.closest('.results-panel'))return;scheduleBeforeInlineResults(id)};
+const inlineResults=new Map();
+const resultVisibility=new IntersectionObserver(entries=>{for(const entry of entries)if(!entry.isIntersecting)pauseResultContent(entry.target)},{threshold:0});
+// Move once after layout, without a long animated scroll through other chapters.
+const resultScrollBehavior=()=> 'instant';
 for(const spec of overviewSpecs){
  const section=$('#'+spec.section),heading=section.querySelector('.section-heading')||section.querySelector('#multi-title').parentElement,title=heading.querySelector('h2'),holder=spec.section==='multi-teacher'?section:heading.parentElement;
  if(!title)throw new Error('Overview title missing: '+spec.section);const titleText=title.textContent,nodes=[...holder.children];
- const row=document.createElement('div');row.className='task-overview '+spec.direction;row.id=spec.section+'-overview';row.innerHTML=`<div class="overview-copy"><p class="overview-intro">${esc(spec.copy)}</p></div><div class="overview-visual"><button type="button" class="overview-trigger" aria-label="Open ${esc(titleText)} results" aria-haspopup="dialog" aria-controls="${spec.section}-results-dialog">${spec.visual()}</button></div>`;row.querySelector('.overview-copy').prepend(title);
- const modal=document.createElement('dialog');modal.className='results-dialog';modal.id=spec.section+'-results-dialog';modal.setAttribute('aria-labelledby',spec.section+'-dialog-title');modal.innerHTML=`<div class="results-shell"><div class="results-dialog-header"><h2 id="${spec.section}-dialog-title">${esc(titleText)}</h2><button type="button" class="results-close" aria-label="Close ${esc(titleText)} results">×</button></div><div class="results-content"></div></div>`;
- for(const node of nodes)modal.querySelector('.results-content').append(node);heading.classList.add('comparison-heading');holder.append(row,modal);
- const trigger=row.querySelector('.overview-trigger');trigger.onclick=()=>{
-  if(activeResults&&activeResults!==modal)activeResults.close();for(const id of autoplayTimers.keys())cancelAuto(id);document.querySelectorAll('video').forEach(v=>v.pause());stopOverviewMotion(true);
-  activeResults=modal;modal.showModal();modal.querySelector('.results-shell').scrollTop=0;prepareMedia();modal.querySelector('.results-close').focus({preventScroll:true});
- };
- modal.querySelector('.results-close').onclick=()=>modal.close();modal.addEventListener('click',e=>{if(e.target===modal)modal.close()});
- modal.addEventListener('close',e=>{if(e.target!==modal)return;pauseResultContent(modal);if(activeResults===modal)activeResults=null;trigger.focus({preventScroll:true});if(!document.hidden){refreshTeaserMotion();void startOverviewMotion()}});
+ const panelId=spec.section+'-details',titleId=title.id||spec.section+'-overview-title';title.id=titleId;
+ const row=document.createElement('div');row.className='task-overview '+spec.direction;row.id=spec.section+'-overview';row.innerHTML=`<div class="overview-copy"><p class="overview-intro">${esc(spec.copy)}</p><button type="button" class="overview-link" aria-expanded="false" aria-controls="${panelId}"><span class="overview-link-label">View results</span><span class="overview-link-icon" aria-hidden="true">＋</span></button></div><div class="overview-visual"><button type="button" class="overview-trigger" aria-label="View ${esc(titleText)} results" aria-expanded="false" aria-controls="${panelId}">${spec.visual()}</button></div>`;row.querySelector('.overview-copy').prepend(title);
+ const panel=document.createElement('div');panel.className='results-panel';panel.id=panelId;panel.hidden=true;panel.tabIndex=-1;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',titleId);panel.innerHTML=`<div class="results-toolbar"><span class="results-label">Results</span><button type="button" class="results-collapse" aria-label="Hide ${esc(titleText)} results">Hide results <span aria-hidden="true">−</span></button></div><div class="results-content"></div><div class="results-end"><button type="button" class="results-collapse">Hide results <span aria-hidden="true">−</span></button></div>`;
+ for(const node of nodes)panel.querySelector('.results-content').append(node);heading.classList.add('comparison-heading');holder.append(row,panel);
+ const triggers=[...row.querySelectorAll('[aria-expanded]')],link=row.querySelector('.overview-link');
+ function setExpanded(expanded,{focus=true,scroll=true}={}){
+  if(expanded===!panel.hidden)return;
+  panel.hidden=!expanded;row.classList.toggle('is-expanded',expanded);
+  triggers.forEach(button=>button.setAttribute('aria-expanded',String(expanded)));
+  link.querySelector('.overview-link-label').textContent=expanded?'Hide results':'View results';
+  link.querySelector('.overview-link-icon').textContent=expanded?'−':'＋';
+  row.querySelector('.overview-trigger').setAttribute('aria-label',`${expanded?'Hide':'View'} ${title.textContent} results`);
+  if(expanded){
+   for(const id of autoplayTimers.keys())cancelAuto(id);
+   row.querySelectorAll('video').forEach(video=>{const state=overviewMotionStates.find(s=>s.video===video);if(state)stopMotionPreview(state,true)});
+   prepareMedia();if(focus)panel.focus({preventScroll:true});
+   if(scroll)panel.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
+  }else{
+   pauseResultContent(panel);panel.querySelectorAll('details[open]').forEach(details=>closeDisclosure(details));
+   if(focus)link.focus({preventScroll:true});
+   if(scroll)row.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
+   if(!document.hidden)void startOverviewMotion();
+  }
+ }
+ triggers.forEach(button=>button.addEventListener('click',()=>setExpanded(panel.hidden)));
+ panel.querySelectorAll('.results-collapse').forEach(button=>button.addEventListener('click',()=>setExpanded(false)));
+ panel.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.querySelector('dialog[open]')){event.preventDefault();setExpanded(false)}});
+ // Observe the individual galleries, not the tall expanded chapter. Scrolling
+ // to benchmarks must stop comparisons even while the chapter is still visible.
+ panel.querySelectorAll('.case-carousel,#multimodal-gallery-results').forEach(gallery=>resultVisibility.observe(gallery));
+ inlineResults.set(panelId,{panel,setExpanded});
 }
 // Silent overview videos loop automatically while visible; no extra playback UI.
 const overviewMotionStates=[...document.querySelectorAll('.overview-motion-media')].map(video=>({video,inView:false,job:0}));
-async function startMotionPreview(state){if(activeResults||document.hidden||!state.inView||!allowAutoMotion())return;const job=++state.job;try{state.video.muted=true;state.video.loop=true;await ensureVideoSource(state.video);if(job===state.job&&state.inView&&!document.hidden&&!activeResults)await state.video.play()}catch{}}
+function canPreviewOverview(state){return !document.hidden&&state.inView&&allowAutoMotion()&&!state.video.closest('.task-overview')?.classList.contains('is-expanded')&&!document.querySelector('dialog[open]')}
+async function startMotionPreview(state){if(!canPreviewOverview(state))return;const job=++state.job;try{state.video.muted=true;state.video.loop=true;await ensureVideoSource(state.video);if(job===state.job&&canPreviewOverview(state))await state.video.play()}catch{}}
 function stopMotionPreview(state,release=false){state.job++;state.video.pause();if(release)releaseVideoSource(state.video)}
 function startOverviewMotion(target=null){return Promise.allSettled(overviewMotionStates.filter(state=>!target||state===target).map(state=>startMotionPreview(state)))}
 function stopOverviewMotion(release=false,target=null){overviewMotionStates.filter(state=>!target||state===target).forEach(state=>stopMotionPreview(state,release))}
 for(const state of overviewMotionStates){const observer=new IntersectionObserver(entries=>{state.inView=entries[0].isIntersecting;if(state.inView)void startMotionPreview(state);else stopMotionPreview(state,true)},{threshold:.35});observer.observe(state.video.closest('.overview-stage'))}
-document.addEventListener('visibilitychange',()=>{if(document.hidden){stopOverviewMotion(true);if(activeResults)pauseResultContent(activeResults)}else if(!activeResults)void startOverviewMotion()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stopOverviewMotion(true);for(const {panel}of inlineResults.values())if(!panel.hidden)pauseResultContent(panel)}else void startOverviewMotion()});
+// Shared links can address a chapter's results or a benchmark without a modal.
+function openLinkedResults(){
+ let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}
+ const target=document.getElementById(id),panel=target?.closest('.results-panel');
+ if(!panel)return;inlineResults.get(panel.id)?.setExpanded(true,{focus:false,scroll:false});
+ requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
+}
+addEventListener('hashchange',openLinkedResults);requestAnimationFrame(openLinkedResults);
