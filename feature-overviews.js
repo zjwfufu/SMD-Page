@@ -73,18 +73,31 @@ const inlineResults=new Map();
 const resultVisibility=new IntersectionObserver(entries=>{for(const entry of entries)if(!entry.isIntersecting)pauseResultContent(entry.target)},{threshold:0});
 // Move once after layout, without a long animated scroll through other chapters.
 const resultScrollBehavior=()=> 'instant';
+function playResultTransition(element,frames,options){
+ return new Promise(resolve=>{
+  const animation=element.animate(frames,options);let finished=false;
+  const timer=setTimeout(finish,options.duration+120);
+  function finish(){if(finished)return;finished=true;clearTimeout(timer);animation.cancel();resolve()}
+  animation.finished.then(finish,finish);
+ });
+}
 for(const spec of overviewSpecs){
  const section=$('#'+spec.section),heading=section.querySelector('.section-heading')||section.querySelector('#multi-title').parentElement,title=heading.querySelector('h2'),holder=spec.section==='multi-teacher'?section:heading.parentElement;
  if(!title)throw new Error('Overview title missing: '+spec.section);const titleText=title.textContent,nodes=[...holder.children];
  const panelId=spec.section+'-details',titleId=title.id||spec.section+'-overview-title';title.id=titleId;
  const row=document.createElement('div');row.className='task-overview '+spec.direction;row.id=spec.section+'-overview';row.innerHTML=`<div class="overview-copy"><p class="overview-intro">${esc(spec.copy)}</p><button type="button" class="overview-link" aria-expanded="false" aria-controls="${panelId}"><span class="overview-link-label">View results</span><span class="overview-link-icon" aria-hidden="true">＋</span></button></div><div class="overview-visual">${spec.section==='editing'?`<div class="overview-interactive" role="group" aria-label="Interactive image editing comparison">${spec.visual()}</div>`:`<button type="button" class="overview-trigger" aria-label="View ${esc(titleText)} results" aria-expanded="false" aria-controls="${panelId}">${spec.visual()}</button>`}</div>`;row.querySelector('.overview-copy').prepend(title);
- const panel=document.createElement('div');panel.className='results-panel';panel.id=panelId;panel.hidden=true;panel.tabIndex=-1;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',titleId);panel.innerHTML=`<div class="results-toolbar"><span class="results-label">Results</span><button type="button" class="results-collapse" aria-label="Hide ${esc(titleText)} results">Hide results <span aria-hidden="true">−</span></button></div><div class="results-content"></div><div class="results-end"><button type="button" class="results-collapse">Hide results <span aria-hidden="true">−</span></button></div>`;
+ const panel=document.createElement('div');panel.className='results-panel';panel.id=panelId;panel.hidden=true;panel.tabIndex=-1;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',spec.section+'-results-title');panel.innerHTML=`<header class="results-heading"><h2 id="${spec.section}-results-title" class="results-heading-title">${esc(titleText)}</h2></header><div class="results-content"></div><div class="results-end"><button type="button" class="results-collapse" aria-label="Hide ${esc(titleText)} results">Hide results <span aria-hidden="true">−</span></button></div>`;
  for(const node of nodes)panel.querySelector('.results-content').append(node);heading.classList.add('comparison-heading');holder.append(row,panel);
  const triggers=[...row.querySelectorAll('[aria-expanded]')],link=row.querySelector('.overview-link');
  const scrubber=row.querySelector('.edit-scrubber');if(scrubber)scrubber.addEventListener('input',()=>{scrubber.closest('.edit-comparison').style.setProperty('--edit-split',scrubber.value+'%');scrubber.setAttribute('aria-valuetext',scrubber.value+' percent source image')});
- function setExpanded(expanded,{focus=true,scroll=true}={}){
-  if(expanded===!panel.hidden)return;
-  panel.hidden=!expanded;row.classList.toggle('is-expanded',expanded);
+ let expandedState=false,transitionVersion=0;
+ async function setExpanded(expanded,{focus=true,scroll=true,animate=true}={}){
+  if(expanded===expandedState)return;
+  expandedState=expanded;const version=++transitionVersion;panel.dataset.transitioning='true';
+  for(const element of [row,panel])element.getAnimations().forEach(animation=>animation.cancel());
+  const source=row.hidden?panel:row,destination=expanded?panel:row;
+  const animated=animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&typeof source.animate==='function';
+  row.classList.toggle('is-expanded',expanded);
   triggers.forEach(button=>button.setAttribute('aria-expanded',String(expanded)));
   link.querySelector('.overview-link-label').textContent=expanded?'Hide results':'View results';
   link.querySelector('.overview-link-icon').textContent=expanded?'−':'＋';
@@ -92,16 +105,24 @@ for(const spec of overviewSpecs){
   if(expanded){
    for(const id of autoplayTimers.keys())cancelAuto(id);
    row.querySelectorAll('video').forEach(video=>{const state=overviewMotionStates.find(s=>s.video===video);if(state)stopMotionPreview(state,true)});
-   prepareMedia();if(focus)panel.focus({preventScroll:true});
-   if(scroll)panel.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
   }else{
    pauseResultContent(panel);panel.querySelectorAll('details[open]').forEach(details=>closeDisclosure(details));
-   if(focus)link.focus({preventScroll:true});
-   if(scroll)row.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
-   if(!document.hidden)void startOverviewMotion();
   }
+  if(animated&&!source.hidden){
+   await playResultTransition(source,[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-8px)'}],{duration:130,easing:'ease-out'});
+   if(version!==transitionVersion)return;
+  }
+  row.hidden=expanded;panel.hidden=!expanded;
+  section.classList.toggle('is-showing-results',expanded);
+  if(expanded)prepareMedia();
+  if(scroll)destination.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
+  if(focus)(expanded?panel:link).focus({preventScroll:true});
+  if(animated)await playResultTransition(destination,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+  if(version!==transitionVersion)return;
+  delete panel.dataset.transitioning;
+  if(!expanded&&!document.hidden)void startOverviewMotion();
  }
- triggers.forEach(button=>button.addEventListener('click',()=>setExpanded(panel.hidden)));
+ triggers.forEach(button=>button.addEventListener('click',()=>setExpanded(!expandedState)));
  panel.querySelectorAll('.results-collapse').forEach(button=>button.addEventListener('click',()=>setExpanded(false)));
  panel.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.querySelector('dialog[open]')){event.preventDefault();setExpanded(false)}});
  // Observe the individual galleries, not the tall expanded chapter. Scrolling
@@ -122,7 +143,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){stopOvervi
 function openLinkedResults(){
  let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}
  const target=document.getElementById(id),panel=target?.closest('.results-panel');
- if(!panel)return;inlineResults.get(panel.id)?.setExpanded(true,{focus:false,scroll:false});
+ if(!panel)return;inlineResults.get(panel.id)?.setExpanded(true,{focus:false,scroll:false,animate:false});
  requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
 }
 addEventListener('hashchange',openLinkedResults);requestAnimationFrame(openLinkedResults);

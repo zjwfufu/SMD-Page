@@ -11,9 +11,9 @@
     panel.className = 'report-evidence';
     panel.id = `${id}-evidence`;
     panel.setAttribute('aria-labelledby', `${id}-evidence-title`);
-    panel.innerHTML = `<div class="evidence-heading"><h3 id="${id}-evidence-title">${spec.metrics.length === 1 ? escape(SMD_METRICS[spec.metrics[0]].title) : 'Benchmarks'}</h3></div>`;
+    panel.innerHTML = `<div class="evidence-heading"><h3 id="${id}-evidence-title">Benchmarks</h3></div>`;
 
-    let selected = spec.metrics[0], metric = id === 'audio' ? 4 : 0;
+    let selected = spec.metrics[0], sortMetric = null;
     const tabs = document.createElement('div');
     tabs.className = 'benchmark-tabs';
     tabs.setAttribute('role', 'group');
@@ -28,37 +28,19 @@
     status.setAttribute('role', 'status');
     panel.append(status);
     function render() {
-      const data = SMD_METRICS[selected];
-      if (metric >= data.metrics.length) metric = 0;
-      const format = (value, i) => value === null ? 'Not reported' : Number(value).toFixed(data.precision[i]);
-      const label = i => /^h3/.test(selected) && i === 4 ? 'Audio clarity · PAM × 5' : /^h3/.test(selected) && i === 5 ? 'Audio quality · PQ ÷ 2' : data.metrics[i];
-      panel.classList.toggle('has-paired-metrics', data.rows.length === 2);
-      if (data.rows.length === 2) {
-        // Pairwise comparisons show every metric at once. Each pair shares its
-        // own zero-based scale; unlike metrics never share a numerical axis.
-        view.innerHTML = `<div class="paired-legend">${data.rows.map((row,r) => `<span><i class="${r === data.focus ? 'is-focus' : ''}" aria-hidden="true"></i>${escape(row[0])}<small>${escape(row[1])} NFE</small></span>`).join('')}</div>
-          <div class="paired-metrics">${data.metrics.map((name,i) => `<section class="paired-metric" aria-label="${escape(label(i))}"><h4>${escape(label(i))} <span>↑</span></h4><div class="paired-axis" aria-hidden="true"><span>0</span><span>${data.max[i]}</span></div>${data.rows.map((row,r) => `<div class="paired-row ${r === data.focus ? 'is-focus' : ''}" aria-label="${escape(row[0] + ': ' + format(row[i+2], i))}"><div class="benchmark-track" aria-hidden="true">${row[i+2] === null ? '' : `<span style="width:${100 * row[i+2] / data.max[i]}%"></span>`}</div><strong>${format(row[i+2], i)}</strong></div>`).join('')}</section>`).join('')}</div>`;
-      } else {
-      view.innerHTML = `<div class="benchmark-toolbar"><label class="sr-only" for="${id}-metric-select">Metric</label><select id="${id}-metric-select">${data.metrics.map((name,i) => `<option value="${i}" ${i === metric ? 'selected' : ''}>${escape(label(i))} ↑</option>`).join('')}</select></div>
-        <div class="benchmark-chart" role="group" aria-label="${escape(data.title + ': ' + label(metric))}"><div class="chart-axis" aria-hidden="true"><span>0</span><span>${data.max[metric]}</span></div>${data.rows.map((row,i) => `<div class="benchmark-row ${i === data.focus ? 'is-focus' : ''} ${/teacher/i.test(row[0]) && !/^cross/.test(selected) ? 'is-reference' : ''}"><div class="benchmark-method"><span title="${escape(row[0].includes('†') ? 'Quoted from the original paper' : row[0].includes('*') ? 'Baseline reproduced by us' : row[0])}">${escape(row[0])}</span><small>${escape(row[1])} NFE</small></div><div class="benchmark-track" aria-hidden="true">${row[metric+2] === null ? '' : `<span style="width:${100 * row[metric+2] / data.max[metric]}%"></span>`}</div><strong class="benchmark-value">${format(row[metric+2],metric)}</strong></div>`).join('')}</div>`;
-      }
-      tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.benchmark === selected)));
+      panel.dataset.benchmark=selected;
+      view.innerHTML=SMD_RENDER_BENCHMARK(selected,sortMetric);
+      tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.benchmark===selected)));
     }
-    function chooseMetric(next, returnFocus) {
-      metric = next;
-      render();
-      view.querySelector(returnFocus)?.focus({preventScroll:true});
-      status.textContent = `${SMD_METRICS[selected].title}: ${SMD_METRICS[selected].metrics[metric]}`;
-    }
-    tabs.addEventListener('click', event => {
-      const button = event.target.closest('[data-benchmark]');
-      if (!button) return;
-      selected = button.dataset.benchmark;
-      render();
-      status.textContent = `${SMD_METRICS[selected].title}: ${SMD_METRICS[selected].metrics[metric]}`;
+    tabs.addEventListener('click',event=>{
+      const button=event.target.closest('[data-benchmark]');if(!button)return;
+      selected=button.dataset.benchmark;sortMetric=null;render();status.textContent=SMD_METRICS[selected].title;
     });
-    view.addEventListener('change', event => {
-      if (event.target.matches('select')) chooseMetric(Number(event.target.value), 'select');
+    view.addEventListener('click',event=>{
+      const button=event.target.closest('[data-sort-metric]');if(!button)return;
+      sortMetric=Number(button.dataset.sortMetric);render();
+      view.querySelector(`[data-sort-metric="${sortMetric}"]`).focus({preventScroll:true});
+      status.textContent='Sorted by '+SMD_METRICS[selected].metrics[sortMetric];
     });
     // The audio benchmark follows the gallery budget in one direction. Benchmark
     // exploration itself never changes the current case, playback, or gallery NFE.
@@ -86,27 +68,14 @@
     overview.querySelector('.overview-intro').textContent = spec.overview;
     overview.querySelector('.overview-trigger')?.setAttribute('aria-label', `View ${spec.title} results`);
     panelRoot.querySelector('.results-collapse[aria-label]').setAttribute('aria-label', `Hide ${spec.title} results`);
+    panelRoot.querySelector('.results-heading-title').textContent=spec.title;
     const body = panelRoot.querySelector('.results-content');
     // Supersede old report notes and the legacy multi-teacher-only table.
     body.querySelectorAll('.protocol-note,.multi-quantitative').forEach(el => el.remove());
-    const intro = document.createElement('div');
-    intro.className = 'report-detail-intro';
-    intro.innerHTML = spec.metrics ? `<nav class="detail-jumps" aria-label="${escape(spec.title)} detail sections"><button type="button" data-detail-jump="examples">Gallery</button><button type="button" data-detail-jump="evidence">Benchmarks</button></nav>` : '';
-    if (spec.metrics) panelRoot.querySelector('.results-label').replaceWith(intro);
-    const examples = body.querySelector('.case-carousel,#multimodal-gallery-results');
-    if (examples) examples.id ||= `${id}-examples`;
-    const panel = spec.metrics ? metricPanel(id, spec) : null;
-    if (panel) body.append(panel);
-    intro.addEventListener('click', event => {
-      const button = event.target.closest('[data-detail-jump]');
-      if (!button) return;
-      const target = button.dataset.detailJump === 'evidence' ? panel : examples;
-      if (target) {
-        target.scrollIntoView({block:'start',behavior:resultScrollBehavior()});
-        target.tabIndex = -1;
-        target.focus({preventScroll:true});
-      }
-    });
+    const galleryHeading=document.createElement('h3');galleryHeading.className='results-subheading';galleryHeading.textContent='Gallery';galleryHeading.id=`${id}-gallery-title`;body.prepend(galleryHeading);
+    const examples=body.querySelector('.case-carousel,#multimodal-gallery-results');
+    if(examples)examples.id ||= `${id}-examples`;
+    if(spec.metrics)body.append(metricPanel(id,spec));
     // Preserve the original button nodes and handlers; share one footer layout.
     body.querySelectorAll('.case-carousel').forEach(carousel => {
       const previous = carousel.querySelector('.carousel-arrow.previous');

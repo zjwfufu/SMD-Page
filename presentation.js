@@ -14,6 +14,7 @@ const teaserCompanions={
 };
 for(const [slot,item] of Object.entries(teaserCompanions))if(!item)throw new Error('Missing curated teaser companion: '+slot);
 const teaserPickedClip=name=>({src:`assets/top-picked-20261005/${name}.mp4`,poster:`assets/top-picked-20261005/${name}-poster.webp`});
+const teaserNewClip=name=>({src:`assets/top-picked-20261007/${name}.mp4`,poster:`assets/top-picked-20261007/${name}-poster.webp`,ratio:'1344/768'});
 // Verified against the H3 gallery catalog. Keep all teaser video examples H3 or 3D.
 const teaserH3Clip=(stem,folder='feature-overviews',ratio='900/514')=>({src:`assets/${folder}/${stem}.mp4`,poster:`assets/${folder}/${stem}-poster.webp`,ratio});
 const teaserH3Extras={
@@ -39,6 +40,7 @@ teaser.innerHTML=`<div class="teaser-wall" aria-label="Selected generation examp
 <div class="teaser-rail" id="teaser-row-1" role="region" aria-label="First row of generation examples" tabindex="0">
 ${teaserVideoTile(teaserLeadVideos[0],'MiniMax H3 · ghost whales')}
 ${teaserImageTile(teaserCompanions.topImage.ours,'Qwen-Image · frosted cabin · 4 NFE')}
+${teaserVideoTile(teaserNewClip('03_snow_fox_seed26100803'),'Snow fox')}
 ${teaserVideoTile(teaserPickedClip('3d_ulta'),'3D generation · teapot',true)}
 ${teaserVideoTile(teaserH3Extras.glass,'MiniMax H3 · glass creature · 8 NFE')}
 ${teaserVideoTile(teaserH3Extras.manta,'MiniMax H3 · manta ray · 8 NFE')}
@@ -52,8 +54,10 @@ ${teaserVideoTile(teaserH3Extras.panda,'MiniMax H3 · red panda · 8 NFE')}
 <div class="teaser-rail" id="teaser-row-2" role="region" aria-label="Second row of generation examples" tabindex="0">
 ${teaserVideoTile(teaserLeadVideos[1],'MiniMax H3 · sci-fi conversation')}
 ${teaserImageTile(teaserExtras.pomegranate.ours,'Qwen-Image · pomegranate still life · 4 NFE')}
+${teaserVideoTile(teaserNewClip('01_duck_family_seed26100781'),'Duck family')}
 ${teaserVideoTile(teaserH3Extras.birds,'MiniMax H3 · cockatiels · 8 NFE')}
 ${teaserImageTile(teaserExtras.hummingbird.ours,'Qwen-Image · hummingbird · 4 NFE')}
+${teaserVideoTile(teaserNewClip('0003_t2va_seed26100722_rank0000'),'Dragon flight through ancient ruins')}
 ${teaserVideoTile(teaserLeadVideos[2],'MiniMax H3 · cloud-sea ship · 8 NFE')}
 ${teaserImageTile(teaserExtras.porcelain.ours,'Qwen-Image · reassembling porcelain bowl · 4 NFE')}
 ${teaserImageTile(teaserExtras.honeycomb.ours,'Qwen-Image · honeycomb · 4 NFE')}
@@ -176,10 +180,12 @@ function recenterTeaser(row){
 function measureTeaserLoops(){
  for(const row of teaserRails){
   const loop=teaserLoops.get(row),first=loop.originals[0],before=row.firstElementChild;
-  const phase=loop.period?((row.scrollLeft/loop.period-1)%1+1)%1:0;
+  const phase=loop.period?((row.scrollLeft/loop.period-1)%1+1)%1:null;
   loop.period=first.offsetLeft-before.offsetLeft;
+  // Offset the second media cycle, not its container, so no leading blank appears.
+  loop.startOffset=row===teaserRails[1]?(first.getBoundingClientRect().width+parseFloat(getComputedStyle(row).columnGap))*.5:0;
   cancelAnimationFrame(loop.animation);loop.target=null;
-  row.scrollLeft=loop.period*(1+phase);
+  row.scrollLeft=loop.period+(phase===null?loop.startOffset:loop.period*phase);
   if(loop.drag)loop.drag=null;
  }
 }
@@ -196,7 +202,7 @@ function moveTeaser(row,delta,animate=true){
 for(const row of teaserRails){
  const loop=teaserLoops.get(row);let suppressClick=false;
  row.addEventListener('scroll',()=>recenterTeaser(row),{passive:true});
- row.addEventListener('keydown',event=>{if(event.target!==row)return;const offsets={ArrowLeft:-row.clientWidth*.65,ArrowRight:row.clientWidth*.65,Home:loop.period-row.scrollLeft,End:loop.originals.at(-1).offsetLeft-row.firstElementChild.offsetLeft-row.scrollLeft};if(event.key in offsets){event.preventDefault();moveTeaser(row,offsets[event.key],false)}});
+ row.addEventListener('keydown',event=>{if(event.target!==row)return;const offsets={ArrowLeft:-row.clientWidth*.65,ArrowRight:row.clientWidth*.65,Home:loop.period+loop.startOffset-row.scrollLeft,End:loop.originals.at(-1).offsetLeft-row.firstElementChild.offsetLeft-row.scrollLeft};if(event.key in offsets){event.preventDefault();moveTeaser(row,offsets[event.key],false)}});
  row.addEventListener('wheel',()=>{cancelAnimationFrame(loop.animation);loop.target=null},{passive:true});
  row.addEventListener('pointerdown',event=>{if(event.target.closest('.teaser-sound'))return;cancelAnimationFrame(loop.animation);loop.target=null;if(event.pointerType!=='mouse'||event.button!==0)return;suppressClick=false;loop.drag={id:event.pointerId,x:event.clientX,left:row.scrollLeft,moved:false}});
  row.addEventListener('pointermove',event=>{const drag=loop.drag;if(!drag)return;if(!event.buttons){loop.drag=null;row.classList.remove('is-dragging');return}const dx=event.clientX-drag.x;if(Math.abs(dx)>6&&!drag.moved){drag.moved=true;row.setPointerCapture(drag.id);row.classList.add('is-dragging')}if(drag.moved){event.preventDefault();row.scrollLeft=drag.left-dx;recenterTeaser(row)}});

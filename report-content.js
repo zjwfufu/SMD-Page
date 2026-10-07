@@ -3,8 +3,8 @@
  */
 window.SMD_REPORT_CONTENT = {
   abstract: [
-    'Simplified Matching Distillation (SMD) turns many-step diffusion models into few-step generators through direct teacher–student velocity matching. Training needs no auxiliary score model or adversarial objective, and inference uses the same student architecture.',
-    'We demonstrate the approach across image generation and editing, 3D, video, and joint audio–video generation, with models up to 33B parameters.'
+    'Simplified Matching Distillation (SMD) enables few-step generation without an auxiliary fake-score model, adversarial training, or the need for the student to represent dense teacher predictions.',
+    'We validate SMD across image, 3D, video, and audio–video generation, including editing and multimodal conditioning, and extend it to cross-model, multi-teacher, and causal video distillation.'
   ],
   explore: {
     title: 'Image Generation',

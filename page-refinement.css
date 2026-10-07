@@ -101,3 +101,120 @@ html{scroll-behavior:auto}
  .experiment-layout .overview-copy h2{font-size:34px}
 }
 @media(prefers-reduced-motion:reduce){.teaser-sound{transition:none}}
+
+/* A chapter switches views instead of stacking its overview above its results. */
+.task-overview[hidden]{display:none!important}
+.editorial-preview .results-panel{margin-top:0;border-top:0}
+.results-heading{text-align:center;margin:0 0 26px}
+.results-heading-title{font:400 clamp(28px,3vw,40px)/1.2 Georgia,serif;margin:0;color:#111}
+.results-subheading{text-align:center;font:500 20px/1.35 system-ui;margin:0 0 24px}
+.results-end{justify-content:center;padding:28px 0 12px;border-bottom:0}
+.results-end .results-collapse{justify-content:center;min-width:150px;padding:10px 22px;border:1px solid #ccc;border-radius:999px;color:#333}
+.results-end .results-collapse:hover{border-color:#111;background:#111;color:#fff;text-decoration:none}
+.project-film,.experiment-heading{text-align:center}
+.experiment-heading{grid-column:1/-1;margin-bottom:40px}
+.experiment-layout{row-gap:0}
+.nav-short{display:none}
+.project-film h2{font-size:clamp(27px,3vw,36px)}
+.report-evidence{padding-top:28px;margin-top:38px}
+.evidence-heading{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;margin-bottom:24px;text-align:center}
+.evidence-heading h3{font:500 22px/1.3 system-ui;margin:0}
+.editorial-preview .results-panel .evidence-heading .benchmark-tabs{margin:0;gap:5px}
+.benchmark-dataset-label{font-size:12px;color:#666}
+.benchmark-view{min-width:0}
+.benchmark-key,.benchmark-footnote{text-align:center;color:#666;font:400 10px/1.6 system-ui;margin:14px 0 0}
+.benchmark-footnote{margin-top:4px}
+
+/* Multi-method comparisons show every score at once, without metric dropdowns. */
+.score-matrix-scroll{max-width:100%;overflow-x:auto;border-top:1px solid #222;border-bottom:1px solid #ddd;scrollbar-width:thin;scrollbar-color:#bbb transparent}
+.score-matrix{width:100%;border-collapse:separate;border-spacing:0;font:400 12px/1.4 system-ui;font-variant-numeric:tabular-nums}
+.score-matrix th,.score-matrix td{padding:13px 10px;border-bottom:1px solid #ededed;text-align:right;white-space:nowrap;vertical-align:middle}
+.score-matrix thead th{font-size:11px;font-weight:500;color:#555;background:#fff;white-space:normal;min-width:74px;border-bottom:1px solid #bbb}
+.score-matrix th:first-child{position:sticky;left:0;z-index:2;background:#fff;text-align:left;min-width:136px;max-width:176px;white-space:normal}
+.score-matrix tbody th{font-weight:500;color:#333}
+.score-matrix tbody th small{display:block;font-size:10px;font-weight:400;color:#777;margin-top:3px}
+.score-matrix .nfe-cell{color:#666;font-size:11px}
+.score-matrix thead button{border:0;background:transparent;padding:0;min-height:38px;width:100%;color:inherit;font:inherit;text-align:right;cursor:pointer}
+.score-matrix thead button:hover,.score-matrix thead button.is-selected{color:#111;text-decoration:underline;text-underline-offset:4px}
+.score-matrix .is-teacher td,.score-matrix .is-teacher th{color:#666;border-bottom:1px solid #bbb;background:#fafafa}
+.score-matrix tr.is-focus th{font-weight:700;box-shadow:inset 3px 0 #111}
+.score-matrix tr.is-focus td,.score-matrix tr.is-focus th{background:#f5f5f5}
+.score-matrix td.is-best{font-weight:750;color:#111}
+.score-matrix td.is-second{text-decoration:underline;text-underline-offset:3px}
+.score-matrix td.is-sorted{background:#f1f1f1}
+.score-matrix tbody tr:last-child th,.score-matrix tbody tr:last-child td{border-bottom:0}
+
+/* Paired comparisons combine shared-scale dots with exact scores and signed deltas. */
+.paired-scoreboard{max-width:960px;margin:auto;border-top:1px solid #222;border-bottom:1px solid #ddd}
+.pair-score-header,.pair-score-row{display:grid;grid-template-columns:minmax(130px,1.4fr) minmax(110px,1.6fr) 110px 110px 84px;gap:14px;align-items:center}
+.pair-score-header{padding:12px 0;border-bottom:1px solid #bbb;font:500 11px/1.45 system-ui;color:#555}
+.pair-score-header>span:nth-child(n+3){text-align:right}
+.pair-score-header small{display:block;font-size:10px;font-weight:400;color:#777;margin-top:3px}
+.pair-axis-heading{text-align:center}
+.pair-score-row{padding:7px 0;border-bottom:1px solid #eee;min-height:52px}
+.pair-score-row:last-child{border-bottom:0}
+.pair-score-row h4{font:500 12px/1.45 system-ui;color:#333;margin:0}
+.pair-score,.pair-delta{text-align:right;font:400 12px/1.4 system-ui;font-variant-numeric:tabular-nums;color:#444}
+.pair-score.is-focus{font-weight:600;color:#111}
+.pair-delta.is-negative{color:#666}.pair-delta.is-positive{color:#111}
+.pair-marker{display:inline-block;width:7px;height:7px;margin-right:6px;border:1px solid #555;border-radius:50%}.pair-marker.solid{background:#111;border-color:#111}
+.pair-dumbbell{width:100%;height:42px;overflow:visible}
+.pair-dumbbell text{fill:#777;font:9px system-ui}.pair-axis{stroke:#e4e4e4;stroke-width:1}
+.pair-join{stroke:#777;stroke-width:2}.pair-point.hollow{fill:#fff;stroke:#777;stroke-width:1.5}.pair-point.solid{fill:#111}
+
+/* A real parameter sweep uses ordered x values, not a categorical bar ranking. */
+.sweep-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.sweep-chart{margin:0;min-width:0}
+.sweep-chart figcaption{font:500 13px/1.4 system-ui;text-align:center;margin-bottom:10px}
+.sweep-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.sweep-chart text{font:10px system-ui;fill:#666}
+.sweep-chart .sweep-value{fill:#222;font-size:11px}
+.sweep-grid{stroke:#e7e7e7;stroke-width:1}.sweep-line{fill:none;stroke:#777;stroke-width:1.6}
+.sweep-point{fill:#fff;stroke:#777;stroke-width:1.5}.sweep-main{fill:#111;stroke:#111;stroke-width:1.5}
+
+@media(max-width:1100px){
+ .experiment-mobile-nav{display:flex;position:sticky;top:64px;z-index:35;gap:24px;align-items:center;overflow-x:auto;white-space:nowrap;scrollbar-width:none;background:#fffffff5;border-bottom:1px solid #ddd;padding:0 2px;margin-bottom:32px;backdrop-filter:blur(10px)}
+ .experiment-mobile-nav::-webkit-scrollbar{display:none}
+ .experiment-mobile-nav a{flex:0 0 auto;color:#666;font-size:13px;padding:15px 0;border-bottom:2px solid transparent;text-decoration:none}
+ .experiment-mobile-nav a:hover,.experiment-mobile-nav a[aria-current]{color:#111;border-bottom-color:#111}
+ .experiment-body>section,.task-overview,.results-panel,.report-evidence{scroll-margin-top:144px}
+}
+@media(max-width:760px){
+ .project-topbar nav{gap:16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;min-width:0}.project-wordmark{flex:none}
+ .project-topbar nav a{flex:none}
+ .experiment-mobile-nav{top:58px;gap:22px}.experiment-mobile-nav a{font-size:12px;padding:13px 0}
+ .results-heading{margin-bottom:22px}.results-subheading{font-size:18px;margin-bottom:20px}
+ .evidence-heading{align-items:center;margin-bottom:20px}.evidence-heading h3{font-size:20px}
+ .score-matrix th,.score-matrix td{padding:11px 9px;font-size:11px}
+ .score-matrix th:first-child{min-width:115px;max-width:140px}
+ .pair-score-header,.pair-score-row{grid-template-columns:minmax(82px,1.35fr) repeat(3,minmax(0,1fr));gap:8px}
+ .pair-axis-heading,.pair-dumbbell{display:none}
+ .pair-score-header{font-size:10px}.pair-score-header>span:nth-child(n+3){text-align:right}
+ .pair-score-row h4,.pair-score,.pair-delta{font-size:11px}
+ .sweep-charts{grid-template-columns:1fr;gap:24px;max-width:430px;margin:auto}
+ .benchmark-key{font-size:10px}.results-end{padding-top:24px}
+}
+@media(max-width:640px){.project-topbar .nav-full{display:none}.project-topbar .nav-short{display:inline}}
+
+/* Full chapter names, centered and wrapping instead of an abbreviated scrolling strip. */
+/* Standalone playback actions (Wan) and grouped actions share the same center. */
+.results-panel .carousel-slide > .sync-button{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;margin:16px auto 0}
+.results-panel .playback-tools{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;width:100%;gap:10px;margin:16px auto 0}
+.results-panel .playback-tools > button{flex:0 0 auto;margin:0}
+.project-resources{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:26px auto 0}
+.project-resources .resource-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;min-width:118px;padding:10px 20px;border:1px solid #111;border-radius:999px;background:#111;color:#fff;font:500 14px/1.4 system-ui;text-decoration:none}
+.project-resources .resource-button svg{width:18px;height:18px;flex:none}
+.project-resources a.resource-button:hover{background:#333;border-color:#333}
+.project-resources .resource-button:disabled{opacity:1;background:#f5f5f5;border-color:#ddd;color:#666;cursor:default}
+.resource-status{text-align:center;color:#777;font:400 11px/1.5 system-ui;margin:10px 0 0}
+.experiment-nav-group a{white-space:normal;overflow-wrap:normal}
+@media(max-width:1100px){
+ .experiment-mobile-nav{position:sticky;top:var(--project-header-height,64px);z-index:35;justify-content:center;flex-wrap:wrap;gap:0 20px;overflow-x:hidden;overflow-y:auto;max-height:45dvh;white-space:normal;padding:3px 10px 5px;margin-bottom:24px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(255,255,255,.78);text-align:center;border-bottom:1px solid #00000014}
+ .experiment-mobile-nav a{flex:0 1 auto;max-width:180px;min-height:32px;display:flex;align-items:center;justify-content:center;padding:5px 0;font-size:12px;line-height:1.5;white-space:normal;text-align:center}
+ .experiment-body>section,.task-overview,.results-panel,.report-evidence,.results-content .case-carousel{scroll-margin-top:var(--experiment-scroll-offset,160px)}
+}
+@media(max-width:640px){
+ .experiment-mobile-nav{gap:0 16px;padding:3px 4px 5px}
+ .experiment-mobile-nav a{flex:0 1 calc(50% - 9px);max-width:none;font-size:11px}
+ .project-resources{gap:8px}.project-resources .resource-button{min-width:0;padding:10px 15px;font-size:13px}
+}
