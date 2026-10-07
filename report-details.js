@@ -3,7 +3,8 @@
   const content = window.SMD_REPORT_CONTENT;
   const escape = value => esc(String(value));
   const abstract = document.querySelector('#abstract');
-  abstract.innerHTML = '<h2>Abstract</h2>' + content.abstract.map(p => `<p>${escape(p)}</p>`).join('');
+  abstract.setAttribute('aria-label', 'About Simplified Matching Distillation');
+  abstract.innerHTML = content.abstract.map(p => `<p>${escape(p)}</p>`).join('');
 
   function metricPanel(id, spec) {
     const panel = document.createElement('section');

@@ -13,7 +13,7 @@ if(multiBlock){
 }
 // Top teaser is intentionally media-only: no hover/focus prompt or caption layer.
 // Prompt provenance is retained separately in teaser-prompt-notes.js (not loaded).
-document.querySelectorAll('#teaser > .teaser-grid > figure').forEach(card=>{
+document.querySelectorAll('#teaser figure').forEach(card=>{
   card.classList.toggle('has-video',!!card.querySelector('video'));
   card.querySelector('figcaption')?.remove();
 });

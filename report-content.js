@@ -3,8 +3,8 @@
  */
 window.SMD_REPORT_CONTENT = {
   abstract: [
-    'Strong few-step generation need not require an auxiliary score model, adversarial training, or a specialized inference architecture. Our simple on-policy baseline matches student velocities to teacher predictions at the same states along student rollouts, holding the student velocity constant within each sampling interval.',
-    'Simplified Matching Distillation (SMD) adds a training-only Pivot proxy for local velocity variation and repulsion from weaker predictions of the same teacher. The resulting objective remains regression-based and leaves student inference unchanged. We evaluate image generation and editing, 3D shape and texture, video, and joint audio–video generation on models up to 33B parameters, and extend the formulation to cross-model supervision, multiple specialist teachers, and causal video compression.'
+    'Simplified Matching Distillation (SMD) turns many-step diffusion models into few-step generators through direct teacher–student velocity matching. Training needs no auxiliary score model or adversarial objective, and inference uses the same student architecture.',
+    'We demonstrate the approach across image generation and editing, 3D, video, and joint audio–video generation, with models up to 33B parameters.'
   ],
   explore: {
     title: 'Image Generation',
