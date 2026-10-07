@@ -34,7 +34,7 @@ function showCuratedMulti(delta=0){
  root.setAttribute('aria-label',c.title);
  // Reuse short-inline / long-disclosure prompt treatment without new controls.
  const text=root.querySelector('.prompt pre').textContent,old=root.querySelector('.prompt');
- if(text.length<=800&&text.split('\n').length<=8){const p=document.createElement('p');p.className='inline-prompt';p.textContent=text;old.replaceWith(p)}else{old.querySelector('summary').textContent='Read prompt';prepareDisclosures(root)}
+ old.replaceWith(makePromptCaption(text));
  extraMulti.querySelector('.case-page').innerHTML=`<strong>${curatedMultiIndex+1}</strong> / ${cases.length}`;
  prepareMedia();
 }

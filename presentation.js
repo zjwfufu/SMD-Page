@@ -32,7 +32,8 @@ const teaserExtras={
  honeycomb:D.images.find(c=>c.id==='honeycomb_macro')
 };
 for(const [name,item]of Object.entries(teaserExtras))if(!item)throw new Error('Missing teaser case '+name);
-const teaserVideoTile=(v,label,small=false)=>`<div class="teaser-item${small?' teaser-object':''}" style="--tile-ratio:${v.ratio||'16/9'}">${vid(v,label,small?'teaser-3d':'')}</div>`;
+const teaserSoundIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="sound-off" d="m17 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-width="1.7"/><path class="sound-on" d="M16 8q5 4 0 8m3-11q8 7 0 14" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+const teaserVideoTile=(v,label,small=false)=>`<div class="teaser-item${small?' teaser-object':''}" style="--tile-ratio:${v.ratio||'16/9'}">${vid(v,label,small?'teaser-3d':'')}${small?'':`<button type="button" class="teaser-sound" aria-label="Unmute ${esc(label)}" aria-pressed="false">${teaserSoundIcon}</button>`}</div>`;
 const teaserImageTile=(src,label)=>{const size=window.SMD_MEDIA_SIZES?.[src]||[1,1];return `<div class="teaser-item teaser-still" style="--tile-ratio:${size[0]}/${size[1]}"><figure class="media-card">${image(src,label)}</figure></div>`};
 teaser.innerHTML=`<div class="teaser-wall" aria-label="Selected generation examples">
 <div class="teaser-rail" id="teaser-row-1" role="region" aria-label="First row of generation examples" tabindex="0">
@@ -57,7 +58,7 @@ ${teaserVideoTile(teaserLeadVideos[2],'MiniMax H3 · cloud-sea ship · 8 NFE')}
 ${teaserImageTile(teaserExtras.porcelain.ours,'Qwen-Image · reassembling porcelain bowl · 4 NFE')}
 ${teaserImageTile(teaserExtras.honeycomb.ours,'Qwen-Image · honeycomb · 4 NFE')}
 </div></div>
-<div class="teaser-tools"><span class="teaser-hint">Drag or swipe to explore</span><div class="teaser-actions"><button type="button" class="teaser-motion">Pause videos</button><button type="button" class="teaser-browse" data-teaser-direction="-1" aria-label="Previous generation examples" aria-controls="teaser-row-1 teaser-row-2">‹</button><button type="button" class="teaser-browse" data-teaser-direction="1" aria-label="Next generation examples" aria-controls="teaser-row-1 teaser-row-2">›</button></div></div>`;
+<button type="button" class="teaser-a11y-pause sr-only">Pause motion</button>`;
 const presentationTitles={explore:['Ours vs. Lightning on Qwen-Image','Four matched seeds for each prompt. Both methods use 4 NFE.'],editing:['Image Editing with Qwen-Image-Edit','Input, Lightning and Ours. Both students use 4 NFE.'],shape:['3D Generation','Hunyuan3D 2.1 and TRELLIS.2. Compare the generated turntables across views.'],video:['Ours vs. AnyFlow on Wan2.1-14B','AnyFlow and Ours at 4 NFE. Three paired prompts per page.'],audio:['Joint Audio–Video Generation with MiniMax H3','LightX2V DMD and Ours at 8 NFE. Select an audio track to listen.'],transfer:['Cross-Model Distillation','Four teacher-to-student routes at 4 NFE.']};
 for(const [id,[title,caption]] of Object.entries(presentationTitles)){
   const heading=document.querySelector('#'+id+' .section-heading');heading.querySelector('h2').textContent=title;
@@ -91,27 +92,46 @@ function scheduleComparison(id){
 }
 const teaserVisible=new Set();
 let teaserPaused=!allowAutoMotion(),teaserExplicitPlay=false;
-const teaserMotionButton=teaser.querySelector('.teaser-motion');
+const teaserMotionButton=teaser.querySelector('.teaser-a11y-pause');
+let teaserAudible=null;
 const canPlayTeaser=()=>!teaserPaused&&!document.hidden&&!document.querySelector('dialog[open]')&&(teaserExplicitPlay||allowAutoMotion());
 function refreshTeaserMotion(){
- teaserMotionButton.textContent=teaserPaused?'Play videos':'Pause videos';
+ teaserMotionButton.textContent=teaserPaused?'Resume motion':'Pause motion';
  // At most two visible clips per row. Horizontal browsing never fetches every video.
- const chosen=canPlayTeaser()?[...teaser.querySelectorAll('.teaser-rail')].flatMap(row=>[...row.querySelectorAll('video')].filter(v=>teaserVisible.has(v)).slice(0,2)):[];
+ const chosen=canPlayTeaser()?[...teaser.querySelectorAll('.teaser-rail')].flatMap(row=>[...row.querySelectorAll('video')].filter(v=>teaserVisible.has(v)).sort((a,b)=>Number(b===teaserAudible)-Number(a===teaserAudible)).slice(0,2)):[];
  teaser.querySelectorAll('video').forEach(video=>{
   cancelAuto(video);
   video._teaserJob=(video._teaserJob||0)+1;const job=video._teaserJob;
-  if(!chosen.includes(video)){video.pause();if(teaserPaused)releaseVideoSource(video);else deferVideoRelease(video);return}
+  if(!chosen.includes(video)){if(video===teaserAudible){teaserAudible=null;video.muted=true}video.pause();if(teaserPaused)releaseVideoSource(video);else deferVideoRelease(video);return}
   if(!video.paused)return;
   clearTimeout(video._releaseTimer);
   autoplayTimers.set(video,setTimeout(async()=>{
    autoplayTimers.delete(video);
    if(!canPlayTeaser()||!teaserVisible.has(video)||job!==video._teaserJob)return;
-   video.muted=true;video.loop=true;
+   video.muted=video!==teaserAudible;video.loop=true;
    try{await ensureVideoSource(video);if(canPlayTeaser()&&teaserVisible.has(video)&&job===video._teaserJob){if(video._teaserResumeTime>0){video.currentTime=video._teaserResumeTime;delete video._teaserResumeTime}await video.play()}}catch(error){if(error.name!=='AbortError')videoError(video,error)}
   },300));
  });
 }
 teaserMotionButton.addEventListener('click',()=>{teaserPaused=!teaserPaused;teaserExplicitPlay=!teaserPaused;refreshTeaserMotion()});
+function updateTeaserSound(){
+ for(const item of teaser.querySelectorAll('.teaser-item')){
+  const button=item.querySelector('.teaser-sound'),video=item.querySelector('video');if(!button||!video)continue;
+  button.setAttribute('aria-pressed',String(!video.muted));
+  button.setAttribute('aria-label',`${video.muted?'Unmute':'Mute'} ${video.getAttribute('aria-label')}`);
+ }
+}
+teaser.addEventListener('click',async event=>{
+ const button=event.target.closest('.teaser-sound');if(!button)return;
+ const video=button.closest('.teaser-item').querySelector('video'),enable=video.muted;
+ document.querySelectorAll('video').forEach(other=>other.muted=true);
+ teaserAudible=enable?video:null;teaserPaused=false;teaserExplicitPlay=true;
+ video.muted=!enable;updateTeaserSound();
+ try{await ensureVideoSource(video);await video.play()}catch(error){video.muted=true;teaserAudible=null;videoError(video,error)}
+ refreshTeaserMotion();updateTeaserSound();
+});
+teaser.addEventListener('volumechange',updateTeaserSound,true);
+
 const teaserRails=[...teaser.querySelectorAll('.teaser-rail')];
 const teaserLoops=new Map();
 // One original cycle and two inert-to-keyboard buffers. Only visible media load.
@@ -172,13 +192,13 @@ function moveTeaser(row,delta,animate=true){
   row.scrollLeft+=distance*Math.min(1,elapsed/75);recenterTeaser(row);loop.animation=requestAnimationFrame(step);
  };loop.animation=requestAnimationFrame(step);
 }
-for(const button of teaser.querySelectorAll('[data-teaser-direction]'))button.addEventListener('click',()=>{for(const row of teaserRails)moveTeaser(row,Number(button.dataset.teaserDirection)*row.clientWidth*.65)});
+
 for(const row of teaserRails){
  const loop=teaserLoops.get(row);let suppressClick=false;
  row.addEventListener('scroll',()=>recenterTeaser(row),{passive:true});
  row.addEventListener('keydown',event=>{if(event.target!==row)return;const offsets={ArrowLeft:-row.clientWidth*.65,ArrowRight:row.clientWidth*.65,Home:loop.period-row.scrollLeft,End:loop.originals.at(-1).offsetLeft-row.firstElementChild.offsetLeft-row.scrollLeft};if(event.key in offsets){event.preventDefault();moveTeaser(row,offsets[event.key],false)}});
  row.addEventListener('wheel',()=>{cancelAnimationFrame(loop.animation);loop.target=null},{passive:true});
- row.addEventListener('pointerdown',event=>{cancelAnimationFrame(loop.animation);loop.target=null;if(event.pointerType!=='mouse'||event.button!==0)return;suppressClick=false;loop.drag={id:event.pointerId,x:event.clientX,left:row.scrollLeft,moved:false}});
+ row.addEventListener('pointerdown',event=>{if(event.target.closest('.teaser-sound'))return;cancelAnimationFrame(loop.animation);loop.target=null;if(event.pointerType!=='mouse'||event.button!==0)return;suppressClick=false;loop.drag={id:event.pointerId,x:event.clientX,left:row.scrollLeft,moved:false}});
  row.addEventListener('pointermove',event=>{const drag=loop.drag;if(!drag)return;if(!event.buttons){loop.drag=null;row.classList.remove('is-dragging');return}const dx=event.clientX-drag.x;if(Math.abs(dx)>6&&!drag.moved){drag.moved=true;row.setPointerCapture(drag.id);row.classList.add('is-dragging')}if(drag.moved){event.preventDefault();row.scrollLeft=drag.left-dx;recenterTeaser(row)}});
  const finishDrag=()=>{const drag=loop.drag;if(!drag)return;suppressClick=drag.moved;if(row.hasPointerCapture(drag.id))row.releasePointerCapture(drag.id);loop.drag=null;row.classList.remove('is-dragging')};
  row.addEventListener('pointerup',finishDrag);row.addEventListener('pointercancel',finishDrag);row.addEventListener('lostpointercapture',()=>{loop.drag=null;row.classList.remove('is-dragging')});
@@ -186,6 +206,28 @@ for(const row of teaserRails){
  row.addEventListener('click',event=>{if(suppressClick){event.preventDefault();event.stopPropagation();suppressClick=false}},true);
 }
 new ResizeObserver(measureTeaserLoops).observe(teaser);measureTeaserLoops();
+let teaserInView=false,lastTeaserTick=0;
+new IntersectionObserver(entries=>{teaserInView=entries[0].isIntersecting;if(!teaserInView){teaserAudible=null;teaser.querySelectorAll('video').forEach(v=>v.muted=true)}},{threshold:0}).observe(teaser);
+for(const row of teaserRails){
+ row.addEventListener('pointerenter',()=>row.dataset.hovering='true');
+ row.addEventListener('pointerleave',()=>{delete row.dataset.hovering});
+ row.addEventListener('touchstart',()=>row.dataset.touching='true',{passive:true});
+ for(const type of ['touchend','touchcancel'])row.addEventListener(type,()=>{delete row.dataset.touching},{passive:true});
+}
+function animateTeaser(now){
+ const dt=lastTeaserTick?Math.min(now-lastTeaserTick,50):0;lastTeaserTick=now;
+ if(teaserInView&&!teaserPaused&&allowAutoMotion()&&!document.querySelector('dialog[open]')){
+  for(const row of teaserRails){
+   const loop=teaserLoops.get(row);
+   if(loop.drag||loop.target!==null||row.dataset.hovering||row.dataset.touching||row.matches(':focus-within')||(teaserAudible&&row.contains(teaserAudible)))continue;
+   // Decreasing the viewport offset moves the media from left to right.
+   loop.drift=(loop.drift||0)+dt*.032;const pixels=Math.floor(loop.drift);loop.drift-=pixels;
+   if(pixels){row.scrollLeft-=pixels;recenterTeaser(row)}
+  }
+ }
+ requestAnimationFrame(animateTeaser);
+}
+requestAnimationFrame(animateTeaser);
 // Opening the image viewer pauses the wall, including clips waiting to load.
 new MutationObserver(refreshTeaserMotion).observe(document.getElementById('image-dialog'),{attributes:true,attributeFilter:['open']});
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches){teaserPaused=true;teaserExplicitPlay=false}refreshTeaserMotion()});
@@ -195,7 +237,7 @@ const comparisonPlayback=new IntersectionObserver(entries=>{for(const entry of e
 }},{threshold:.2});
 for(const id of ['wan-results','av-results'])comparisonPlayback.observe(document.getElementById(id));
 document.addEventListener('visibilitychange',()=>{
- if(document.hidden){for(const id of autoplayTimers.keys())cancelAuto(id);teaser.querySelectorAll('video').forEach(releaseVideoSource)}
+ if(document.hidden){teaserAudible=null;teaser.querySelectorAll('video').forEach(v=>v.muted=true);for(const id of autoplayTimers.keys())cancelAuto(id);teaser.querySelectorAll('video').forEach(releaseVideoSource)}
  else{refreshTeaserMotion();for(const id of ['wan-results','av-results'])scheduleComparison(id)}
 });
 

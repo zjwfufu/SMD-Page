@@ -84,7 +84,7 @@
     if (!overview || !panelRoot) continue;
     overview.querySelector('h2').textContent = spec.title;
     overview.querySelector('.overview-intro').textContent = spec.overview;
-    overview.querySelector('.overview-trigger').setAttribute('aria-label', `View ${spec.title} results`);
+    overview.querySelector('.overview-trigger')?.setAttribute('aria-label', `View ${spec.title} results`);
     panelRoot.querySelector('.results-collapse[aria-label]').setAttribute('aria-label', `Hide ${spec.title} results`);
     const body = panelRoot.querySelector('.results-content');
     // Supersede old report notes and the legacy multi-teacher-only table.

@@ -1,4 +1,20 @@
-/* Isolated overlays and pre-sized media keep other sections stationary. */
+/* Shared caption disclosure and pre-sized media for research examples. */
+let promptCaptionSequence=0;
+const promptCaptionObserver=new ResizeObserver(entries=>{for(const {target}of entries){if(!target.isConnected){promptCaptionObserver.unobserve(target);continue}if(!target.clientWidth||target.classList.contains('is-expanded'))continue;const text=target.querySelector('.case-prompt-text'),button=target.querySelector('button');button.hidden=!target.dataset.forceDisclosure&&text.scrollHeight<=text.clientHeight+2}});
+function makePromptCaption(text,preview=''){
+ const root=document.createElement('div');root.className='case-prompt';
+ const body=document.createElement('p');body.className='case-prompt-text';body.id='case-prompt-'+(++promptCaptionSequence);
+ const label=document.createElement('span');label.className='case-prompt-label';label.textContent='Prompt ';
+ const textNode=document.createTextNode(preview||text);body.append(label,textNode);
+ if(preview&&preview!==text)root.dataset.forceDisclosure='true';
+ const button=document.createElement('button');button.type='button';button.className='case-prompt-toggle';button.textContent='+';button.setAttribute('aria-label','Expand prompt');button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls',body.id);
+ button.addEventListener('click',()=>{const expanded=root.classList.toggle('is-expanded');if(preview)textNode.nodeValue=expanded?text:preview;button.textContent=expanded?'−':'+';button.setAttribute('aria-expanded',String(expanded));button.setAttribute('aria-label',expanded?'Collapse prompt':'Expand prompt')});
+ root.append(body,button);promptCaptionObserver.observe(root);return root;
+}
+function modernizePrompts(root,preview=''){
+ root.querySelectorAll('details.prompt').forEach(original=>{const text=[...original.querySelectorAll('pre')].map(p=>p.textContent.trim()).join('\n\n');if(text)original.replaceWith(makePromptCaption(text,preview))});
+ root.querySelectorAll('.inline-prompt').forEach(original=>original.replaceWith(makePromptCaption(original.textContent)));
+}
 
 // Independent, equally centered sections instead of nested width/spacing rules.
 const multiBlock=document.querySelector('#multi-teacher');
@@ -67,13 +83,7 @@ function prepareReaderCase(group){
     const texts=[...original.querySelectorAll('pre')].map(el=>el.textContent.trim());
     const holder=document.createElement('div');holder.className='reader-prompts';
     for(const text of texts){
-      if(text.length<=800&&text.split('\n').length<=8){
-        const paragraph=document.createElement('p');paragraph.className='inline-prompt';paragraph.textContent=text;holder.append(paragraph);
-      }else{
-        const details=document.createElement('details');details.className='prompt prompt-long';details.dataset.readerReady='true';
-        const summary=document.createElement('summary');summary.textContent='Read prompt';
-        const pre=document.createElement('pre');pre.textContent=text;details.append(summary,pre);holder.append(details);
-      }
+      holder.append(makePromptCaption(text));
     }
     original.replaceWith(holder);
   }
