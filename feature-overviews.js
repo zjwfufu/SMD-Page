@@ -63,7 +63,7 @@ const overviewSpecs=[
  {section:'audio',direction:'visual-left',visual:audioOverview,copy:'Sound and motion unfold together. We examine few-step distillation for joint audio–video generation, with original soundtracks available alongside each video comparison.'},
  {section:'multimodal',direction:'visual-right',visual:multimodalOverview,copy:'Images and videos jointly define appearance, motion, objects, and scene. We distill these multimodal conditions into few-step audio–video generation.'},
  {section:'transfer',direction:'visual-right',visual:crossOverview,copy:'A teacher need not share its student’s architecture. We study distillation across model sizes and model families, comparing what different teachers bring to a four-step student.'},
- {section:'multi-teacher',direction:'visual-left',visual:multiOverview,copy:'Different teachers emphasize different qualities. Routed supervision brings their strengths into one student, without requiring a collection of teachers at inference time.'}
+ {section:'multi-teacher',direction:'visual-left',visual:multiOverview,copy:'Different teachers emphasize different qualities. Multi-teacher supervision brings their strengths into one student, without requiring a collection of teachers at inference time.'}
 ];
 function pauseResultContent(panel){panel.querySelectorAll('[data-sync]').forEach(b=>{cancelAuto(b.dataset.sync);cancelPlayback(b.dataset.sync)});panel.querySelectorAll('video').forEach(v=>{v.pause();releaseVideoSource(v)});updatePlaybackControls()}
 // Comparisons remain opt-in, including after case changes and tab restoration.

@@ -68,9 +68,9 @@ window.SMD_REPORT_CONTENT = {
   },
   'multi-teacher': {
     title: 'Multi-Teacher Distillation',
-    overview: 'Bring complementary specialists into one student. Prompt-routed supervision improves all six reported metrics over self-distillation and the 28-NFE base teacher. Inference uses only the resulting 4-NFE student.',
-    detail: 'Four reward-specialized LoRA teachers target CLIPScore, GenEval, OCR, and PickScore. Compare their individually distilled students with self-distillation, the base teacher, and the routed SD3.5-Medium student.',
-    protocol: 'All students share the same initialization and use imitation without repulsion. GenEval, OCR, and PickScore use their respective evaluation sets; HPSv2, CLIPScore, and ImageReward use DrawBench. Routing is training-only. Specialists still lead several criteria: the claim is balanced transfer, not dominance over every specialist.',
+    overview: 'Bring complementary specialists into one student. Multi-teacher supervision improves all six reported metrics over self-distillation and the 28-NFE base teacher. Inference uses only the resulting 4-NFE student.',
+    detail: 'Four reward-specialized LoRA teachers target CLIPScore, GenEval, OCR, and PickScore. Compare their individually distilled students with self-distillation, the base teacher, and the multi-teacher SD3.5-Medium student.',
+    protocol: 'All students share the same initialization and use imitation without repulsion. GenEval, OCR, and PickScore use their respective evaluation sets; HPSv2, CLIPScore, and ImageReward use DrawBench. Multi-teacher supervision is used only during training. Specialists still lead several criteria: the claim is balanced transfer, not dominance over every specialist.',
     metrics: ['multi']
   }
 };
