@@ -1,0 +1,137 @@
+/* A single vertical ribbon with shared moving diagonal seams. */
+.has-experiment-atlas{display:block;background:#fff;border-top:1px solid #ddd;padding:42px clamp(12px,2.3vw,34px) 34px;isolation:isolate}
+.has-experiment-atlas .experiment-sidebar,.has-experiment-atlas .experiment-mobile-nav{display:none!important}
+.has-experiment-atlas .experiment-heading{margin:0;text-align:center;font-size:clamp(30px,3.5vw,46px)}
+.atlas-viewport{position:relative;width:75%;overflow:hidden;margin:30px auto 0}
+.experiment-atlas{position:relative;height:clamp(1980px,234vh,2400px);width:100%;margin:auto;isolation:isolate;overflow:hidden;background:#fff}
+.atlas-piece{position:absolute;left:0;width:100%;z-index:1;pointer-events:none;transform-origin:left center;transition:transform .22s,filter .22s}
+.atlas-tile{display:block;appearance:none;position:relative;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;background:#fff;overflow:hidden;text-align:left;color:#fff;cursor:pointer;isolation:isolate;touch-action:pan-y;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.atlas-tile:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#101a20b5,#101a2040 43%,#101a2008 80%);z-index:2;transition:opacity .25s}
+.atlas-art{position:absolute;inset:0;display:block;pointer-events:none;--bg:#fff;--ink:#252525;--muted:#666;--feature-serif:Georgia,serif;transition:filter .25s,opacity .25s}
+.atlas-art>.overview-stage{position:absolute;inset:0;width:100%;height:100%;max-width:none;aspect-ratio:auto;margin:0;transform:none}
+.atlas-art img,.atlas-art video{user-select:none;pointer-events:none}
+.atlas-art [hidden]{display:none!important}
+.atlas-art .glance-columns{gap:8px;inset:0;transform:none}
+.atlas-art .glance-column{gap:8px;height:100%;transform:none}
+.atlas-art .glance-tile{flex:1;min-height:0;background:transparent;box-shadow:none}
+.atlas-art .glance-tile img{object-fit:contain}
+.atlas-art .generation-glance,.atlas-art .video-glance{mask-image:none;-webkit-mask-image:none}
+.atlas-art .glance-frost{display:none}
+.atlas-art .editing-glance{padding:0;justify-content:center}
+.atlas-art .edit-paper{padding:0;transform:none;border-radius:0;box-shadow:none}
+.atlas-art .edit-comparison{aspect-ratio:16/9}
+.atlas-art .edit-comparison img{object-fit:contain}
+.atlas-art .edit-divider span{display:none}
+.editorial-preview .atlas-art .shape-glance{padding:0}
+.atlas-art .shape-video-print{width:100%;aspect-ratio:16/9;background:transparent}
+.atlas-art .shape-video-print img{width:100%;height:100%;object-fit:contain}
+.atlas-art .shape-video-print video{inset:0;width:100%;height:100%;object-fit:contain}
+.atlas-art .video-glance{overflow:visible}
+.atlas-art .audio-cinema{top:4%;left:0;width:100%;height:auto;aspect-ratio:16/9;padding:0;transform:none;border-radius:0;box-shadow:none}
+.atlas-art .audio-cinema>img,.atlas-art .audio-cinema>video{width:100%;height:100%;object-fit:contain}
+.atlas-art .audio-ribbon{bottom:5%;height:25%}
+.atlas-art .audio-ribbon-shape{fill:#e0e0dd;filter:none;opacity:.75}
+.atlas-art .audio-ribbon-shadow{opacity:.2}
+.atlas-art .audio-field,.atlas-art .causal-time-band{display:none}
+.atlas-art .causal-frame-current{top:24%;height:auto;aspect-ratio:16/9;width:66%;right:0}
+.atlas-art .causal-frame img,.atlas-art .causal-frame video{object-fit:contain}
+.atlas-art .transfer-result figcaption,.atlas-art .specialist-result figcaption,.atlas-art .multi-result figcaption{display:none}
+.atlas-art .multimodal-prompt-card{min-height:48px}
+.atlas-art .multimodal-output>img,.atlas-art .multimodal-output>video{display:block;width:100%;height:100%;object-fit:contain}
+.atlas-art .cross-glance,.atlas-art .multi-glance{padding:2%}
+.atlas-label{position:absolute;inset:auto auto var(--label-bottom,26px) 22px;z-index:3;display:flex;align-items:center;padding:0;background:none;max-width:calc(100% - 44px);gap:12px;color:#fff;text-shadow:0 1px 6px #000b;pointer-events:none}
+.atlas-number{flex:none;font:500 10px/1.2 system-ui;letter-spacing:.1em;color:#ffffffd9;text-shadow:0 1px 6px #000b}
+.atlas-name{font:400 clamp(24px,2.5vw,34px)/1.1 Georgia,serif;letter-spacing:-.015em;color:#fff;text-shadow:0 1px 6px #000b;max-width:none;text-wrap:balance}
+.atlas-arrow{margin-left:10px;font:300 26px/1 system-ui}
+.atlas-piece.is-active{z-index:2;transform:translateY(-3px) scale(1.1);filter:drop-shadow(0 6px 9px #00000026)}
+.atlas-piece.is-active .atlas-tile:after{opacity:0}
+.has-experiment-atlas .results-end{display:none}
+.atlas-tile:focus-visible{outline:0}
+.atlas-piece:has(.atlas-tile:focus-visible) .atlas-name{text-decoration:underline;text-underline-offset:6px}
+.has-experiment-atlas [hidden]{display:none!important}
+.has-experiment-atlas.has-selected-chapter{background:#fff;padding-top:24px}
+.has-selected-chapter>.experiment-heading{display:none}
+.atlas-toolbar{display:flex;justify-content:center;align-items:center;padding:0;margin:0 0 16px;scroll-margin-top:calc(var(--project-header-height,64px) + 16px)}
+.atlas-return{appearance:none;border:1px solid #111;border-radius:999px;background:#111;color:#fff;display:inline-flex;align-items:center;justify-content:center;min-width:164px;min-height:44px;padding:10px 22px;font:500 14px/1.4 var(--feature-sans,system-ui);cursor:pointer;white-space:nowrap;text-decoration:none}
+.atlas-return:hover{background:#333;border-color:#333;color:#fff;text-decoration:none}
+.editorial-preview .has-experiment-atlas .atlas-chapter{margin:0;scroll-margin-top:calc(var(--project-header-height,64px) + 24px)}
+.has-experiment-atlas .task-overview{min-height:420px;margin-bottom:16px;gap:clamp(28px,4vw,64px)}
+.has-experiment-atlas .results-panel,.has-experiment-atlas .task-overview,.has-experiment-atlas .report-evidence{scroll-margin-top:calc(var(--project-header-height,64px) + 24px)}
+.atlas-chapter-end{display:flex;justify-content:center;margin-top:24px;padding-top:8px}
+.atlas-return:focus-visible{outline:2px solid #111;outline-offset:4px}
+@media(max-width:800px){
+ .has-experiment-atlas{padding:30px 0 24px}
+ .atlas-viewport{width:100%;margin-top:24px}
+ .experiment-atlas{height:2400px;min-width:0}
+ .atlas-label{inset:auto auto var(--label-bottom,26px) 16px;max-width:calc(100% - 32px);padding:0;gap:8px}
+ .atlas-name{font-size:24px}
+ .atlas-arrow{font-size:26px}
+ .has-experiment-atlas .task-overview{min-height:0}
+ .has-experiment-atlas .overview-copy{padding:8px 0}
+}
+@media(prefers-reduced-motion:reduce){.atlas-piece,.atlas-art,.atlas-tile:after{transition:none}.atlas-piece.is-active{transform:none}}
+
+/* Recompose the overview artwork across the band, not as a small contained print. */
+.atlas-art .glance-columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));inset:-8px;gap:6px;transform:rotate(-1.5deg) scale(1.03)}
+.atlas-art .glance-column,.atlas-art .glance-column:nth-child(n){display:contents;transform:none}
+.atlas-art .glance-tile{width:100%;height:100%;min-width:0;min-height:0}
+.atlas-art .glance-tile img{object-fit:cover}
+.atlas-art .glance-tile img[src$="/anime_photo_club.webp"]{object-position:50% 22%}
+.atlas-art .glance-column:last-child .glance-tile:last-child{grid-column:span 2}
+.atlas-art .editing-glance{display:block}
+.atlas-art .edit-paper,.atlas-art .edit-comparison{width:100%;height:100%;aspect-ratio:auto}
+.atlas-art .edit-comparison-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));height:100%}
+.atlas-art .edit-comparison img{position:relative;inset:auto;width:100%;height:100%;object-fit:cover;object-position:center;clip-path:none}
+.atlas-art .edit-source-image{grid-column:1;grid-row:1}
+.atlas-art .edit-result-image{grid-column:2;grid-row:1}
+.atlas-art .shape-video-print{width:100%;height:100%;aspect-ratio:auto;background:#cdd0d3}
+.atlas-art .shape-video-print img,.atlas-art .shape-video-print video{width:100%;height:100%;object-fit:contain;background:#cdd0d3}
+.atlas-art .video-scene-wall{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.85fr);gap:3px;width:100%;height:100%;background:#fff}
+.atlas-art .video-scene{position:relative;min-width:0;height:100%;overflow:hidden}
+.atlas-art .video-scene>img,.atlas-art .video-scene>video{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.atlas-art .video-scene:first-child>img,.atlas-art .video-scene:first-child>video{object-position:58% center}
+.atlas-art .audio-cinema{inset:0;width:100%;height:100%;aspect-ratio:auto}
+.atlas-art .audio-cinema>img,.atlas-art .audio-cinema>video{object-fit:cover;object-position:50% 38%}
+.atlas-art .audio-ribbon{bottom:2%;height:20%}
+.atlas-art .causal-frame{padding:0;border-radius:0}
+.atlas-art .causal-frame-early{left:0;top:5%;height:90%;width:39%;transform:rotate(-3deg)}
+.atlas-art .causal-frame-middle{left:27%;top:2%;height:94%;width:41%;transform:rotate(1deg)}
+.atlas-art .causal-frame-current{right:0;top:0;height:100%;width:45%;transform:rotate(2deg)}
+.atlas-art .causal-frame img,.atlas-art .causal-frame video{object-fit:cover}
+.editorial-preview .atlas-art .cross-glance,.editorial-preview .atlas-art .multi-glance{padding:0}
+.atlas-art .transfer-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.atlas-art .transfer-result{height:100%;min-height:0;padding:0;transform:none;border-radius:0;box-shadow:none}
+.atlas-art .transfer-result>img{height:100%;aspect-ratio:auto;object-fit:cover}
+.atlas-art .multi-flow{grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:5px;min-width:0;overflow:hidden}
+.atlas-art .multi-glance{container-type:inline-size;container-name:multi-teacher-art}
+.atlas-art .specialist-results{display:grid;height:100%;min-width:0;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:5px;align-content:stretch}
+.atlas-art .specialist-result,.atlas-art .multi-result{width:100%;height:100%;min-width:0;min-height:0;padding:0;border-radius:0;box-shadow:none;transform:none}
+.atlas-art .specialist-result img,.atlas-art .multi-result img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 42%}
+.atlas-art .multimodal-glance{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);padding:0;gap:6px}
+.atlas-art .multimodal-source-stack{height:100%;aspect-ratio:auto}
+.atlas-art .multimodal-source-stack>.multimodal-plane{transform:none;padding:3px;border-radius:0}
+.atlas-art .multimodal-source-stack>.multimodal-stack-video{left:0;top:0;width:50%;height:49%}
+.atlas-art .multimodal-source-stack>.multimodal-stack-text{left:52%;top:0;width:48%;height:49%;padding:12px;aspect-ratio:auto}
+.atlas-art .multimodal-stack-text>p{font-size:11px;line-height:1.35;-webkit-line-clamp:5}
+.atlas-art .multimodal-image-stack{position:absolute;left:0;top:51%;width:100%;height:49%}
+.atlas-art .multimodal-image-stack>.multimodal-plane{transform:none;top:0;height:100%;width:49%;padding:3px;border-radius:0}
+.atlas-art .multimodal-image-stack>.multimodal-stack-image-0{left:0}
+.atlas-art .multimodal-image-stack>.multimodal-stack-image-1{left:51%}
+.atlas-art .multimodal-glance>.multimodal-output{left:0;top:0;width:100%;height:100%;padding:0;transform:none;border-radius:0;aspect-ratio:auto}
+.atlas-art .multimodal-output>img,.atlas-art .multimodal-output>video{object-fit:cover}
+@media(max-width:800px){
+ .atlas-art .glance-columns{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
+ .atlas-art .video-scene:first-child>img,.atlas-art .video-scene:first-child>video{object-position:28% center}
+ .atlas-art .glance-column:last-child .glance-tile:last-child{grid-column:auto}
+ .atlas-art .edit-comparison-media{grid-template-columns:1fr}
+ .atlas-art .edit-comparison img{position:absolute;inset:0}
+ .atlas-art .edit-source-image{clip-path:inset(0 50% 0 0);z-index:1}
+ .atlas-art .transfer-flow,.atlas-art .multi-flow,.atlas-art .multimodal-glance{gap:4px}
+ .atlas-art .multimodal-source-stack>.multimodal-stack-text{padding:5px}
+ .atlas-art .multimodal-stack-text>p{font-size:7px;-webkit-line-clamp:6}
+}
+/* Respond to the actual card width, not the full browser width. */
+@container multi-teacher-art (max-width:640px){
+ .atlas-art .multi-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .atlas-art .specialist-results{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:4px}
+}

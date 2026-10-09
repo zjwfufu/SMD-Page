@@ -132,7 +132,7 @@ for(const spec of overviewSpecs){
 }
 // Silent overview videos loop automatically while visible; no extra playback UI.
 const overviewMotionStates=[...document.querySelectorAll('.overview-motion-media')].map(video=>({video,inView:false,job:0}));
-function canPreviewOverview(state){return !document.hidden&&state.inView&&allowAutoMotion()&&!state.video.closest('.task-overview')?.classList.contains('is-expanded')&&!document.querySelector('dialog[open]')}
+function canPreviewOverview(state){return !document.hidden&&state.inView&&allowAutoMotion()&&!state.video.closest('[hidden]')&&!state.video.closest('.task-overview')?.classList.contains('is-expanded')&&!document.querySelector('dialog[open]')}
 async function startMotionPreview(state){if(!canPreviewOverview(state))return;const job=++state.job;try{state.video.muted=true;state.video.loop=true;await ensureVideoSource(state.video);if(job===state.job&&canPreviewOverview(state))await state.video.play()}catch{}}
 function stopMotionPreview(state,release=false){state.job++;state.video.pause();if(release)releaseVideoSource(state.video)}
 function startOverviewMotion(target=null){return Promise.allSettled(overviewMotionStates.filter(state=>!target||state===target).map(state=>startMotionPreview(state)))}
@@ -142,6 +142,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){stopOvervi
 // Shared links can address a chapter's results or a benchmark without a modal.
 function openLinkedResults(){
  let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}
+ if(window.SMD_EXPERIMENT_ATLAS?.navigate(id,{history:false,animate:false,focus:false}))return;
  const target=document.getElementById(id),panel=target?.closest('.results-panel');
  if(!panel)return;inlineResults.get(panel.id)?.setExpanded(true,{focus:false,scroll:false,animate:false});
  requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));

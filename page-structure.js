@@ -27,6 +27,12 @@
  authorBlock.append(resources);
  resources.querySelector('a[href="#todo"]').addEventListener('click',event=>event.preventDefault());
 
+ // One editorial introduction, credits on the left and approved copy on the right.
+ // Move existing nodes so author links and abstract wording remain untouched.
+ const introduction=document.createElement('div');introduction.className='project-introduction';introduction.id='overview';
+ hero.id='project-title-block';hero.before(introduction);
+ introduction.append(hero,document.getElementById('abstract'));
+
  // Supply source/poster paths here when the two requested films are ready.
  // Null means no player, no media request, and no invented demo asset.
  const films=[{id:'demo',title:'Teaser Video',src:null,poster:null},{id:'method',title:'Method Overview',src:null,poster:null}];
@@ -38,7 +44,7 @@
   else{const note=document.createElement('p');note.className='film-pending';note.textContent='Coming soon';section.append(note)}
   filmSections.append(section);
  }
- document.getElementById('abstract').after(filmSections);
+ introduction.after(filmSections);
 
  const groups=[
   {label:'Visual generation',items:[['explore','Image Generation'],['editing','Image Editing'],['shape','3D Generation']]},
@@ -47,9 +53,9 @@
  ];
  const experiments=document.createElement('div');experiments.id='experiments';experiments.className='experiment-layout';
  const sidebar=document.createElement('nav');sidebar.className='experiment-sidebar';sidebar.setAttribute('aria-label','Experiment sections');
- sidebar.innerHTML=`<a class="experiment-index-title" href="#experiments">Experiment Results</a>${groups.map(group=>`<div class="experiment-nav-group"><p>${group.label}</p>${group.items.map(([id,title])=>`<a href="#${id}" data-section-link="${id}">${title}</a>`).join('')}</div>`).join('')}`;
+ sidebar.innerHTML=`<a class="experiment-index-title" href="#experiments">Explore SMD</a>${groups.map(group=>`<div class="experiment-nav-group"><p>${group.label}</p>${group.items.map(([id,title])=>`<a href="#${id}" data-section-link="${id}">${title}</a>`).join('')}</div>`).join('')}`;
  const body=document.createElement('div');body.className='experiment-body';
- const heading=document.createElement('h2');heading.className='experiment-heading';heading.textContent='Experiment Results';
+ const heading=document.createElement('h2');heading.className='experiment-heading';heading.textContent='Explore SMD';
  for(const group of groups)for(const [id]of group.items)body.append(document.getElementById(id));
  experiments.append(heading,sidebar,body);document.getElementById('full-content').prepend(experiments);
  const jump=document.createElement('nav');jump.className='experiment-mobile-nav';jump.setAttribute('aria-label','Experiment chapters');
@@ -57,9 +63,9 @@
  heading.after(jump);
 
  const topbar=document.createElement('header');topbar.className='project-topbar';
- topbar.innerHTML='<div class="project-topbar-inner"><a class="project-wordmark" href="#top" aria-label="SMD home">SMD</a><nav aria-label="Main navigation"><a href="#overview" data-main-link="overview">Overview</a><a href="#demo" data-main-link="demo">Teaser Video</a><a href="#method" data-main-link="method">Method Overview</a><a href="#experiments" data-main-link="experiments">Experiment Results</a></nav></div>';
+ topbar.innerHTML='<div class="project-topbar-inner"><a class="project-wordmark" href="#top" aria-label="SMD home">SMD</a><nav aria-label="Main navigation"><a href="#overview" data-main-link="overview">Overview</a><a href="#demo" data-main-link="demo">Teaser Video</a><a href="#method" data-main-link="method">Method Overview</a><a href="#experiments" data-main-link="experiments">Explore SMD</a></nav></div>';
  document.body.prepend(topbar);
- for(const [id,short]of Object.entries({demo:'Teaser',method:'Method',experiments:'Results'})){const link=topbar.querySelector(`[data-main-link="${id}"]`),full=link.textContent;link.setAttribute('aria-label',full);link.innerHTML=`<span class="nav-full">${full}</span><span class="nav-short" aria-hidden="true">${short}</span>`}
+ for(const [id,short]of Object.entries({demo:'Teaser',method:'Method',experiments:'Explore SMD'})){const link=topbar.querySelector(`[data-main-link="${id}"]`),full=link.textContent;link.setAttribute('aria-label',full);link.innerHTML=`<span class="nav-full">${full}</span><span class="nav-short" aria-hidden="true">${short}</span>`}
  const ids=['overview','demo','method','experiments',...groups.flatMap(g=>g.items.map(([id])=>id))];
  let scrollJob=0,lastChapter='';
  function updateNavigationOffsets(){
@@ -69,7 +75,7 @@
   markSection();
  }
  function markSection(){
-  scrollJob=0;let current='';const boundary=topbar.getBoundingClientRect().height+jump.getBoundingClientRect().height+48;for(const id of ids){if(document.getElementById(id).getBoundingClientRect().top<=boundary)current=id}
+  scrollJob=0;let current='';const boundary=topbar.getBoundingClientRect().height+jump.getBoundingClientRect().height+48;for(const id of ids){const element=document.getElementById(id);if(!element.closest('[hidden]')&&element.getBoundingClientRect().top<=boundary)current=id}
   for(const link of [...sidebar.querySelectorAll('[data-section-link]'),...jump.querySelectorAll('[data-section-link]')]){if(link.dataset.sectionLink===current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')}
   const category=['overview','demo','method'].includes(current)?current:current?'experiments':'';
   for(const link of topbar.querySelectorAll('[data-main-link]')){if(link.dataset.mainLink===category)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')}
@@ -77,9 +83,9 @@
  }
  addEventListener('scroll',()=>{if(!scrollJob)scrollJob=requestAnimationFrame(markSection)},{passive:true});addEventListener('resize',updateNavigationOffsets);
  const navigationResize=new ResizeObserver(updateNavigationOffsets);navigationResize.observe(topbar);navigationResize.observe(jump);updateNavigationOffsets();
- function goToSection(id){const target=document.getElementById(id);if(!target)return;history.pushState(null,'','#'+id);target.scrollIntoView({block:'start',behavior:'instant'});markSection()}
+ function goToSection(id){if(window.SMD_EXPERIMENT_ATLAS?.navigate(id))return;const target=document.getElementById(id);if(!target)return;history.pushState(null,'','#'+id);target.scrollIntoView({block:'start',behavior:'instant'});markSection()}
  for(const link of [...topbar.querySelectorAll('a'),...sidebar.querySelectorAll('a'),...jump.querySelectorAll('a')])link.addEventListener('click',event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();goToSection(link.hash.slice(1))});
- addEventListener('popstate',()=>{let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}openLinkedResults();document.getElementById(id)?.scrollIntoView({block:'start',behavior:'instant'});markSection()});
+ addEventListener('popstate',()=>{let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}if(window.SMD_EXPERIMENT_ATLAS?.navigate(id,{history:false,animate:false}))return;openLinkedResults();document.getElementById(id)?.scrollIntoView({block:'start',behavior:'instant'});markSection()});
  // Existing hash links continue to work after grouping the section nodes.
  if(location.hash){openLinkedResults();requestAnimationFrame(()=>{let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}document.getElementById(id)?.scrollIntoView({block:'start',behavior:'instant'})})}
 })();

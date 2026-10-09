@@ -218,3 +218,32 @@ html{scroll-behavior:auto}
  .experiment-mobile-nav a{flex:0 1 calc(50% - 9px);max-width:none;font-size:11px}
  .project-resources{gap:8px}.project-resources .resource-button{min-width:0;padding:10px 15px;font-size:13px}
 }
+
+/* Title/credits and the approved abstract share one editorial spread. */
+.project-introduction{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:clamp(40px,6vw,90px);max-width:1240px;margin:54px auto 62px;padding:0 18px;scroll-margin-top:100px}
+.editorial-preview .project-introduction .hero{max-width:none;margin:0;padding:0;text-align:left;min-width:0}
+.editorial-preview .project-introduction .hero h1{font:400 clamp(33px,3.5vw,48px)/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.035em;text-align:left;margin:0 0 30px;text-wrap:balance}
+.project-introduction .hero h1 br{display:none}
+.project-introduction .project-authors{display:grid;grid-template-columns:repeat(4,max-content);justify-content:start;gap:10px 21px;margin:0;max-width:none;font-size:14px;line-height:1.5}
+.project-introduction .project-affiliations{justify-content:flex-start;gap:8px 17px;margin:15px 0 0;font-size:12px;text-align:left}
+.project-introduction .project-resources{justify-content:flex-start;gap:10px;margin:24px 0 0}
+.project-introduction .project-resources .resource-button{min-width:100px;min-height:42px;font-size:13px;padding:9px 16px}
+.editorial-preview .project-introduction #abstract{max-width:none;margin:0;padding:0;min-width:0}
+.editorial-preview .project-introduction #abstract p{font:400 clamp(18px,1.65vw,23px)/1.6 Georgia,'Times New Roman',serif;letter-spacing:-.01em;color:#222;margin:0 0 22px;text-align:left}
+.editorial-preview .project-introduction #abstract p:last-child{font-size:clamp(16px,1.35vw,19px);line-height:1.65;color:#646464;margin:0}
+.project-introduction+#film-sections{margin-top:0}
+@media(max-width:900px){
+ .project-introduction{grid-template-columns:1fr;gap:28px;max-width:700px;margin:36px auto 46px;padding:0 12px}
+ .editorial-preview .project-introduction .hero h1{font-size:clamp(32px,5.5vw,44px);max-width:650px;margin-bottom:24px}
+ .editorial-preview .project-introduction #abstract p{font-size:19px;line-height:1.65;margin-bottom:16px}
+ .editorial-preview .project-introduction #abstract p:last-child{font-size:17px}
+}
+@media(max-width:480px){
+ .project-introduction{padding:0 2px;margin-top:30px;gap:26px}
+ .project-introduction .project-authors{grid-template-columns:repeat(2,max-content);gap:8px 22px;font-size:13px}
+ .project-introduction .project-affiliations{font-size:11px;gap:8px 13px}
+ .project-introduction .project-resources{gap:8px;margin-top:20px}
+ .project-introduction .project-resources .resource-button{min-width:0;padding:9px 14px}
+ .editorial-preview .project-introduction #abstract p{font-size:18px}
+ .editorial-preview .project-introduction #abstract p:last-child{font-size:16px}
+}
