@@ -53,7 +53,7 @@
     }
     stage.querySelectorAll('input,button,.edit-instruction').forEach(node => node.remove());
     // The entry collage shows the media, not the overview's explanatory arrows.
-    stage.querySelectorAll('.transfer-arrow,.multi-merge,.multimodal-brush-arrow').forEach(node => node.remove());
+    stage.querySelectorAll('.transfer-arrow,.multi-merge,.multimodal-brush-arrow,.audio-ribbon').forEach(node => node.remove());
     // Posters keep nine entries inexpensive. Only a hovered/focused entry may play.
     stage.querySelectorAll('video').forEach(video => {
       const poster = document.createElement('img');
