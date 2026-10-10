@@ -1,0 +1,184 @@
+/* Research-led views. Accent denotes SMD, not an unconditional win. */
+.benchmark-explorer{--bench-blue:#345ee8;max-width:1100px;margin:0 auto;color:#202124}
+.bench-story{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:30px 0 22px}
+.bench-story h4{font:400 clamp(25px,3vw,36px)/1.15 Georgia,serif;letter-spacing:-.025em;margin:0;max-width:680px}
+.bench-story p{font:400 12px/1.6 system-ui;color:#70757d;max-width:260px;margin:0;text-align:right}
+.bench-controls{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;justify-content:flex-start}
+.bench-controls button{appearance:none;border:1px solid #e0e2e6;background:#fff;border-radius:7px;padding:9px 15px;min-height:40px;font:500 12px/1.35 system-ui;color:#686e79;cursor:pointer}
+.bench-controls button[aria-pressed=true]{color:#fff;background:#20242c;border-color:#20242c}
+.bench-controls button:hover{border-color:#707780}
+.bench-controls button:focus-visible,.bench-mini:focus-visible,.bench-legend button:focus-visible{outline:2px solid var(--bench-blue);outline-offset:3px}
+.bench-plot{display:block;width:100%;height:auto;max-width:920px;margin:12px auto 20px;overflow:visible;font-family:system-ui;isolation:isolate}
+.bench-grid{stroke:#e3e6eb;stroke-width:1;fill:none}
+.bench-grid-vertical{stroke:#eff0f3}
+.bench-tick{fill:#777f89;font:12px system-ui;font-variant-numeric:tabular-nums}
+.bench-axis-title{fill:#454b54;font:500 14px system-ui}
+.bench-point-label{font:500 13px system-ui;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.bench-reference{stroke:#9ca2aa;stroke-width:1.4;stroke-dasharray:5 5;fill:none}
+.bench-series{transition:opacity .16s;outline:0}
+.bench-series[tabindex]{cursor:pointer}
+.bench-series:focus-visible{filter:drop-shadow(0 0 3px #345ee899)}
+.bench-series.is-inspected{opacity:1!important}
+.benchmark-explorer.has-inspection .bench-series:not(.is-inspected):not(.bench-focus){opacity:.18}
+.bench-legend{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;margin:8px 0}
+.bench-legend button{appearance:none;border:1px solid transparent;border-radius:7px;display:inline-flex;align-items:center;gap:7px;padding:7px 9px;min-height:36px;background:transparent;color:#565d67;font:500 12px/1.3 system-ui;cursor:pointer}
+.bench-legend button[aria-pressed=true]{background:#f1f4fc;border-color:#d9e1f8;color:#263c81}
+.bench-legend button:hover{background:#f5f6f8}
+.bench-legend i{width:8px;height:8px;border-radius:50%;background:var(--series-color);flex:none}
+.bench-legend small{font-size:10px;color:#828995}
+.bench-inspector{display:block;min-height:42px;text-align:center;font:400 12px/1.75 system-ui;color:#4e5662;padding:8px 16px;margin:8px auto 0;max-width:960px;background:#f7f8fa;border-radius:7px;font-variant-numeric:tabular-nums}
+.bench-note{font:400 11px/1.6 system-ui;color:#7b828d;text-align:center;margin:14px auto 0;max-width:920px}
+.bench-transfer-line{stroke:var(--bench-blue);stroke-width:2.5;fill:none}
+.bench-context path{fill:none;stroke:#b6bdc8;stroke-width:1.5;stroke-dasharray:5 5}
+.bench-context circle{fill:#fff;stroke:#b6bdc8;stroke-width:1.5}
+.bench-context text{fill:#9aa3b1;font:12px system-ui;paint-order:stroke;stroke:white;stroke-width:4px}
+.bench-deltas{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin:24px 0 0;border-top:1px solid #e5e8ed;padding-top:20px;gap:12px}
+.bench-delta span{display:block;font:400 11px/1.5 system-ui;color:#707781}
+.bench-delta strong{display:block;font:500 clamp(17px,2vw,24px)/1.4 system-ui;color:var(--bench-blue);font-variant-numeric:tabular-nums;margin-top:4px}
+.bench-delta.is-down strong{color:#9b6343}
+.bench-profile{margin-top:26px}
+.bench-profile-series:not(.bench-focus){opacity:.3}
+.bench-profile-series.is-inspected{opacity:1}
+.bench-profile-series.is-inspected polyline{stroke-width:3}
+.bench-profile-metric{fill:#4c5561;font:500 13px system-ui}
+.bench-profile-value{fill:var(--bench-blue);font:600 12px system-ui;paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round;font-variant-numeric:tabular-nums}
+.bench-ranking-title{font:500 14px/1.5 system-ui;color:#4f5662;margin:20px 0 0}
+.bench-ranking{margin-top:8px;max-width:960px}
+.bench-rank-label{font:500 13px system-ui;fill:#5a626e}
+.bench-rank-value{font:500 14px system-ui;fill:#545c67;font-variant-numeric:tabular-nums}
+.bench-rank-guide{stroke:#f0f1f4;stroke-width:1}
+.bench-blue{fill:var(--bench-blue)}
+.bench-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:16px 0 0}
+.bench-mini{appearance:none;text-align:left;padding:15px 15px 8px;border:1px solid #e7e9ed;border-radius:9px;background:#fff;min-width:0;cursor:pointer}
+.bench-mini>span{display:block;font:500 12px/1.4 system-ui;color:#636b76}
+.bench-mini>strong{display:flex;align-items:baseline;gap:8px;font:500 23px/1.4 system-ui;color:#263656;font-variant-numeric:tabular-nums;margin:8px 0 3px}
+.bench-mini small{font:400 10px system-ui;color:#8790a0}
+.bench-mini svg{display:block;width:100%;height:32px}
+.bench-mini:hover,.bench-mini.is-selected{border-color:#869be9;background:#fafbff}
+.bench-inline-key{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin:0 0 25px;font:500 12px system-ui;color:#5b6370}
+.bench-inline-key span{display:flex;align-items:center;gap:8px}
+.bench-inline-key i{display:inline-block;width:8px;height:8px;border-radius:50%}
+.bench-group-title{font:500 14px system-ui;color:#343b48;margin:28px 0 15px}
+.bench-budget-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 34px}
+.bench-budget-card{margin:0;padding-top:14px;border-top:1px solid #e4e7ed;min-width:0}
+.bench-budget-card figcaption{font:500 13px/1.4 system-ui;color:#4c5665;margin:0 0 8px}
+.bench-budget-card svg{display:block;width:100%;height:auto}
+.bench-budget-value{font:500 12px system-ui;font-variant-numeric:tabular-nums;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.bench-correction-path{fill:none;stroke:#b2b9c4;stroke-width:1.8;stroke-dasharray:6 4}
+.bench-full-data{margin-top:32px;border-top:1px solid #dfe3e9;border-bottom:1px solid #dfe3e9;padding:0;background:#fff}
+.bench-full-data>summary{display:flex;justify-content:space-between;align-items:center;gap:15px;cursor:pointer;list-style:none;padding:17px 2px;font:500 13px system-ui;color:#454d5a}
+.bench-full-data>summary::-webkit-details-marker{display:none}
+.bench-full-data>summary:after{content:'+';font-size:22px;font-weight:300}
+.bench-full-data[open]>summary:after{content:'−'}
+.bench-full-data>summary span{font:400 11px system-ui;color:#8a919c;margin-left:auto}
+.bench-full-data>section{padding:10px 0 20px}
+.bench-full-data h5{font:500 14px system-ui;margin:5px 0 18px}
+.bench-source-note{font:400 11px/1.65 system-ui;color:#747d8a;margin:14px 0 0}
+.bench-full-data .score-matrix th,.bench-full-data .score-matrix td{padding:12px 10px}
+.bench-full-data .score-matrix .is-focus th,.bench-full-data .score-matrix .is-focus td{background:#f2f5fd}
+@media(max-width:700px){
+ .bench-story{display:block;margin-top:24px}
+ .bench-story h4{font-size:27px;line-height:1.15}
+ .bench-story p{text-align:left;margin-top:10px;max-width:none;font-size:12px}
+ .bench-controls{gap:6px}
+ .bench-controls button{font-size:11px;padding:8px 10px;min-height:40px}
+ .bench-plot{margin-top:10px}
+ .bench-axis-title{font-size:14px}.bench-tick{font-size:13px}
+ .bench-legend{justify-content:flex-start;gap:3px 6px}
+ .bench-legend button{font-size:11px;padding:8px 5px}
+ .bench-legend small{font-size:9px}
+ .bench-inspector{font-size:11px;padding:9px 10px;text-align:left}
+ .bench-deltas{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px}
+ .bench-delta strong{font-size:20px}
+ .bench-profile{margin-top:14px}
+ .bench-profile-metric{font-size:13px}.bench-profile-value{font-size:13px}
+ .bench-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .bench-mini{padding:12px 12px 7px}.bench-mini>strong{font-size:21px}
+ .bench-budget-grid{grid-template-columns:1fr;gap:16px}
+ .bench-budget-card{max-width:440px;width:100%;margin:auto}
+ .bench-budget-card .bench-tick{font-size:11px}
+ .bench-full-data>summary span{font-size:10px;max-width:150px;text-align:right}
+ .bench-note{font-size:10px;text-align:left}
+}
+@media(prefers-reduced-motion:reduce){.bench-series{transition:none}}
+
+/* The image-generation chapter is intentionally just three primary charts. */
+.wan-comparison{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(290px,1fr);gap:40px;align-items:center;margin-top:36px}
+.wan-motion-plot{display:block;width:100%;height:auto;overflow:visible}
+.wan-motion-plot .bench-axis-title{font:500 16px system-ui;fill:#4b535f}
+.wan-motion-plot .bench-tick{font:400 14px system-ui;fill:#7b818b}
+.wan-motion-plot .bench-grid-vertical{stroke:#f1f2f4}
+.wan-motion-point circle{fill:#9ba3af;stroke:#fff;stroke-width:2}
+.wan-motion-point text{font:500 15px system-ui;fill:#606976;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.wan-motion-point.is-ours circle{fill:var(--bench-blue)}
+.wan-motion-point.is-ours text{fill:var(--bench-blue);font-weight:650}
+.wan-quality-table{width:100%;border-collapse:collapse;font:400 15px/1.4 system-ui;font-variant-numeric:tabular-nums;color:#555c67}
+.wan-quality-table th,.wan-quality-table td{padding:17px 10px;text-align:right;border:0;font-weight:400}
+.wan-quality-table th:first-child{text-align:left;padding-left:0}
+.wan-quality-table thead th{font-size:14px;white-space:nowrap;color:#747d8a}
+.wan-quality-table tbody tr{border-top:1px solid #e8eaee}
+.wan-quality-table td{font-size:18px}
+.wan-quality-table .is-ours th,.wan-quality-table .is-ours td{color:var(--bench-blue);font-weight:650}
+.wan-primary-only .bench-full-data>summary{font-size:14px}
+.wan-primary-only .bench-full-data>summary span{display:none}
+.wan-primary-only .bench-source-note{font:400 13px/1.65 system-ui}
+@media(max-width:800px){
+ .wan-comparison{grid-template-columns:1fr;gap:12px;margin-top:26px}
+ .wan-quality-table{max-width:560px;margin:auto}
+ .wan-motion-point text{font-size:16px}
+ .wan-motion-plot .bench-tick{font-size:15px}
+}
+.editing-model-label{text-align:center;font:400 14px/1.5 system-ui;color:#737983;margin:8px 0 36px}
+.editing-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:64px}
+.editing-benchmark-group{min-width:0}
+.editing-benchmark-group h4{font:500 22px/1.3 system-ui;color:#20242c;margin:0 0 8px}
+.editing-overall-label{font:400 15px/1.4 system-ui;color:#737983;margin-bottom:26px}
+.editing-bar-row{display:grid;grid-template-columns:85px minmax(0,1fr) 58px;gap:14px;align-items:center;margin:0 0 22px}
+.editing-method{font:500 15px/1.4 system-ui;color:#555c67}
+.editing-bar-track{display:block;background:#f2f3f5;height:22px;border-radius:2px;overflow:hidden}
+.editing-bar-fill{display:block;background:#c7ccd5;height:100%;border-radius:2px}
+.editing-value{font:500 26px/1 system-ui;color:#555c67;text-align:right;font-variant-numeric:tabular-nums}
+.editing-bar-row.is-ours .editing-bar-fill{background:var(--bench-blue)}
+.editing-bar-row.is-ours .editing-method,.editing-bar-row.is-ours .editing-value,.editing-submetrics .is-ours{color:var(--bench-blue);font-weight:600}
+.editing-scale{display:flex;justify-content:space-between;margin:-9px 72px 0 99px;font:400 13px/1.4 system-ui;color:#737983}
+.editing-submetrics{border-collapse:collapse;width:100%;margin:30px 0 0;font:400 15px/1.5 system-ui;color:#555c67;font-variant-numeric:tabular-nums}
+.editing-submetrics th,.editing-submetrics td{padding:12px 0;border:0;text-align:right;font-weight:400}
+.editing-submetrics thead th{font-size:14px;padding:0 0 10px}
+.editing-submetrics tbody tr{border-top:1px solid #e8eaee}
+.editing-submetrics tbody th{text-align:left;width:56%;padding-right:12px}
+.editing-submetrics td{font-size:20px;width:22%}
+.editing-primary-only .bench-full-data{margin-top:36px}
+.editing-primary-only .bench-full-data>summary{font-size:14px}
+.editing-primary-only .bench-full-data>summary span{display:none}
+.editing-primary-only .bench-source-note{font:400 13px/1.65 system-ui;color:#747d8a}
+@media(max-width:800px){
+ .editing-comparison{grid-template-columns:1fr;gap:36px;max-width:560px;margin:auto}
+ .editing-model-label{margin-bottom:30px}
+ .editing-benchmark-group h4{font-size:21px}
+ .editing-bar-row{grid-template-columns:76px minmax(0,1fr) 52px;gap:10px}
+ .editing-value{font-size:24px}
+ .editing-scale{margin-right:62px;margin-left:86px}
+ .editing-submetrics{font-size:14px}
+ .editing-submetrics td{font-size:18px}
+}
+.image-primary-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:32px 0 0}
+.image-primary-chart{margin:0;min-width:0}
+.image-primary-chart figcaption{text-align:center;font:500 18px/1.35 system-ui;color:#20242c;margin:0 0 12px}
+.image-primary-chart svg{display:block;width:100%;height:auto;overflow:visible;font-family:system-ui}
+.image-score-grid{stroke:#e8eaee;stroke-width:1}
+.image-axis-value{font-size:14px;fill:#7b818b;font-variant-numeric:tabular-nums}
+.image-score-bar{fill:#c7ccd5}
+.image-score-value{font-size:15px;font-weight:500;fill:#4a515c;font-variant-numeric:tabular-nums;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.image-method-name{font-size:14px;font-weight:400;fill:#555c67}
+.image-score-method.is-ours .image-score-bar{fill:var(--bench-blue)}
+.image-score-method.is-ours .image-score-value,.image-score-method.is-ours .image-method-name{fill:var(--bench-blue);font-weight:650}
+.image-teacher-line{stroke:#858c97;stroke-width:1.3;stroke-dasharray:4 4;pointer-events:none}
+.image-teacher-label{font-size:14px;fill:#707783;font-variant-numeric:tabular-nums}
+.image-primary-only .bench-full-data{margin-top:10px}
+.image-primary-only .bench-full-data>summary{font-size:14px}
+.image-primary-only .bench-full-data>summary span{display:none}
+.image-primary-only .benchmark-key,.image-primary-only .benchmark-footnote,.image-primary-only .bench-source-note{font-size:13px;line-height:1.65}
+@media(max-width:1000px){
+ .image-primary-charts{grid-template-columns:1fr;gap:28px;max-width:500px;margin:26px auto 0}
+ .image-primary-chart figcaption{font-size:19px;margin-bottom:8px}
+}

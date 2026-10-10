@@ -54,7 +54,7 @@
 .atlas-toolbar{display:flex;justify-content:center;align-items:center;padding:0;margin:0 0 16px;scroll-margin-top:calc(var(--project-header-height,64px) + 16px)}
 .atlas-return{appearance:none;border:1px solid #111;border-radius:999px;background:#111;color:#fff;display:inline-flex;align-items:center;justify-content:center;min-width:164px;min-height:44px;padding:10px 22px;font:500 14px/1.4 var(--feature-sans,system-ui);cursor:pointer;white-space:nowrap;text-decoration:none}
 .atlas-return:hover{background:#333;border-color:#333;color:#fff;text-decoration:none}
-.editorial-preview .has-experiment-atlas .atlas-chapter{margin:0;scroll-margin-top:calc(var(--project-header-height,64px) + 24px)}
+.editorial-preview .has-experiment-atlas .atlas-chapter{margin:0 auto;scroll-margin-top:calc(var(--project-header-height,64px) + 24px)}
 .has-experiment-atlas .task-overview{min-height:420px;margin-bottom:16px;gap:clamp(28px,4vw,64px)}
 .has-experiment-atlas .results-panel,.has-experiment-atlas .task-overview,.has-experiment-atlas .report-evidence{scroll-margin-top:calc(var(--project-header-height,64px) + 24px)}
 .atlas-chapter-end{display:flex;justify-content:center;margin-top:24px;padding-top:8px}

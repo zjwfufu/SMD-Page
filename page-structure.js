@@ -18,9 +18,10 @@
 
  // Set verified release URLs here. Never substitute the website-source repository.
  const projectResources=[
-  {label:'arXiv',url:'#todo',icon:'<path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/>'},
+  {label:'Paper',url:'#todo',icon:'<path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/>'},
   {label:'Code',url:'https://github.com/zjwfufu/SMD',icon:'<path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 16"/>'},
-  {label:'Model',url:'https://huggingface.co/collections/zjwfufu/smd',icon:'<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5m-9 5v9m-4.5-16.5 9 5"/>'}
+  {label:'Model',url:'https://huggingface.co/collections/zjwfufu/smd',icon:'<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5m-9 5v9m-4.5-16.5 9 5"/>'},
+  {label:'Data',url:'https://huggingface.co/collections/zjwfufu/smd-data',icon:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/>'}
  ];
  const resources=document.createElement('div');resources.className='project-resources';resources.setAttribute('aria-label','Project resources');
  resources.innerHTML=projectResources.map(item=>{const contents=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${item.icon}</svg><span>${item.label}</span>`;return item.url?`<a class="resource-button" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${contents}</a>`:`<button type="button" class="resource-button" disabled aria-label="${item.label} link pending" title="Link pending">${contents}</button>`}).join('');
