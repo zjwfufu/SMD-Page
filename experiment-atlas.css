@@ -7,12 +7,12 @@
 .atlas-piece{position:absolute;left:0;width:100%;z-index:1;pointer-events:none;transform-origin:left center;transition:transform .22s,filter .22s}
 .atlas-tile{display:block;appearance:none;position:relative;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;background:#fff;overflow:hidden;text-align:left;color:#fff;cursor:pointer;isolation:isolate;touch-action:pan-y;pointer-events:auto;-webkit-tap-highlight-color:transparent}
 .atlas-tile:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#101a20b5,#101a2040 43%,#101a2008 80%);z-index:2;transition:opacity .25s}
-.atlas-art{position:absolute;inset:0;display:block;pointer-events:none;--bg:#fff;--ink:#252525;--muted:#666;--feature-serif:Georgia,serif;transition:filter .25s,opacity .25s}
+.atlas-art{position:absolute;inset:0;display:block;pointer-events:none;--bg:#fff;--ink:#252525;--muted:#666;--feature-serif:Georgia,serif;--atlas-media-gap:0px;--atlas-condition-gap:3px;transition:filter .25s,opacity .25s}
 .atlas-art>.overview-stage{position:absolute;inset:0;width:100%;height:100%;max-width:none;aspect-ratio:auto;margin:0;transform:none}
 .atlas-art img,.atlas-art video{user-select:none;pointer-events:none}
 .atlas-art [hidden]{display:none!important}
-.atlas-art .glance-columns{gap:8px;inset:0;transform:none}
-.atlas-art .glance-column{gap:8px;height:100%;transform:none}
+.atlas-art .glance-columns{gap:var(--atlas-media-gap);inset:0;transform:none}
+.atlas-art .glance-column{gap:var(--atlas-media-gap);height:100%;transform:none}
 .atlas-art .glance-tile{flex:1;min-height:0;background:transparent;box-shadow:none}
 .atlas-art .glance-tile img{object-fit:contain}
 .atlas-art .generation-glance,.atlas-art .video-glance{mask-image:none;-webkit-mask-image:none}
@@ -29,16 +29,12 @@
 .atlas-art .video-glance{overflow:visible}
 .atlas-art .audio-cinema{top:4%;left:0;width:100%;height:auto;aspect-ratio:16/9;padding:0;transform:none;border-radius:0;box-shadow:none}
 .atlas-art .audio-cinema>img,.atlas-art .audio-cinema>video{width:100%;height:100%;object-fit:contain}
-.atlas-art .audio-ribbon{bottom:5%;height:25%}
-.atlas-art .audio-ribbon-shape{fill:#e0e0dd;filter:none;opacity:.75}
-.atlas-art .audio-ribbon-shadow{opacity:.2}
 .atlas-art .audio-field,.atlas-art .causal-time-band{display:none}
 .atlas-art .causal-frame-current{top:24%;height:auto;aspect-ratio:16/9;width:66%;right:0}
 .atlas-art .causal-frame img,.atlas-art .causal-frame video{object-fit:contain}
 .atlas-art .transfer-result figcaption,.atlas-art .specialist-result figcaption,.atlas-art .multi-result figcaption{display:none}
 .atlas-art .multimodal-prompt-card{min-height:48px}
 .atlas-art .multimodal-output>img,.atlas-art .multimodal-output>video{display:block;width:100%;height:100%;object-fit:contain}
-.atlas-art .cross-glance,.atlas-art .multi-glance{padding:2%}
 .atlas-label{position:absolute;inset:auto auto var(--label-bottom,26px) 22px;z-index:3;display:flex;align-items:center;padding:0;background:none;max-width:calc(100% - 44px);gap:12px;color:#fff;text-shadow:0 1px 6px #000b;pointer-events:none}
 .atlas-number{flex:none;font:500 10px/1.2 system-ui;letter-spacing:.1em;color:#ffffffd9;text-shadow:0 1px 6px #000b}
 .atlas-name{font:400 clamp(24px,2.5vw,34px)/1.1 Georgia,serif;letter-spacing:-.015em;color:#fff;text-shadow:0 1px 6px #000b;max-width:none;text-wrap:balance}
@@ -72,7 +68,7 @@
 @media(prefers-reduced-motion:reduce){.atlas-piece,.atlas-art,.atlas-tile:after{transition:none}.atlas-piece.is-active{transform:none}}
 
 /* Recompose the overview artwork across the band, not as a small contained print. */
-.atlas-art .glance-columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));inset:-8px;gap:6px;transform:rotate(-1.5deg) scale(1.03)}
+.atlas-art .glance-columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));inset:-8px;gap:var(--atlas-media-gap);transform:rotate(-1.5deg) scale(1.03)}
 .atlas-art .glance-column,.atlas-art .glance-column:nth-child(n){display:contents;transform:none}
 .atlas-art .glance-tile{width:100%;height:100%;min-width:0;min-height:0}
 .atlas-art .glance-tile img{object-fit:cover}
@@ -86,28 +82,27 @@
 .atlas-art .edit-result-image{grid-column:2;grid-row:1}
 .atlas-art .shape-video-print{width:100%;height:100%;aspect-ratio:auto;background:#cdd0d3}
 .atlas-art .shape-video-print img,.atlas-art .shape-video-print video{width:100%;height:100%;object-fit:contain;background:#cdd0d3}
-.atlas-art .video-scene-wall{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.85fr);gap:3px;width:100%;height:100%;background:#fff}
+.atlas-art .video-scene-wall{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.85fr);gap:var(--atlas-media-gap);width:100%;height:100%;background:#fff}
 .atlas-art .video-scene{position:relative;min-width:0;height:100%;overflow:hidden}
 .atlas-art .video-scene>img,.atlas-art .video-scene>video{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .atlas-art .video-scene:first-child>img,.atlas-art .video-scene:first-child>video{object-position:58% center}
 .atlas-art .audio-cinema{inset:0;width:100%;height:100%;aspect-ratio:auto}
 .atlas-art .audio-cinema>img,.atlas-art .audio-cinema>video{object-fit:cover;object-position:50% 38%}
-.atlas-art .audio-ribbon{bottom:2%;height:20%}
 .atlas-art .causal-frame{padding:0;border-radius:0}
 .atlas-art .causal-frame-early{left:0;top:5%;height:90%;width:39%;transform:rotate(-3deg)}
 .atlas-art .causal-frame-middle{left:27%;top:2%;height:94%;width:41%;transform:rotate(1deg)}
 .atlas-art .causal-frame-current{right:0;top:0;height:100%;width:45%;transform:rotate(2deg)}
 .atlas-art .causal-frame img,.atlas-art .causal-frame video{object-fit:cover}
 .editorial-preview .atlas-art .cross-glance,.editorial-preview .atlas-art .multi-glance{padding:0}
-.atlas-art .transfer-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+.atlas-art .transfer-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--atlas-media-gap)}
 .atlas-art .transfer-result{height:100%;min-height:0;padding:0;transform:none;border-radius:0;box-shadow:none}
 .atlas-art .transfer-result>img{height:100%;aspect-ratio:auto;object-fit:cover}
-.atlas-art .multi-flow{grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:0;min-width:0;overflow:hidden}
+.atlas-art .multi-flow{grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:var(--atlas-media-gap);min-width:0;overflow:hidden}
 .atlas-art .multi-glance{container-type:inline-size;container-name:multi-teacher-art}
-.atlas-art .specialist-results{display:grid;height:100%;min-width:0;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:0;align-content:stretch}
+.atlas-art .specialist-results{display:grid;height:100%;min-width:0;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:var(--atlas-media-gap);align-content:stretch}
 .atlas-art .specialist-result,.atlas-art .multi-result{width:100%;height:100%;min-width:0;min-height:0;padding:0;border-radius:0;box-shadow:none;transform:none}
 .atlas-art .specialist-result img,.atlas-art .multi-result img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 42%}
-.atlas-art .multimodal-glance{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);padding:0;gap:6px}
+.atlas-art .multimodal-glance{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);padding:0;gap:var(--atlas-condition-gap)}
 .atlas-art .multimodal-source-stack{height:100%;aspect-ratio:auto}
 .atlas-art .multimodal-source-stack>.multimodal-plane{transform:none;padding:3px;border-radius:0}
 .atlas-art .multimodal-source-stack>.multimodal-stack-video{left:0;top:0;width:50%;height:49%}
@@ -126,12 +121,31 @@
  .atlas-art .edit-comparison-media{grid-template-columns:1fr}
  .atlas-art .edit-comparison img{position:absolute;inset:0}
  .atlas-art .edit-source-image{clip-path:inset(0 50% 0 0);z-index:1}
- .atlas-art .multimodal-glance{gap:4px}
  .atlas-art .multimodal-source-stack>.multimodal-stack-text{padding:5px}
  .atlas-art .multimodal-stack-text>p{font-size:7px;-webkit-line-clamp:6}
 }
 /* Respond to the actual card width, not the full browser width. */
 @container multi-teacher-art (max-width:640px){
- .atlas-art .multi-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
- .atlas-art .specialist-results{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:0}
+ .atlas-art .multi-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--atlas-media-gap)}
+ .atlas-art .specialist-results{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:var(--atlas-media-gap)}
 }
+/* Shared edge treatment applies only to atlas artwork, never result galleries.
+   Text keeps its reading inset; condition groups keep a single 3px separator. */
+.editorial-preview .atlas-art>.overview-stage{padding:0;border:0;border-radius:0;box-shadow:none}
+.atlas-art :is(.glance-tile,.edit-paper,.shape-video-print,.video-scene,.audio-cinema,.causal-frame,.transfer-result,.specialist-result,.multi-result){padding:0;border:0;border-radius:0;box-shadow:none}
+.atlas-art .multimodal-source-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:var(--atlas-condition-gap);min-width:0;min-height:0}
+.atlas-art .multimodal-source-stack>.multimodal-plane{position:relative;inset:auto;width:100%;height:100%;min-width:0;min-height:0;aspect-ratio:auto;border:0;outline:0;border-radius:0;box-shadow:none}
+.atlas-art .multimodal-source-stack>.multimodal-stack-video{padding:0}
+.atlas-art .multimodal-image-stack{position:relative;inset:auto;width:100%;height:100%;grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--atlas-condition-gap);min-height:0}
+.atlas-art .multimodal-image-stack>.multimodal-plane{position:relative;inset:auto;width:100%;height:100%;min-width:0;min-height:0;padding:0;border:0;outline:0;border-radius:0;box-shadow:none}
+.atlas-art .multimodal-glance>.multimodal-output{border:0;outline:0;box-shadow:none}
+.atlas-art .multimodal-plane:after{display:none}
+/* Independent images need a small gutter; temporal frames use overlap. */
+.atlas-art .generation-glance .glance-columns{gap:3px}
+.atlas-art .generation-glance .glance-tile{border-radius:4px}
+.atlas-art .causal-glance{overflow:hidden}
+.atlas-art .causal-frame{top:-12%;height:124%;opacity:1;border-radius:0;box-shadow:none}
+.atlas-art .causal-frame-early{left:-5%;width:46%;transform:rotate(-3deg);filter:brightness(.92)}
+.atlas-art .causal-frame-middle{left:26%;width:46%;transform:rotate(1deg);filter:brightness(.97)}
+.atlas-art .causal-frame-current{right:-5%;width:48%;transform:rotate(2deg);filter:none}
+.atlas-art .causal-frame-middle:after,.atlas-art .causal-frame-current:after{content:'';position:absolute;inset:0 auto 0 0;width:10px;background:linear-gradient(90deg,#00000025,transparent);pointer-events:none}
