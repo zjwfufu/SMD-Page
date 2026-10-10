@@ -99,12 +99,12 @@
 .atlas-art .causal-frame-current{right:0;top:0;height:100%;width:45%;transform:rotate(2deg)}
 .atlas-art .causal-frame img,.atlas-art .causal-frame video{object-fit:cover}
 .editorial-preview .atlas-art .cross-glance,.editorial-preview .atlas-art .multi-glance{padding:0}
-.atlas-art .transfer-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.atlas-art .transfer-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
 .atlas-art .transfer-result{height:100%;min-height:0;padding:0;transform:none;border-radius:0;box-shadow:none}
 .atlas-art .transfer-result>img{height:100%;aspect-ratio:auto;object-fit:cover}
-.atlas-art .multi-flow{grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:5px;min-width:0;overflow:hidden}
+.atlas-art .multi-flow{grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:0;min-width:0;overflow:hidden}
 .atlas-art .multi-glance{container-type:inline-size;container-name:multi-teacher-art}
-.atlas-art .specialist-results{display:grid;height:100%;min-width:0;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:5px;align-content:stretch}
+.atlas-art .specialist-results{display:grid;height:100%;min-width:0;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:0;align-content:stretch}
 .atlas-art .specialist-result,.atlas-art .multi-result{width:100%;height:100%;min-width:0;min-height:0;padding:0;border-radius:0;box-shadow:none;transform:none}
 .atlas-art .specialist-result img,.atlas-art .multi-result img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 42%}
 .atlas-art .multimodal-glance{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);padding:0;gap:6px}
@@ -126,12 +126,12 @@
  .atlas-art .edit-comparison-media{grid-template-columns:1fr}
  .atlas-art .edit-comparison img{position:absolute;inset:0}
  .atlas-art .edit-source-image{clip-path:inset(0 50% 0 0);z-index:1}
- .atlas-art .transfer-flow,.atlas-art .multi-flow,.atlas-art .multimodal-glance{gap:4px}
+ .atlas-art .multimodal-glance{gap:4px}
  .atlas-art .multimodal-source-stack>.multimodal-stack-text{padding:5px}
  .atlas-art .multimodal-stack-text>p{font-size:7px;-webkit-line-clamp:6}
 }
 /* Respond to the actual card width, not the full browser width. */
 @container multi-teacher-art (max-width:640px){
- .atlas-art .multi-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
- .atlas-art .specialist-results{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:4px}
+ .atlas-art .multi-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+ .atlas-art .specialist-results{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:0}
 }
