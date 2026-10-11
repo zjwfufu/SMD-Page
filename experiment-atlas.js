@@ -97,6 +97,11 @@
   });
 
   let activeIndex = -1, previewMedia = [], previewJob = 0;
+  let hoverLoadTimer=0,previewReleaseTimer=0;
+  const previewCache=new Map();
+  // Decode nearby stills ahead of hover, without preloading every video.
+  const nearbyPosters=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;entry.target.querySelectorAll('img').forEach(img=>{img.loading='eager';img.decode?.().catch(()=>{})});nearbyPosters.unobserve(entry.target)}},{rootMargin:'600px'});
+  tiles.forEach(tile=>nearbyPosters.observe(tile));
   const restingWeights = [1.08,.96,1.12,.98,1.04,.95,1.10,.94,1.02];
   const currentWeights = [...restingWeights];
   function paintApertures() {
@@ -151,34 +156,54 @@
   function stopPreview(collapse = true) {
     previewJob++;
     clearTimeout(revealTimer);
+    clearTimeout(hoverLoadTimer);clearTimeout(previewReleaseTimer);
     for(const {video,poster} of previewMedia){
-      video.pause();video.removeAttribute('src');video.load();video.remove();poster.hidden=false;
+      previewCache.get(poster)?.cancelReady?.();video.pause();video.style.opacity='0';poster.hidden=false;
     }
     previewMedia = [];
+    previewReleaseTimer=setTimeout(releasePreviewCache,1200);
     board.classList.remove('is-exploring');
     board.querySelectorAll('.is-active').forEach(node => node.classList.remove('is-active'));
     if (collapse) expandAperture(-1);
+  }
+  function disposePreview(entry){entry.cancelReady?.();entry.video.pause();entry.video.removeAttribute('src');entry.video.load();entry.video.remove();entry.poster.hidden=false;previewCache.delete(entry.poster);}
+  function releasePreviewCache(){clearTimeout(previewReleaseTimer);for(const entry of [...previewCache.values()])disposePreview(entry);}
+  function playPreview(entry,job){
+    const {video}=entry;entry.cancelReady?.();let frame=0,timeout=0,cancelled=false,buffering=true;
+    const current=()=>!cancelled&&job===previewJob&&previewMedia.includes(entry)&&!document.hidden;
+    const reveal=()=>{if(current()&&!buffering&&video.readyState>=2&&!video.paused)video.style.opacity='1'};
+    const playing=()=>{if(!current())return;buffering=false;if(video.requestVideoFrameCallback){frame=video.requestVideoFrameCallback(reveal)}else{requestAnimationFrame(()=>requestAnimationFrame(reveal))}};
+    const waiting=()=>{buffering=true;video.style.opacity='0'};
+    const failed=()=>{if(current()){disposePreview(entry);previewMedia=previewMedia.filter(item=>item!==entry)}};
+    entry.cancelReady=()=>{cancelled=true;clearTimeout(timeout);if(frame&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(frame);video.removeEventListener('playing',playing);video.removeEventListener('waiting',waiting);video.removeEventListener('error',failed)};
+    video.addEventListener('playing',playing);video.addEventListener('waiting',waiting);video.addEventListener('error',failed);
+    // A slow/failed request must keep the still image, not an empty player.
+    timeout=setTimeout(()=>{if(current()&&video.readyState<2)failed();else reveal()},8000);
+    video.play().then(playing).catch(failed);
   }
   async function preview(button) {
     const index=tiles.indexOf(button);if(index===activeIndex)return;
     stopPreview(false);expandAperture(index);
     button.parentElement.classList.add('is-active');board.classList.add('is-exploring');
-    if (reducedMotion() || document.hidden || board.hidden) return;
+    if (reducedMotion() || navigator.connection?.saveData || document.hidden || board.hidden) return;
     const posters = [...button.querySelectorAll('[data-preview-src]')], job = previewJob;
+    posters.forEach(poster=>{poster.loading='eager'});
     // Multimodal has both a reference video and a generated result. Preview all
     // videos in this one active tile rather than picking the first DOM match.
+    // Visual hover is immediate; only sustained hover starts network/decoding.
+    hoverLoadTimer=setTimeout(()=>{
+    if(job!==previewJob)return;clearTimeout(previewReleaseTimer);
+    for(const entry of [...previewCache.values()])if(!posters.includes(entry.poster))disposePreview(entry);
     previewMedia = posters.map(poster=>{
+      if(previewCache.has(poster))return previewCache.get(poster);
       const video=document.createElement('video');
       video.className='atlas-motion';video.muted=true;video.loop=true;video.playsInline=true;
-      video.poster=poster.src;video.setAttribute('aria-hidden','true');
-      video.src=poster.dataset.previewSrc;poster.after(video);poster.hidden=true;
-      return {video,poster};
+      video.preload='none';video.poster=poster.src;video.setAttribute('aria-hidden','true');
+      video.style.opacity='0';video.src=poster.dataset.previewSrc;poster.after(video);
+      const entry={video,poster};previewCache.set(poster,entry);return entry;
     });
-    await Promise.allSettled(previewMedia.map(async entry=>{
-      const {video,poster}=entry;
-      try{await video.play();if(job!==previewJob)video.pause();}
-      catch{if(job===previewJob){video.pause();video.removeAttribute('src');video.load();video.remove();poster.hidden=false;previewMedia=previewMedia.filter(item=>item!==entry);}}
-    }));
+    previewMedia.forEach(entry=>playPreview(entry,job));
+    },140);
   }
   // Reflow alone must not trigger a new selection under a stationary pointer.
   // Resolve the piece only on actual pointer travel, so opening a slice is stable.
@@ -190,7 +215,7 @@
     const tile=event.target.closest('.atlas-tile');if(tile)preview(tile);
   });
   board.addEventListener('pointerleave', () => {pointerX=pointerY=null;if(!board.contains(document.activeElement))stopPreview();});
-  document.addEventListener('visibilitychange', () => {if (document.hidden) stopPreview();});
+  document.addEventListener('visibilitychange', () => {if (document.hidden){stopPreview();releasePreviewCache();}});
   const boardObserver = new IntersectionObserver(entries => {if (!entries[0].isIntersecting) stopPreview();});
   boardObserver.observe(board);
 

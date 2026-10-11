@@ -10,6 +10,8 @@
 .atlas-art{position:absolute;inset:0;display:block;pointer-events:none;--bg:#fff;--ink:#252525;--muted:#666;--feature-serif:Georgia,serif;--atlas-media-gap:0px;--atlas-condition-gap:3px;transition:filter .25s,opacity .25s}
 .atlas-art>.overview-stage{position:absolute;inset:0;width:100%;height:100%;max-width:none;aspect-ratio:auto;margin:0;transform:none}
 .atlas-art img,.atlas-art video{user-select:none;pointer-events:none}
+/* Stills remain in layout underneath motion, including during buffering. */
+.atlas-art video.atlas-motion{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0;pointer-events:none}
 .atlas-art [hidden]{display:none!important}
 .atlas-art .glance-columns{gap:var(--atlas-media-gap);inset:0;transform:none}
 .atlas-art .glance-column{gap:var(--atlas-media-gap);height:100%;transform:none}

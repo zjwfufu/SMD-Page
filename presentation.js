@@ -100,6 +100,7 @@ const teaserMotionButton=teaser.querySelector('.teaser-a11y-pause');
 let teaserAudible=null;
 const canPlayTeaser=()=>!teaserPaused&&!document.hidden&&!document.querySelector('dialog[open]')&&(teaserExplicitPlay||allowAutoMotion());
 function refreshTeaserMotion(){
+ scheduleTeaserAnimation();
  teaserMotionButton.textContent=teaserPaused?'Resume motion':'Pause motion';
  // At most two visible clips per row. Horizontal browsing never fetches every video.
  const chosen=canPlayTeaser()?[...teaser.querySelectorAll('.teaser-rail')].flatMap(row=>[...row.querySelectorAll('video')].filter(v=>teaserVisible.has(v)).sort((a,b)=>Number(b===teaserAudible)-Number(a===teaserAudible)).slice(0,2)):[];
@@ -212,8 +213,13 @@ for(const row of teaserRails){
  row.addEventListener('click',event=>{if(suppressClick){event.preventDefault();event.stopPropagation();suppressClick=false}},true);
 }
 new ResizeObserver(measureTeaserLoops).observe(teaser);measureTeaserLoops();
-let teaserInView=false,lastTeaserTick=0;
-new IntersectionObserver(entries=>{teaserInView=entries[0].isIntersecting;if(!teaserInView){teaserAudible=null;teaser.querySelectorAll('video').forEach(v=>v.muted=true)}},{threshold:0}).observe(teaser);
+let teaserInView=false,lastTeaserTick=0,teaserAnimation=0;
+function scheduleTeaserAnimation(){
+ const running=teaserInView&&canPlayTeaser();
+ if(!running){cancelAnimationFrame(teaserAnimation);teaserAnimation=0;lastTeaserTick=0;return}
+ if(!teaserAnimation)teaserAnimation=requestAnimationFrame(animateTeaser);
+}
+new IntersectionObserver(entries=>{teaserInView=entries[0].isIntersecting;if(!teaserInView){teaserAudible=null;teaser.querySelectorAll('video').forEach(v=>v.muted=true)}scheduleTeaserAnimation();},{threshold:0}).observe(teaser);
 for(const row of teaserRails){
  row.addEventListener('pointerenter',()=>row.dataset.hovering='true');
  row.addEventListener('pointerleave',()=>{delete row.dataset.hovering});
@@ -221,6 +227,7 @@ for(const row of teaserRails){
  for(const type of ['touchend','touchcancel'])row.addEventListener(type,()=>{delete row.dataset.touching},{passive:true});
 }
 function animateTeaser(now){
+ teaserAnimation=0;
  const dt=lastTeaserTick?Math.min(now-lastTeaserTick,50):0;lastTeaserTick=now;
  if(teaserInView&&!teaserPaused&&allowAutoMotion()&&!document.querySelector('dialog[open]')){
   for(const row of teaserRails){
@@ -231,9 +238,9 @@ function animateTeaser(now){
    if(pixels){row.scrollLeft-=pixels;recenterTeaser(row)}
   }
  }
- requestAnimationFrame(animateTeaser);
+ scheduleTeaserAnimation();
 }
-requestAnimationFrame(animateTeaser);
+scheduleTeaserAnimation();
 // Opening the image viewer pauses the wall, including clips waiting to load.
 new MutationObserver(refreshTeaserMotion).observe(document.getElementById('image-dialog'),{attributes:true,attributeFilter:['open']});
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches){teaserPaused=true;teaserExplicitPlay=false}refreshTeaserMotion()});
@@ -243,6 +250,7 @@ const comparisonPlayback=new IntersectionObserver(entries=>{for(const entry of e
 }},{threshold:.2});
 for(const id of ['wan-results','av-results'])comparisonPlayback.observe(document.getElementById(id));
 document.addEventListener('visibilitychange',()=>{
+ scheduleTeaserAnimation();
  if(document.hidden){teaserAudible=null;teaser.querySelectorAll('video').forEach(v=>v.muted=true);for(const id of autoplayTimers.keys())cancelAuto(id);teaser.querySelectorAll('video').forEach(releaseVideoSource)}
  else{refreshTeaserMotion();for(const id of ['wan-results','av-results'])scheduleComparison(id)}
 });

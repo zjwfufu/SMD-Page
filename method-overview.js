@@ -30,11 +30,11 @@ const stepNames=['Teacher','Student','Local matching','Baseline','Pivot','Repuls
 const timeline=root.querySelector('.method-timeline');
 timeline.innerHTML=chapters.map((c,i)=>`<button class="method-tab" type="button" role="tab" id="method-tab-${c.id}" aria-controls="method-${c.id}" aria-selected="${i===0}" tabindex="${i===0?0:-1}">${stepNames[i]}</button>`).join('');
 const panels=[...root.querySelectorAll('.method-step')],tabs=[...timeline.querySelectorAll('button')],videos=[...root.querySelectorAll('video')],reduce=matchMedia('(prefers-reduced-motion: reduce)');
-let selected=0,manualPaused=reduce.matches,queued=false,epoch=0,selectionEpoch=0,pending=false;
+let selected=0,manualPaused=reduce.matches||!!navigator.connection?.saveData,queued=false,epoch=0,selectionEpoch=0,pending=false,methodInView=false,initialized=false;
 const stage=root.querySelector('#method-steps');
 function sync(v){const paused=v.paused,box=v.closest('.method-visual'),button=box.querySelector('.method-toggle');box.classList.toggle('is-paused',paused);button.setAttribute('aria-pressed',String(paused));button.setAttribute('aria-label',(paused?'Play ':'Pause ')+v.getAttribute('aria-label'));}
 function stop(){epoch++;videos.forEach(v=>{v.pause();sync(v)});}
-async function play(v){const job=++epoch;videos.filter(other=>other!==v).forEach(other=>other.pause());if(!v.getAttribute('src'))v.src=v.dataset.src;if(v.ended)v.currentTime=0;try{await v.play();if(job!==epoch||v!==videos[selected])v.pause();}catch{}sync(v);}
+async function play(v){initialized=true;const job=++epoch;videos.filter(other=>other!==v).forEach(other=>other.pause());if(!v.getAttribute('src'))v.src=v.dataset.src;if(v.ended)v.currentTime=0;try{await v.play();if(job!==epoch||v!==videos[selected])v.pause();}catch{}sync(v);}
 // Keep the outgoing frame visible while the next clip loads and seeks. Only
 // reveal it once HAVE_CURRENT_DATA confirms a decoded frame at the start.
 function prepare(v,reset=false){
@@ -53,6 +53,7 @@ function prepare(v,reset=false){
 }
 function revealTab(index){const tab=tabs[index],r=tab.getBoundingClientRect(),box=timeline.getBoundingClientRect();if(r.left<box.left)timeline.scrollLeft+=r.left-box.left;else if(r.right>box.right)timeline.scrollLeft+=r.right-box.right;}
 async function select(index,{focus=false}={}){
+ initialized=true;
  const request=++selectionEpoch;pending=true;stage.setAttribute('aria-busy','true');stop();
  if(focus)tabs[index].focus({preventScroll:true});
  const ready=await prepare(videos[index],true);
@@ -64,10 +65,12 @@ async function select(index,{focus=false}={}){
  sync(videos[index]);
  if(focus)tabs[index].focus({preventScroll:true});
  revealTab(index);
+ // Retain only the active decoder and the next preloaded chapter.
+ videos.forEach((video,i)=>{if(i!==index&&i!==index+1&&video.getAttribute('src')){video.pause();video.removeAttribute('src');video.preload='none';video.load()}});
  if(index+1<videos.length&&!manualPaused)prepare(videos[index+1]);
  schedule();
 }
-function choose(){queued=false;if(pending)return;const v=videos[selected],r=v.getBoundingClientRect(),visible=Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,64));if(document.hidden||(!document.fullscreenElement&&visible/Math.min(r.height,innerHeight-64)<.45)){stop();return}if(!manualPaused&&v.paused&&!v.ended)play(v);}
+function choose(){queued=false;if(pending||!initialized)return;const v=videos[selected],r=v.getBoundingClientRect(),visible=Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,64));if(document.hidden||(!document.fullscreenElement&&visible/Math.min(r.height,innerHeight-64)<.45)){stop();return}if(!manualPaused&&v.paused&&!v.ended)play(v);}
 function schedule(){if(!queued){queued=true;requestAnimationFrame(choose)}}
 tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>select(i));tab.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight')next=(i+1)%tabs.length;else if(e.key==='ArrowLeft')next=(i-1+tabs.length)%tabs.length;else if(e.key==='Home')next=0;else if(e.key==='End')next=tabs.length-1;else return;e.preventDefault();select(next,{focus:true})})});
 videos.forEach((v,i)=>{
@@ -77,9 +80,8 @@ videos.forEach((v,i)=>{
  v.closest('.method-visual').querySelector('.method-toggle').addEventListener('click',()=>{if(v.paused){manualPaused=false;play(v)}else{manualPaused=true;stop()}});
  v.closest('.method-visual').querySelector('.method-fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(v.closest('.method-visual').requestFullscreen)await v.closest('.method-visual').requestFullscreen();else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();else v.controls=true;}catch{v.controls=true}});
 });
-const observer=new IntersectionObserver(schedule,{threshold:[0,.25,.5,.75,1]});observer.observe(root.querySelector('#method-steps'));
-addEventListener('scroll',schedule,{passive:true});addEventListener('resize',()=>{revealTab(selected);schedule()});document.addEventListener('visibilitychange',schedule);document.addEventListener('fullscreenchange',schedule);reduce.addEventListener('change',()=>{manualPaused=reduce.matches;stop();schedule()});
-// Initialize paused until this section enters the viewport. Do not change page navigation.
-select(0);
+const observer=new IntersectionObserver(entries=>{methodInView=entries[0].isIntersecting;if(!methodInView){stop();return}if(!initialized&&!manualPaused)select(0);else schedule()},{threshold:[0,.25,.5,.75,1]});observer.observe(root.querySelector('#method-steps'));
+addEventListener('scroll',()=>{if(methodInView)schedule()},{passive:true});addEventListener('resize',()=>{revealTab(selected);if(methodInView)schedule()});document.addEventListener('visibilitychange',schedule);document.addEventListener('fullscreenchange',schedule);reduce.addEventListener('change',()=>{manualPaused=reduce.matches||!!navigator.connection?.saveData;stop();if(methodInView&&!initialized&&!manualPaused)select(0);else schedule()});
+// Leave posters in place until the section is visible or the reader selects a step.
 
 })();
