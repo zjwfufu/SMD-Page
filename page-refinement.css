@@ -65,7 +65,7 @@ html{scroll-behavior:auto}
 .project-film{border-top:1px solid #ddd;padding:22px 0 0;scroll-margin-top:100px}
 .project-film h2{font:400 26px/1.2 Georgia,serif;margin:0 0 10px;color:#111}
 .film-pending{font-size:13px;color:#777}
-.project-film video{margin-top:22px;width:100%;background:#111}
+.project-film video{margin-top:22px;width:100%;aspect-ratio:16/9;background:#111}
 #film-sections:has(video){display:block}.project-film:has(video){margin-bottom:56px}
 .experiment-layout{display:grid;grid-template-columns:148px minmax(0,1fr);gap:40px;position:relative;scroll-margin-top:100px}
 .experiment-sidebar{position:sticky;top:96px;align-self:start;max-height:calc(100dvh - 120px);overflow:auto;padding:8px 0}
