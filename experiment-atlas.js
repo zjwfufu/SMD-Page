@@ -75,7 +75,7 @@
     button.setAttribute('aria-controls', id);button.setAttribute('aria-expanded', 'false');
     button.append(overviewArt(id, index));
     const label = document.createElement('span');label.className = 'atlas-label';
-    label.innerHTML = `<span class="atlas-number">${String(index + 1).padStart(2, '0')}</span><span class="atlas-name">${esc(title(id))}</span><span class="atlas-arrow" aria-hidden="true">↗</span>`;
+    label.innerHTML = `<span class="atlas-name">${esc(title(id))}</span><span class="atlas-arrow" aria-hidden="true">↗</span>`;
     button.append(label);wrapper.append(button);board.append(wrapper);
     let touchWasActive = false, touchPointer = false;
     button.addEventListener('pointerdown', event => {touchPointer=event.pointerType !== 'mouse';if(touchPointer)touchWasActive = activeIndex === index;});

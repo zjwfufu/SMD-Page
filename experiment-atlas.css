@@ -2,7 +2,7 @@
 .has-experiment-atlas{display:block;background:#fff;border-top:1px solid #ddd;padding:42px clamp(12px,2.3vw,34px) 34px;isolation:isolate}
 .has-experiment-atlas .experiment-sidebar,.has-experiment-atlas .experiment-mobile-nav{display:none!important}
 .has-experiment-atlas .experiment-heading{margin:0;text-align:center;font-size:clamp(30px,3.5vw,46px)}
-.atlas-viewport{position:relative;width:75%;overflow:hidden;margin:30px auto 0}
+.atlas-viewport{position:relative;width:75%;overflow:hidden;border-radius:4px;margin:30px auto 0}
 .experiment-atlas{position:relative;height:clamp(1980px,234vh,2400px);width:100%;margin:auto;isolation:isolate;overflow:hidden;background:#fff}
 .atlas-piece{position:absolute;left:0;width:100%;z-index:1;pointer-events:none;transform-origin:left center;transition:transform .22s,filter .22s}
 .atlas-tile{display:block;appearance:none;position:relative;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;background:#fff;overflow:hidden;text-align:left;color:#fff;cursor:pointer;isolation:isolate;touch-action:pan-y;pointer-events:auto;-webkit-tap-highlight-color:transparent}
@@ -38,7 +38,6 @@
 .atlas-art .multimodal-prompt-card{min-height:48px}
 .atlas-art .multimodal-output>img,.atlas-art .multimodal-output>video{display:block;width:100%;height:100%;object-fit:contain}
 .atlas-label{position:absolute;inset:auto auto var(--label-bottom,26px) 22px;z-index:3;display:flex;align-items:center;padding:0;background:none;max-width:calc(100% - 44px);gap:12px;color:#fff;text-shadow:0 1px 6px #000b;pointer-events:none}
-.atlas-number{flex:none;font:500 10px/1.2 system-ui;letter-spacing:.1em;color:#ffffffd9;text-shadow:0 1px 6px #000b}
 .atlas-name{font:400 clamp(24px,2.5vw,34px)/1.1 Georgia,serif;letter-spacing:-.015em;color:#fff;text-shadow:0 1px 6px #000b;max-width:none;text-wrap:balance}
 .atlas-arrow{margin-left:10px;font:300 26px/1 system-ui}
 .atlas-piece.is-active{z-index:2;transform:translateY(-3px) scale(1.1);filter:drop-shadow(0 6px 9px #00000026)}

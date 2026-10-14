@@ -65,7 +65,7 @@ html{scroll-behavior:auto}
 .project-film{border-top:1px solid #ddd;padding:22px 0 0;scroll-margin-top:100px}
 .project-film h2{font:400 26px/1.2 Georgia,serif;margin:0 0 10px;color:#111}
 .film-pending{font-size:13px;color:#777}
-.film-player{position:relative;margin-top:22px;aspect-ratio:16/9;background:#111}
+.film-player{position:relative;margin-top:22px;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:#111}
 .project-film .film-player video{display:block;margin:0;width:100%;height:100%;aspect-ratio:16/9;background:#111}
 .film-cover{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:0;background:rgba(245,248,250,.22);-webkit-backdrop-filter:blur(16px) saturate(.75);backdrop-filter:blur(16px) saturate(.75);color:#fff;cursor:pointer}
 .film-cover[hidden]{display:none!important}.film-cover:disabled{cursor:progress}
