@@ -20,6 +20,7 @@
  const projectResources=[
   {label:'Paper',url:'https://arxiv.org/abs/2610.18472',icon:'<path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/>'},
   {label:'Code',url:'https://github.com/zjwfufu/SMD',icon:'<path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 16"/>'},
+  {label:'Hugging Face',url:'https://huggingface.co/zjwfufu/SMD',icon:'<path d="M14 4h6v6m0-6-9 9M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/>'},
   {label:'Model',url:'https://huggingface.co/collections/zjwfufu/smd',icon:'<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5m-9 5v9m-4.5-16.5 9 5"/>'},
   {label:'Data',url:'https://huggingface.co/collections/zjwfufu/smd-data',icon:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/>'}
  ];
