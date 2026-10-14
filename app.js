@@ -179,7 +179,11 @@ for(const event of ['play','pause','ended','volumechange'])document.addEventList
 updatePlaybackControls();
 document.addEventListener('click',e=>{const sync=e.target.closest('[data-sync]');if(sync)syncPlay(sync.dataset.sync);const listen=e.target.closest('[data-listen]');if(listen)syncPlay('av-results',Number(listen.dataset.listen));});
 // Stop videos that leave the screen; no autoplay or background downloads.
-function stopSection(section){section.querySelectorAll('[data-sync]').forEach(b=>cancelPlayback(b.dataset.sync));section.querySelectorAll('video').forEach(v=>{v.pause();deferVideoRelease(v)});updatePlaybackControls()}
+function stopSection(section){section.querySelectorAll('[data-sync]').forEach(b=>cancelPlayback(b.dataset.sync));section.querySelectorAll('video').forEach(v=>{
+  if(v.closest('#demo')){v.pause();clearTimeout(v._releaseTimer);return}
+  if(v.closest('#method,#teaser'))return;
+  v.pause();deferVideoRelease(v)
+});updatePlaybackControls()}
 const visibilityObserver=new IntersectionObserver(entries=>{for(const e of entries)if(!e.isIntersecting)stopSection(e.target)});document.querySelectorAll('section').forEach(s=>visibilityObserver.observe(s));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSection(document)});
 
@@ -239,6 +243,7 @@ async function ensureVideoSource(video){
  try{await job.promise}finally{if(videoLoads.get(video)===job)videoLoads.delete(video)}
 }
 function releaseVideoSource(video){
+ if(video.closest('#demo,#method')){video.pause();return}
  clearTimeout(video._releaseTimer);videoLoads.get(video)?.controller.abort();videoLoads.delete(video);
  video.pause();video.removeAttribute('src');video.preload='none';video.load();
  videoAssets.get(video)?.revoke();videoAssets.delete(video);

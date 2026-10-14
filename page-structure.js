@@ -46,7 +46,10 @@
    const video=document.createElement('video');video.controls=false;video.playsInline=true;video.preload='none';video.src=film.src;if(film.poster)video.poster=film.poster;
    const cover=document.createElement('button');cover.type='button';cover.className='film-cover';
    cover.innerHTML='<span class="film-play-mark" aria-hidden="true">▶</span><span class="film-play-label">Play teaser video</span>';
-   cover.addEventListener('click',async()=>{cover.disabled=true;video.controls=true;cover.querySelector('.film-play-label').textContent='Loading video…';try{await video.play()}catch{cover.hidden=true;video.focus()}});
+   cover.addEventListener('click',async()=>{cover.disabled=true;video.controls=true;const label=cover.querySelector('.film-play-label');label.textContent='Loading video…';try{await video.play()}catch{
+    if(!video.error){cover.disabled=false;video.controls=false;label.textContent='Play teaser video';return}
+    cover.hidden=true;video.focus()
+   }});
    video.addEventListener('playing',()=>{cover.hidden=true},{once:true});
    video.addEventListener('error',()=>{cover.hidden=true});
    player.append(video,cover);section.append(player);
