@@ -34,9 +34,9 @@
  hero.id='project-title-block';hero.before(introduction);
  introduction.append(hero,document.getElementById('abstract'));
 
- // Supply source/poster paths here when the two requested films are ready.
- // Null means no player, no media request, and no invented demo asset.
- const films=[{id:'demo',title:'Teaser Video',src:null,poster:null},{id:'method',title:'Method Overview',src:null,poster:null}];
+ // The approved teaser uses the existing film slot, independently of Method.
+ // preload=none keeps the full film off the network until the visitor plays it.
+ const films=[{id:'demo',title:'Teaser Video',src:'assets/teaser/SMD_r54_1080p_x264.mp4',poster:'assets/teaser/SMD_r54_poster.jpg'},{id:'method',title:'Method Overview',src:null,poster:null}];
  const filmSections=document.createElement('div');filmSections.id='film-sections';
  for(const film of films){
   const section=document.createElement('section');section.id=film.id;section.className='project-film';section.setAttribute('aria-labelledby',film.id+'-title');
