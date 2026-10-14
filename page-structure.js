@@ -35,12 +35,21 @@
 
  // The approved teaser uses the existing film slot, independently of Method.
  // preload=none keeps the full film off the network until the visitor plays it.
- const films=[{id:'demo',title:'Teaser Video',src:'assets/teaser/SMD_r54_1080p_x264.mp4',poster:'assets/teaser/SMD_r54_poster.jpg'},{id:'method',title:'Method Overview',src:null,poster:null}];
+ const films=[{id:'demo',title:'Teaser Video',src:'assets/teaser/SMD_r54_1080p_x264.mp4',poster:'assets/teaser/SMD_r54_poster.jpg?v=glass20261014'},{id:'method',title:'Method Overview',src:null,poster:null}];
  const filmSections=document.createElement('div');filmSections.id='film-sections';
  for(const film of films){
   const section=document.createElement('section');section.id=film.id;section.className='project-film';section.setAttribute('aria-labelledby',film.id+'-title');
   section.innerHTML=`<h2 id="${film.id}-title">${film.title}</h2>`;
-  if(film.src){const video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='none';video.src=film.src;if(film.poster)video.poster=film.poster;section.append(video)}
+  if(film.src){
+   const player=document.createElement('div');player.className='film-player';
+   const video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='none';video.src=film.src;if(film.poster)video.poster=film.poster;
+   const cover=document.createElement('button');cover.type='button';cover.className='film-cover';
+   cover.innerHTML='<span class="film-play-mark" aria-hidden="true">▶</span><span class="film-play-label">Play teaser video</span>';
+   cover.addEventListener('click',async()=>{cover.disabled=true;cover.querySelector('.film-play-label').textContent='Loading video…';try{await video.play()}catch{cover.hidden=true;video.focus()}});
+   video.addEventListener('playing',()=>{cover.hidden=true},{once:true});
+   video.addEventListener('error',()=>{cover.hidden=true});
+   player.append(video,cover);section.append(player);
+  }
   else{const note=document.createElement('p');note.className='film-pending';note.textContent='Coming soon';section.append(note)}
   filmSections.append(section);
  }
