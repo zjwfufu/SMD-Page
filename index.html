@@ -23,6 +23,10 @@
   <link rel="stylesheet" href="method-overview.css?v=round20261014">
   <script defer src="method-overview.js?v=method20261011"></script>
   <script defer src="experiment-atlas.js?v=round20261014"></script>
+  <style>
+    #citation{max-width:1100px;margin:64px auto 0;padding:0 0 24px}
+    #citation pre{margin:0;padding:20px;border:1px solid var(--border,#ddd);border-radius:8px;background:#f7f7f7;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.6;text-align:left}
+  </style>
 </head>
 <body>
   <a class="skip" href="#experiments">Skip to results</a>
@@ -32,6 +36,15 @@
     </section>
     <section class="abstract" id="abstract" aria-label="About Simplified Matching Distillation"><p>Simplified Matching Distillation (SMD) enables few-step generation without an auxiliary fake-score model, adversarial training, or the need for the student to represent dense teacher predictions.</p><p>We validate SMD across image, 3D, video, and audio–video generation, including editing and multimodal conditioning, and extend it to cross-model, multi-teacher, and causal video distillation.</p></section>
     <div id="full-content"></div>
+    <section id="citation" class="section" aria-labelledby="citation-title">
+      <div class="section-heading"><h2 id="citation-title">Citation</h2></div>
+      <pre><code class="language-bibtex">@article{smd,
+  title   = {Simplifying and Improving On-Policy Distillation for Few-Step Diffusion},
+  author  = {Jiawei Zhang and Ziyu Wan and Nanye Ma and Long Zhao and Dong Chen and Hongyu Liu and Qifeng Chen and Dongdong Chen},
+  year    = {2026},
+  journal = {arXiv preprint arXiv:2610.18472},
+}</code></pre>
+    </section>
   </main>
   <footer><a href="#top">Back to top ↑</a></footer>
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
