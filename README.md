@@ -1,3 +1,3 @@
-# Simplifying and Improving On-Policy Distillation for Few-Step Diffusion
+# Anonymous research project page
 
-GitHub Pages publication source.
+Open index.html through the anonymous website view. All project media are served from this snapshot.

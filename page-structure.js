@@ -1,35 +1,9 @@
-/* Report authors and reading navigation. See PAGE_REFINEMENT.md for provenance. */
+/* Anonymous project introduction and reading navigation. */
 (() => {
- const authors=[
-  {name:'Jiawei Zhang',affiliation:'1',url:'https://zjwsite.github.io/'},
-  {name:'Ziyu Wan',affiliation:'1',url:'http://raywzy.com/'},
-  {name:'Nanye Ma',affiliation:'2',url:'https://willisma.github.io/'},
-  {name:'Long Zhao',affiliation:'',url:'https://garyzhao.github.io/'},
-  {name:'Dong Chen',affiliation:'1',url:'https://www.dongchen.pro/'},
-  {name:'Hongyu Liu',affiliation:'3',url:'https://kumapowerliu.github.io/'},
-  {name:'Qifeng Chen',affiliation:'3',url:'https://cqf.io/'},
-  {name:'Dongdong Chen',affiliation:'1',url:'https://www.dongdongchen.bid/'}
- ];
  const hero=document.querySelector('.hero');hero.id='overview';
  document.getElementById('teaser').after(hero);
- const authorBlock=document.createElement('div');authorBlock.className='project-credits';
- authorBlock.innerHTML=`<ul class="project-authors" aria-label="Authors">${authors.map(a=>`<li><a href="${a.url}" target="_blank" rel="noopener noreferrer">${esc(a.name)}</a>${a.affiliation?`<sup>${a.affiliation}</sup>`:''}</li>`).join('')}</ul><p class="project-affiliations"><span><sup>1</sup> Microsoft Research</span><span><sup>2</sup> NYU</span><span><sup>3</sup> HKUST</span></p>`;
- hero.append(authorBlock);
-
- // Set verified release URLs here. Never substitute the website-source repository.
- const projectResources=[
-  {label:'Paper',url:'https://arxiv.org/abs/2610.18472',icon:'<path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/>'},
-  {label:'Code',url:'https://github.com/zjwfufu/SMD',icon:'<path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 16"/>'},
-  {label:'Hugging Face',url:'https://huggingface.co/zjwfufu/SMD',icon:'<path d="M14 4h6v6m0-6-9 9M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/>'},
-  {label:'Model',url:'https://huggingface.co/collections/zjwfufu/smd',icon:'<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5m-9 5v9m-4.5-16.5 9 5"/>'},
-  {label:'Data',url:'https://huggingface.co/collections/zjwfufu/smd-data',icon:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/>'}
- ];
- const resources=document.createElement('div');resources.className='project-resources';resources.setAttribute('aria-label','Project resources');
- resources.innerHTML=projectResources.map(item=>{const contents=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${item.icon}</svg><span>${item.label}</span>`;return item.url?`<a class="resource-button" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${contents}</a>`:`<button type="button" class="resource-button" disabled aria-label="${item.label} link pending" title="Link pending">${contents}</button>`}).join('');
- authorBlock.append(resources);
-
- // One editorial introduction, credits on the left and approved copy on the right.
- // Move existing nodes so author links and abstract wording remain untouched.
+ // Arrange the title and project description in two columns.
+ // Retain the project description and navigation.
  const introduction=document.createElement('div');introduction.className='project-introduction';introduction.id='overview';
  hero.id='project-title-block';hero.before(introduction);
  introduction.append(hero,document.getElementById('abstract'));
@@ -43,10 +17,10 @@
   section.innerHTML=`<h2 id="${film.id}-title">${film.title}</h2>`;
   if(film.src){
    const player=document.createElement('div');player.className='film-player';
-   const video=document.createElement('video');video.controls=false;video.playsInline=true;video.preload='none';video.src=film.src;if(film.poster)video.poster=film.poster;
+   const video=document.createElement('video');video.controls=false;video.playsInline=true;video.preload='none';video.dataset.src=film.src;if(film.poster)video.poster=film.poster;
    const cover=document.createElement('button');cover.type='button';cover.className='film-cover';
    cover.innerHTML='<span class="film-play-mark" aria-hidden="true">▶</span><span class="film-play-label">Play teaser video</span>';
-   cover.addEventListener('click',async()=>{cover.disabled=true;video.controls=true;const label=cover.querySelector('.film-play-label');label.textContent='Loading video…';try{await video.play()}catch{
+   cover.addEventListener('click',async()=>{cover.disabled=true;video.controls=true;const label=cover.querySelector('.film-play-label');label.textContent='Loading video…';try{await ensureVideoSource(video);await video.play()}catch{
     if(!video.error){cover.disabled=false;video.controls=false;label.textContent='Play teaser video';return}
     cover.hidden=true;video.focus()
    }});

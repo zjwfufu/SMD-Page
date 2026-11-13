@@ -232,7 +232,7 @@ async function ensureVideoSource(video){
   video.parentElement.classList.add('is-loading');
   let asset;
   try{
-   if(source.endsWith('.parts.json')){
+   if(window.hasPublishedAsset(source)){
     asset=await window.resolvePublishedAsset(source,()=>{if(controller.signal.aborted)throw new DOMException('Cancelled','AbortError')});
    }else asset={url:source,revoke(){}};
    if(controller.signal.aborted||!video.isConnected){asset.revoke();throw new DOMException('Cancelled','AbortError')}

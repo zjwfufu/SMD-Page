@@ -166,7 +166,7 @@
     board.querySelectorAll('.is-active').forEach(node => node.classList.remove('is-active'));
     if (collapse) expandAperture(-1);
   }
-  function disposePreview(entry){entry.cancelReady?.();entry.video.pause();entry.video.removeAttribute('src');entry.video.load();entry.video.remove();entry.poster.hidden=false;previewCache.delete(entry.poster);}
+  function disposePreview(entry){entry.cancelReady?.();releaseVideoSource(entry.video);entry.video.remove();entry.poster.hidden=false;previewCache.delete(entry.poster);}
   function releasePreviewCache(){clearTimeout(previewReleaseTimer);for(const entry of [...previewCache.values()])disposePreview(entry);}
   function playPreview(entry,job){
     const {video}=entry;entry.cancelReady?.();let frame=0,timeout=0,cancelled=false,buffering=true;
@@ -179,7 +179,7 @@
     video.addEventListener('playing',playing);video.addEventListener('waiting',waiting);video.addEventListener('error',failed);
     // A slow/failed request must keep the still image, not an empty player.
     timeout=setTimeout(()=>{if(current()&&video.readyState<2)failed();else reveal()},8000);
-    video.play().then(playing).catch(failed);
+    ensureVideoSource(video).then(()=>{if(current())return video.play()}).then(playing).catch(failed);
   }
   async function preview(button) {
     const index=tiles.indexOf(button);if(index===activeIndex)return;
@@ -199,7 +199,7 @@
       const video=document.createElement('video');
       video.className='atlas-motion';video.muted=true;video.loop=true;video.playsInline=true;
       video.preload='none';video.poster=poster.src;video.setAttribute('aria-hidden','true');
-      video.style.opacity='0';video.src=poster.dataset.previewSrc;poster.after(video);
+      video.style.opacity='0';video.dataset.src=poster.dataset.previewSrc;poster.after(video);
       const entry={video,poster};previewCache.set(poster,entry);return entry;
     });
     previewMedia.forEach(entry=>playPreview(entry,job));

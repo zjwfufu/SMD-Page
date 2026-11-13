@@ -1,5 +1,4 @@
-/* Reference: https://research.nvidia.com/labs/genair/pdd/
-   Matching page proportions and comparison hierarchy; blue palette, local content. */
+/* Research project page styles. */
 *{box-sizing:border-box}
 :root{--bg:#edf3fa;--surface:#f8fbff;--surface-alt:#e0eaf6;--ink:#162b44;--muted:#61748c;--border:#bfd0e5;--accent:#245fae}
 html{scroll-behavior:smooth;scroll-padding-top:24px}
