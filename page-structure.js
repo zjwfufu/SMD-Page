@@ -20,13 +20,25 @@
    const video=document.createElement('video');video.controls=false;video.playsInline=true;video.preload='none';video.dataset.src=film.src;if(film.poster)video.poster=film.poster;
    const cover=document.createElement('button');cover.type='button';cover.className='film-cover';
    cover.innerHTML='<span class="film-play-mark" aria-hidden="true">▶</span><span class="film-play-label">Play teaser video</span>';
-   cover.addEventListener('click',async()=>{cover.disabled=true;video.controls=true;const label=cover.querySelector('.film-play-label');label.textContent='Loading video…';try{await ensureVideoSource(video);await video.play()}catch{
-    if(!video.error){cover.disabled=false;video.controls=false;label.textContent='Play teaser video';return}
-    cover.hidden=true;video.focus()
-   }});
-   video.addEventListener('playing',()=>{cover.hidden=true},{once:true});
-   video.addEventListener('error',()=>{cover.hidden=true});
-   player.append(video,cover);section.append(player);
+   const label=cover.querySelector('.film-play-label');
+   const status=document.createElement('span');status.className='film-load-status';status.setAttribute('role','status');status.hidden=true;
+   let percent=0,buffering=false,complete=false;
+   const showRetry=()=>{cover.hidden=false;cover.disabled=false;video.controls=false;label.textContent='Video interrupted — retry';status.hidden=true;player.classList.remove('is-loading')};
+   cover.addEventListener('click',async()=>{
+    cover.disabled=true;video.controls=true;label.textContent='Loading video…';
+    try{await ensureVideoSource(video);await video.play()}
+    catch{cover.disabled=false;label.textContent=video.getAttribute('src')?'Play teaser video':'Could not load video — retry';video.controls=false}
+   });
+   video.addEventListener('demo-progress',event=>{
+    percent=event.detail.percent;label.textContent=`Loading video… ${percent}%`;
+    status.textContent=`Buffering video… ${percent}%`;status.hidden=!buffering||complete||!cover.hidden;
+   });
+   video.addEventListener('waiting',()=>{buffering=true;status.textContent=`Buffering video… ${percent}%`;status.hidden=complete||!cover.hidden});
+   video.addEventListener('playing',()=>{cover.hidden=true;buffering=false;status.hidden=true;player.classList.remove('is-loading')});
+   video.addEventListener('demo-complete',()=>{complete=true;status.hidden=true});
+   video.addEventListener('demo-load-error',()=>{complete=false;showRetry()});
+   video.addEventListener('error',showRetry);
+   player.append(video,cover,status);section.append(player);
   }
   else{const note=document.createElement('p');note.className='film-pending';note.textContent='Coming soon';section.append(note)}
   filmSections.append(section);

@@ -1,1 +1,3 @@
 .project-introduction .hero{align-self:center}.project-introduction .abstract{align-self:center}
+
+.film-load-status{position:absolute;top:12px;left:12px;padding:6px 10px;border-radius:4px;background:rgba(0,0,0,.75);color:white;font-size:13px;pointer-events:none}.film-load-status[hidden]{display:none}

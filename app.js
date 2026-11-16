@@ -232,11 +232,13 @@ async function ensureVideoSource(video){
   video.parentElement.classList.add('is-loading');
   let asset;
   try{
-   if(window.hasPublishedAsset(source)){
+   if(window.isDemoStream?.(source)){
+    asset=await window.loadDemoStream(video);
+   }else if(window.hasPublishedAsset(source)){
     asset=await window.resolvePublishedAsset(source,()=>{if(controller.signal.aborted)throw new DOMException('Cancelled','AbortError')});
    }else asset={url:source,revoke(){}};
    if(controller.signal.aborted||!video.isConnected){asset.revoke();throw new DOMException('Cancelled','AbortError')}
-   videoAssets.set(video,asset);video.src=asset.url;
+   videoAssets.set(video,asset);if(video.getAttribute('src')!==asset.url)video.src=asset.url;
   }catch(error){video.parentElement.classList.remove('is-loading');throw error}
  })();
  videoLoads.set(video,job);
