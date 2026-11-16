@@ -54,7 +54,8 @@
     try{buffer.appendBuffer(bytes)}catch(error){done();reject(error)}
    });
   }
-  // Keep only three requests in flight and append in byte order.
+  // Download independently of append order: one slow segment must not stop
+  // the other workers from filling the buffer. Keep four workers in flight.
   // Resolved segment bytes also survive a manual retry.
   (async()=>{
    try{
@@ -67,15 +68,22 @@
      video.src=objectURL;await opened;checkActive();
      media.duration=manifest.duration;buffer=media.addSourceBuffer(manifest.type);
     }
-    const jobs=new Map(),chunks=[];
-    const schedule=index=>{
-     if(index>=manifest.parts.length||jobs.has(index))return;
-     const job=readPart(manifest.parts[index]);job.catch(()=>{});jobs.set(index,job);
-    };
-    for(let i=0;i<3;i++)schedule(i);
+    const chunks=[],jobs=manifest.parts.map(()=>{
+     let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b});
+     promise.catch(()=>{});return{promise,resolve,reject};
+    });
+    let next=0;
+    async function worker(){
+     while(next<manifest.parts.length&&!revoked){
+      const index=next++;
+      try{jobs[index].resolve(await readPart(manifest.parts[index]))}
+      catch(error){jobs[index].reject(error)}
+     }
+    }
+    for(let i=0;i<4;i++)worker().catch(()=>{});
     let received=0;
     for(let i=0;i<manifest.parts.length;i++){
-     checkActive();const bytes=await jobs.get(i);jobs.delete(i);schedule(i+3);checkActive();
+     checkActive();const bytes=await jobs[i].promise;checkActive();
      if(streaming)await append(bytes);else chunks.push(bytes);
      received+=bytes.length;
      onProgress(Math.round(received/manifest.bytes*100));
