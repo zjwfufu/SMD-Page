@@ -3,7 +3,7 @@
  'use strict';
  const manifest=window.demoStreamManifest,cache=new Map(),waiting=new Map(),downloads=new Map();
  window.isDemoStream=source=>source===manifest.source;
- window.receiveDemoPart=(id,encoded)=>{
+ function receivePart(id,encoded){
   const job=waiting.get(id);if(!job)return;
   try{
    const raw=atob(encoded),bytes=new Uint8Array(raw.length);
@@ -11,7 +11,15 @@
    if(bytes.length!==job.bytes)throw new Error('Incomplete video segment');
    cache.set(id,bytes);job.resolve(bytes);
   }catch(error){job.reject(error)}
- };
+ }
+ window.addEventListener('message',event=>{
+  const message=event.data;
+  if(!message||message.type!=='demo-part')return;
+  const job=waiting.get(message.id);
+  if(!job||event.source!==job.frame.contentWindow)return;
+  if(message.failed)job.reject(new Error('Video segment unavailable'));
+  else receivePart(message.id,message.encoded);
+ });
  function readPart(part){
   if(downloads.has(part.id))return downloads.get(part.id);
   const promise=downloadPart(part);downloads.set(part.id,promise);
@@ -23,14 +31,17 @@
   for(let attempt=0;attempt<4;attempt++){
    try{
     return await new Promise((resolve,reject)=>{
-     const script=document.createElement('script');
-     const cleanup=()=>{clearTimeout(timer);script.remove();waiting.delete(part.id)};
-     const job={bytes:part.bytes,resolve:value=>{cleanup();resolve(value)},reject:error=>{cleanup();reject(error)}};
+     const frame=document.createElement('iframe');frame.hidden=true;frame.setAttribute('aria-hidden','true');
+     // Removing a script does not abort its download. Removing its frame does,
+     // so timed-out requests cannot consume every browser connection slot.
+     const cleanup=()=>{clearTimeout(timer);frame.remove();waiting.delete(part.id)};
+     const job={frame,bytes:part.bytes,resolve:value=>{cleanup();resolve(value)},reject:error=>{cleanup();reject(error)}};
      const timer=setTimeout(()=>job.reject(new Error('Video segment timed out')),12000);
      waiting.set(part.id,job);
-     script.src=new URL(part.path,location.href).href+(attempt?'?retry='+attempt:'');
-     script.onerror=()=>job.reject(new Error('Video segment unavailable'));
-     document.head.append(script);
+     const url=new URL(part.path,location.href).href+(attempt?'?retry='+attempt:'');
+     frame.srcdoc='<script>window.receiveDemoPart=(id,encoded)=>parent.postMessage({type:"demo-part",id,encoded},"*");<\/script>'+
+      '<script src="'+url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" onerror=\'parent.postMessage({type:"demo-part",id:'+JSON.stringify(part.id)+',failed:true},"*")\'><\/script>';
+     document.body.append(frame);
     });
    }catch(error){
     if(attempt===3)throw error;
