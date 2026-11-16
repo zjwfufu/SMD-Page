@@ -68,7 +68,7 @@
    });
   }
   // Download independently of append order: one slow segment must not stop
-  // the other workers from filling the buffer. Keep four workers in flight.
+  // the other workers from filling the buffer. Keep six workers in flight.
   // Resolved segment bytes also survive a manual retry.
   (async()=>{
    try{
@@ -93,7 +93,7 @@
       catch(error){jobs[index].reject(error)}
      }
     }
-    for(let i=0;i<4;i++)worker().catch(()=>{});
+    for(let i=0;i<6;i++)worker().catch(()=>{});
     let received=0;
     for(let i=0;i<manifest.parts.length;i++){
      checkActive();const bytes=await jobs[i].promise;checkActive();
