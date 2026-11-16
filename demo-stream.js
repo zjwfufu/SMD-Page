@@ -36,7 +36,9 @@
      // so timed-out requests cannot consume every browser connection slot.
      const cleanup=()=>{clearTimeout(timer);frame.remove();waiting.delete(part.id)};
      const job={frame,bytes:part.bytes,resolve:value=>{cleanup();resolve(value)},reject:error=>{cleanup();reject(error)}};
-     const timer=setTimeout(()=>job.reject(new Error('Video segment timed out')),12000);
+     // Cold files on the mirror can take longer than a warm retry. Give later
+     // attempts more time instead of repeatedly cancelling the same response.
+     const timer=setTimeout(()=>job.reject(new Error('Video segment timed out')),12000*(attempt+1));
      waiting.set(part.id,job);
      const url=new URL(part.path,location.href).href+(attempt?'?retry='+attempt:'');
      frame.srcdoc='<script>window.receiveDemoPart=(id,encoded)=>parent.postMessage({type:"demo-part",id,encoded},"*");<\/script>'+
